@@ -1,0 +1,70 @@
+# Python
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Application Data
+extracted_attributes/
+
+# Azure Functions
+local.settings.json
+
+# Logs
+*.log
+logs/
+
+# Azure (if any local config files)
+azure_config.json
+*.publishsettings
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+.python_packages
+
+# Workspace files
+*.code-workspace
+
+# Closet for test (dummy data for test)
+closet/
+
+# Sisyphus files
+.sisyphus/
+
+# Ruff cache
+.ruff_cache/
+# Azurite Emulator
+__azurite_db*__.json
+__blobstorage__
+__queuestorage__
+__tablestorage__
+AzuriteConfig
+google_credentials.json
+service_account.json
