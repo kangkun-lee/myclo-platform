@@ -1,5 +1,6 @@
-export const API_BASE_URL =
-  import.meta.env.VITE_API_URL ?? "http://localhost:8000"
+import { env } from '../config/env'
+
+export const API_BASE_URL = env.API_BASE_URL
 
 export const endpoints = {
   login: "/api/auth/login",

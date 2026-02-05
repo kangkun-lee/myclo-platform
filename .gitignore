@@ -50,3 +50,6 @@ build/
 Thumbs.db
 
 local.settings.json
+
+# Ruff cache
+.ruff_cache/

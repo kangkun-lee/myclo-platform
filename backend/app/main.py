@@ -9,7 +9,8 @@ from app.core.health import health_router
 from app.domains.extraction.router import extraction_router
 from app.domains.wardrobe.router import wardrobe_router
 from app.domains.recommendation.router import recommendation_router
-from app.domains.generation.router import generation_router
+
+# from app.domains.generation.router import generation_router  # Temporarily disabled
 from app.domains.weather.router import router as weather_router
 
 
@@ -72,7 +73,7 @@ def create_app() -> FastAPI:
 
     app.include_router(wardrobe_router, prefix="/api", tags=["Wardrobe"])
     app.include_router(recommendation_router, prefix="/api", tags=["Recommendation"])
-    app.include_router(generation_router, prefix="/api", tags=["Generation"])
+    # app.include_router(generation_router, prefix="/api", tags=["Generation"])  # Temporarily disabled
 
     from app.domains.chat.router import chat_router
 
