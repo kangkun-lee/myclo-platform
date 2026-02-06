@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
+from sqlalchemy.orm import Session
+from app.database import get_db
 from .service import weather_service
 from .schema import DailyWeatherResponse
 from app.core.regions import get_nearest_region
@@ -10,6 +12,7 @@ router = APIRouter()
 async def get_today_summary(
     lat: float = Query(..., description="위도"),
     lon: float = Query(..., description="경도"),
+    db: Session = Depends(get_db),
 ):
     # 1. 가장 가까운 지역 찾기
     region_name, region_data = get_nearest_region(lat, lon)
@@ -18,7 +21,7 @@ async def get_today_summary(
 
     # 2. 날씨 데이터 조회 (Region 이름으로 캐싱/조회)
     weather_data, msg = await weather_service.get_daily_weather_summary(
-        None, nx, ny, region_name
+        db, nx, ny, region_name
     )
 
     if not weather_data:

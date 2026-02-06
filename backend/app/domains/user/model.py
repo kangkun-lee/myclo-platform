@@ -15,6 +15,9 @@ class User(Base):
     weight = Column(DECIMAL(5, 2), nullable=True)  # kg
     age = Column(Integer, nullable=True)
     gender = Column(String, nullable=True)  # 'MALE', 'FEMALE', etc.
+    face_image_path = Column(
+        String, nullable=True
+    )  # Path to user's face image in storage
     password = Column(String, nullable=False)
     created_at = Column(DateTime, server_default=text("now()"))
 

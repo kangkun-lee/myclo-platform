@@ -1,9 +1,9 @@
 import logging
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
-from app.domains.user.router import get_current_user
-from app.storage.memory_store import UserRecord
+from app.core.auth import get_current_user
+from app.domains.user.model import User
 from .service import extractor
-from .schema import ExtractionResponse, ExtractionUrlResponse
+from .schema import ExtractionResponse, ExtractionUrlResponse, MultiExtractionResponse
 from app.core.schemas import AttributesSchema
 from app.utils.validators import validate_uploaded_file
 from app.utils.response_helpers import handle_route_exception
@@ -15,77 +15,98 @@ logger = logging.getLogger(__name__)
 extraction_router = APIRouter()
 
 
+from sqlalchemy.orm import Session
+from app.database import get_db
+
+
 @extraction_router.post(
     "/extract",
-    response_model=ExtractionResponse,
-    summary="이미지 속성 추출 및 저장 (단일 업로드)",
-    description="옷 이미지를 업로드하여 속성을 추출하고 내 옷장에 저장합니다. (로그인 필요)",
+    response_model=MultiExtractionResponse,
+    summary="이미지 속성 추출 및 저장 (멀티/배치 처리)",
+    description="각기 다른 옷 이미지들을 업로드하여 각각 속성을 추출하고 내 옷장에 저장합니다. (로그인 필요)",
 )
 async def extract(
-    image: UploadFile = File(..., description="업로드할 옷 이미지 파일"),
-    current_user: UserRecord = Depends(get_current_user),
+    images: list[UploadFile] = File(..., description="업로드할 옷 이미지 파일들"),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """
-    Extract and save clothing attributes (Single file)
-
-    - **image**: 업로드할 이미지 파일 (필수)
-    - **Authorization**: Bearer Token (필수)
+    Extract and save clothing attributes for each image individually.
     """
-    logger.info("=== Extract Request Started ===")
-    logger.info(
-        f"User authenticated: ID={current_user.id}, Username={current_user.user_name}"
-    )
-    logger.info(f"Image filename: {image.filename}, content_type: {image.content_type}")
+    logger.info("=== Batch Extract Request Started ===")
+    logger.info(f"User authenticated: ID={current_user.id}")
+    logger.info(f"Received {len(images)} images for batch extraction.")
+
+    results: list[ExtractionResponse] = []
 
     try:
-        # Read contents first for size validation
-        contents = await image.read()
-        file_size_mb = len(contents) / 1024 / 1024
-        logger.info(f"Image file size: {len(contents)} bytes ({file_size_mb:.2f} MB)")
+        from app.domains.wardrobe.service import wardrobe_manager
 
-        # File validation (filename, extension, MIME type, size)
-        validate_uploaded_file(
-            filename=image.filename,
-            content_type=image.content_type,
-            file_size=len(contents),
-        )
-        logger.info("File validation passed")
+        for idx, img in enumerate(images):
+            try:
+                contents = await img.read()
+                size = len(contents)
+                logger.info(
+                    f"Processing image {idx+1}/{len(images)}: {img.filename} ({size} bytes)"
+                )
 
-        # Sync extraction call
-        logger.info("Starting attribute extraction...")
-        attributes = extractor.extract(contents)
-        category_main = (
-            attributes.get("category", {}).get("main", "N/A")
-            if isinstance(attributes.get("category"), dict)
-            else "N/A"
-        )
-        logger.info(f"Attribute extraction completed. Category: {category_main}")
-        logger.debug(f"Extracted attributes keys: {list(attributes.keys())}")
+                # File validation
+                validate_uploaded_file(
+                    filename=img.filename,
+                    content_type=img.content_type,
+                    file_size=size,
+                )
 
-        logger.info(f"Saving item in memory for user_id={current_user.id}...")
-        encoded = base64.b64encode(contents).decode("utf-8")
-        image_url = f"data:{image.content_type};base64,{encoded}"
-        record = add_wardrobe_item(
-            user_id=current_user.id,
-            attributes=attributes,
-            image_url=image_url,
-        )
-        logger.info(f"Item saved successfully. Item ID: {record.id}")
+                # Individual extraction for this specific image
+                logger.info(f"Starting attribute extraction for image {idx+1}...")
+                attributes = extractor.extract(
+                    [contents]
+                )  # Pass as list of 1 for multi-image logic compatibility
 
-        logger.info("=== Extract Request Completed Successfully ===")
-        # Return single object with attributes
-        return ExtractionResponse(
-            success=True,
-            attributes=AttributesSchema(**attributes),
-            saved_to=f"memory:{record.id}",
-            image_url=image_url,
-            item_id=str(record.id),
-            blob_name=None,
-            storage_type="memory",
+                # Save as individual item
+                logger.info(f"Saving item {idx+1} to database...")
+                record = wardrobe_manager.save_item(
+                    db=db,
+                    image_bytes=contents,
+                    original_filename=img.filename,
+                    attributes=attributes,
+                    user_id=current_user.id,
+                )
+
+                item_id = str(record["item_id"])
+                image_url = record["image_url"]
+                blob_name = record["blob_name"]
+
+                results.append(
+                    ExtractionResponse(
+                        success=True,
+                        attributes=AttributesSchema(**attributes),
+                        saved_to=f"supabase:{item_id}",
+                        image_url=image_url,
+                        item_id=item_id,
+                        blob_name=blob_name,
+                        storage_type="supabase",
+                    )
+                )
+                logger.info(f"Item {idx+1} processed successfully. Item ID: {item_id}")
+
+            except Exception as item_err:
+                logger.error(
+                    f"Failed to process image {idx+1} ({img.filename}): {item_err}"
+                )
+                # We could continue with other items or fail the whole request.
+                # Here we continue but mark it as failure (though pydantic might complain if success=False isn't handled)
+                # For now, let's let individual failures raise exception to keep it simple,
+                # or just skip. Let's raise for now to be safe.
+                raise
+
+        logger.info(f"=== Batch Extract Completed: {len(results)} items processed ===")
+        return MultiExtractionResponse(
+            success=True, items=results, total_processed=len(results)
         )
 
     except HTTPException as e:
-        logger.error(f"HTTPException raised: {e.status_code} - {e.detail}")
+        logger.error(f"HTTPException: {e.status_code} - {e.detail}")
         raise
     except Exception as e:
         logger.error(

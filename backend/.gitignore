@@ -68,3 +68,6 @@ __tablestorage__
 AzuriteConfig
 google_credentials.json
 service_account.json
+
+FEW_SHOT_GUIDE.md
+IMAGE_GENERATION_OPTIMIZATION.md

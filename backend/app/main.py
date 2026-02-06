@@ -12,20 +12,24 @@ from app.domains.recommendation.router import recommendation_router
 
 # from app.domains.generation.router import generation_router  # Temporarily disabled
 from app.domains.weather.router import router as weather_router
+from app.domains.user.model import User
+from app.domains.wardrobe.model import ClosetItem
+from app.domains.outfit.model import OutfitLog, OutfitItem
+from app.domains.recommendation.model import TodaysPick
+from app.domains.weather.model import DailyWeather
+from app.domains.chat.model import ChatSession
 
 
 # 로깅 설정
-# Azure Functions 환경에서는 기본 로깅 설정이 다르게 작동할 수 있음
+# 로깅 설정
 import sys
 
-# Azure Functions와 일반 Python 환경 모두에서 작동하도록 설정
+# 일반 Python 환경 로깅 설정
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.StreamHandler(
-            sys.stdout
-        ),  # stdout으로 출력하여 Azure Functions에서도 보이도록
+        logging.StreamHandler(sys.stdout),
     ],
     force=True,  # 기존 핸들러가 있으면 덮어쓰기
 )
@@ -43,13 +47,58 @@ logging.getLogger("app").setLevel(logging.DEBUG)
 from app.domains.auth.router import router as auth_router
 
 
+from contextlib import asynccontextmanager
+from sqlalchemy import create_engine, text
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup logic
+    logger = logging.getLogger("app.startup")
+    logger.info("Starting up application...")
+
+    # 1. Run Migrations (Add face_image_path)
+    try:
+        from app.core.config import Config
+
+        # Create a transient engine for migration check
+        engine = create_engine(Config.DATABASE_URL)
+        with engine.connect() as conn:
+            # Check if column exists
+            check_sql = text(
+                """
+                SELECT column_name 
+                FROM information_schema.columns 
+                WHERE table_name='users' AND column_name='face_image_path';
+            """
+            )
+            result = conn.execute(check_sql).fetchone()
+
+            if not result:
+                logger.info("Migrating: Adding face_image_path to users table")
+                conn.execute(
+                    text("ALTER TABLE users ADD COLUMN face_image_path VARCHAR;")
+                )
+                conn.commit()
+                logger.info("Migration successful.")
+    except Exception as e:
+        logger.error(f"Startup migration failed: {e}")
+
+    yield
+
+    # Shutdown logic (if any)
+    logger.info("Shutting down application...")
+
+
 def create_app() -> FastAPI:
-    app = FastAPI(title="Clothing Attribute Extractor", version="1.0.0")
+    app = FastAPI(
+        title="Clothing Attribute Extractor", version="1.0.0", lifespan=lifespan
+    )
 
     # CORS
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=Config.CORS_ORIGINS,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

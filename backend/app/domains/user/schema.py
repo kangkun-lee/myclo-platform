@@ -37,5 +37,7 @@ class UserResponse(BaseModel):
     weight: float | None = None
     gender: str | None = None
     body_shape: str | None = None
+    face_image_url: str | None = None  # Signed URL or Public URL
+    face_image_path: str | None = None  # Raw Storage Path
 
     model_config = ConfigDict(from_attributes=True)

@@ -1,7 +1,6 @@
 import os
 import logging
 from typing import Optional
-from azure.storage.blob import BlobServiceClient, ContentSettings
 from app.core.config import Config
 
 logger = logging.getLogger(__name__)
@@ -9,30 +8,25 @@ logger = logging.getLogger(__name__)
 
 class MannequinManager:
     def __init__(self):
-        self.account_name = Config.AZURE_STORAGE_ACCOUNT_NAME
-        self.account_key = Config.AZURE_STORAGE_ACCOUNT_KEY
-        self.container_name = Config.AZURE_STORAGE_CONTAINER_NAME
-        self.blob_service_client = None
-        self.container_client = None
+        # Supabase를 사용하도록 변경
+        self.supabase_url = Config.SUPABASE_URL
+        self.supabase_key = Config.SUPABASE_SERVICE_KEY or Config.SUPABASE_ANON_KEY
+        self.bucket_name = Config.SUPABASE_STORAGE_BUCKET
+        self.supabase = None
 
-        if self.account_name and self.account_key:
+        if self.supabase_url and self.supabase_key:
             try:
-                account_url = f"https://{self.account_name}.blob.core.windows.net"
-                self.blob_service_client = BlobServiceClient(
-                    account_url=account_url, credential=self.account_key
-                )
-                self.container_client = self.blob_service_client.get_container_client(
-                    self.container_name
-                )
+                from supabase import create_client
+
+                self.supabase = create_client(self.supabase_url, self.supabase_key)
+            except ImportError:
+                logger.error("supabase package not installed")
             except Exception as e:
-                logger.error(
-                    f"Failed to initialize Blob Storage for MannequinManager: {e}"
-                )
+                logger.error(f"Failed to initialize Supabase for MannequinManager: {e}")
 
     def get_mannequin_bytes(self, gender: str, body_shape: str) -> Optional[bytes]:
         """
         성별과 체형에 맞는 마네킹 이미지의 바이트 데이터를 반환합니다.
-        AI 모델에 직접 주입할 때 사용합니다.
         """
         gender = (gender or "MALE").lower()
         gender_folder = "man" if gender in ["man", "male", "m"] else "woman"
@@ -56,7 +50,7 @@ class MannequinManager:
                 return None
 
         try:
-            # Ensure it's uploaded to blob for visibility/persistence as requested
+            # 보조적으로 Supabase에 업로드 시도 (캐싱/공유 목적)
             self.get_mannequin_url(gender, body_shape)
 
             with open(local_path, "rb") as f:
@@ -67,81 +61,57 @@ class MannequinManager:
 
     def get_mannequin_url(self, gender: str, body_shape: str) -> Optional[str]:
         """
-        성별과 체형에 맞는 마네킹 이미지의 Azure Blob URL을 반환합니다.
-        로컬 static 폴더에서 파일을 찾아 없으면 기본 마네킹을 반환하고,
-        필요 시 Blob Storage에 업로드합니다.
+        성별과 체형에 맞는 마네킹 이미지의 Supabase URL을 반환합니다.
         """
         gender = (gender or "MALE").lower()
-        if gender not in ["man", "woman", "male", "female"]:
-            gender = "man"
-
-        # Normalize gender folder name
         gender_folder = "man" if gender in ["man", "male"] else "woman"
-
-        # Normalize body shape filename
-        # slim, athletic, muscular, average, stocky
         shape = (body_shape or "average").lower()
         valid_shapes = ["slim", "athletic", "muscular", "average", "stocky"]
 
         if shape not in valid_shapes:
-            # Fallback mapping if user has different strings
-            mapping = {
-                "skinny": "slim",
-                "fit": "athletic",
-                "big": "stocky",
-                "heavy": "stocky",
-                "normal": "average",
-            }
-            shape = mapping.get(shape, "average")
+            shape = "average"
 
         filename = f"{shape}.png"
-
-        # 1. 로컬 경로 확인
-        base_path = os.path.dirname(os.path.dirname(__file__))  # app/
+        base_path = os.path.dirname(os.path.dirname(__file__))
         local_path = os.path.join(
             base_path, "static", "images", gender_folder, filename
         )
 
         if not os.path.exists(local_path):
-            logger.warning(
-                f"Mannequin not found at {local_path}, falling back to average.png"
-            )
             filename = "average.png"
             local_path = os.path.join(
                 base_path, "static", "images", gender_folder, filename
             )
             if not os.path.exists(local_path):
-                logger.error("Default mannequin also missing!")
                 return None
 
-        # 2. Blob Storage에 업로드 (이미 존재하면 건너뜀)
-        blob_name = f"static/mannequins/{gender_folder}/{filename}"
+        # Supabase Storage 경로
+        file_path = f"static/mannequins/{gender_folder}/{filename}"
 
         try:
-            if not self.container_client:
-                logger.error("Blob container client not initialized")
+            if not self.supabase:
                 return None
 
-            blob_client = self.container_client.get_blob_client(blob_name)
-
-            # 존재 여부 확인 (매번 업로드하면 느리니까)
-            if not blob_client.exists():
-                logger.info(f"Uploading mannequin to blob: {blob_name}")
-                with open(local_path, "rb") as data:
-                    blob_client.upload_blob(
-                        data,
-                        overwrite=True,
-                        content_settings=ContentSettings(content_type="image/png"),
+            # 존재 여부 확인 로직 (Supabase Storage에서는 list_objects 등으로 확인 가능)
+            # 여기서는 간단히 업로드 시도 (이미 있으면 에러가 날 수 있으나 upload options로 핸들링 가능)
+            try:
+                with open(local_path, "rb") as f:
+                    # upsert=True 옵션으로 덮어쓰기 허용
+                    self.supabase.storage.from_(self.bucket_name).upload(
+                        path=file_path,
+                        file=f.read(),
+                        file_options={"content-type": "image/png", "x-upsert": "true"},
                     )
+            except Exception:
+                # 이미 존재할 경우 에러 무시
+                pass
 
-            # SAS Token 없이 Public Read가 가능하게 하거나, SAS URL 반환
-            # (현재 환경에서는 public access가 꺼져있을 수 있으므로 SAS URL 생성 유틸 재사용 필요)
             from app.domains.wardrobe.service import wardrobe_manager
 
-            return wardrobe_manager.get_sas_url(blob_client.url)
+            return wardrobe_manager.get_signed_url(file_path)
 
         except Exception as e:
-            logger.error(f"Error handling mannequin blob: {e}")
+            logger.error(f"Error handling mannequin supabase storage: {e}")
             return None
 
 

@@ -4,8 +4,8 @@
 
 import logging
 from fastapi import APIRouter, Depends, HTTPException
-from app.domains.user.router import get_current_user
-from app.storage.memory_store import UserRecord
+from app.core.auth import get_current_user
+from app.domains.user.model import User
 from app.ai.workflows.chat_workflow import get_chat_workflow
 from app.ai.schemas.workflow_state import ChatState
 from .schema import ChatRequest
@@ -18,7 +18,7 @@ chat_router = APIRouter()
 @chat_router.post("/chat")
 async def send_message(
     request: ChatRequest,
-    current_user: UserRecord = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
     """사용자 메시지를 처리하고 응답을 반환합니다."""
 

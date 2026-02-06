@@ -13,12 +13,16 @@ class OutfitGenerationRequest(BaseModel):
     bottom: WardrobeItemSchema
     style_description: Optional[str] = "Casual everyday look"
     gender: Optional[str] = "unisex"
+    height: Optional[float] = None
+    weight: Optional[float] = None
+    body_shape: Optional[str] = None
+    face_image_url: Optional[str] = None
 
 
 class OutfitGenerationResponse(BaseModel):
     """
     Response schema for generated image.
-    Returns the URL of the image stored in Azure Blob Storage.
+    Returns the URL of the image stored in Supabase Storage.
     """
 
     success: bool

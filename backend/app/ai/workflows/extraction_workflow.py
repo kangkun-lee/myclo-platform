@@ -16,28 +16,27 @@ logger = logging.getLogger(__name__)
 
 
 def extract_attributes(
-    image_bytes: bytes, retry_on_schema_fail: bool = True
+    images: list[bytes], retry_on_schema_fail: bool = True
 ) -> Dict[str, Any]:
     """
-    이미지 속성 추출 (Direct LLM Call)
+    이미지 리스트(멀티) 속성 추출 (Direct LLM Call)
 
     Args:
-        image_bytes: 이미지 바이트 데이터
+        images: 이미지 바이트 데이터 리스트
         retry_on_schema_fail: 스키마 검증 실패 시 재시도 여부
 
     Returns:
         추출된 속성 딕셔너리
     """
-    logger.info(
-        f"Starting direct attribute extraction (image size: {len(image_bytes)} bytes)"
-    )
+    logger.info(f"Starting direct attribute extraction (images count: {len(images)})")
 
     try:
         # 1. 1차 시도
         logger.info("Calling Gemini Vision API (Attempt 1)...")
-        raw_response = gemini_client.generate_with_vision(
+        raw_response = gemini_client.generate_content(
             prompt=USER_PROMPT,
-            image_bytes=image_bytes,
+            images=images,
+            model_override=gemini_client.vision_model,
             temperature=0.3,
             max_output_tokens=2000,
         )
@@ -59,9 +58,10 @@ def extract_attributes(
             if retry_on_schema_fail:
                 logger.info("Retrying with correction prompt...")
                 retry_prompt = build_retry_prompt(errors)
-                raw_response = gemini_client.generate_with_vision(
+                raw_response = gemini_client.generate_content(
                     prompt=retry_prompt,
-                    image_bytes=image_bytes,
+                    images=images,
+                    model_override=gemini_client.vision_model,
                     temperature=0.2,
                     max_output_tokens=2000,
                 )

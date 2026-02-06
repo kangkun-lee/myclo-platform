@@ -1,14 +1,15 @@
+import uuid
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
 from app.database import Base
 
 
 class ChatSession(Base):
     __tablename__ = "chat_sessions"
 
-    session_id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    user_id = Column(PG_UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     session_summary = Column(Text, nullable=True)  # Long-term memory
 
     # Relationships
@@ -19,8 +20,10 @@ class ChatSession(Base):
 class ChatMessage(Base):
     __tablename__ = "chat_messages"
 
-    message_id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(Integer, ForeignKey("chat_sessions.session_id"), nullable=False)
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    session_id = Column(
+        PG_UUID(as_uuid=True), ForeignKey("chat_sessions.id"), nullable=False
+    )
     sender = Column(String, nullable=False)  # 'USER' or 'AGENT'
 
     # PostgreSQL JSONB

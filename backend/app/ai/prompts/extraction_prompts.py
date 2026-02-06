@@ -346,7 +346,7 @@ DEFAULT_OBJ = {
     "confidence": 0.2,
 }
 
-# Azure OpenAI에 최적화된 시스템 프롬프트
+# LLM에 최적화된 시스템 프롬프트
 SYSTEM_PROMPT = (
     "You are a clothing-attribute extractor. "
     "You MUST output ONLY a valid JSON object. No extra text, no markdown, no code blocks. "

@@ -1,12 +1,8 @@
 from typing import Optional
 from uuid import UUID
-
 from fastapi import APIRouter, Depends, HTTPException, Query
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import JWTError, jwt
 
 from app.core.schemas import AttributesSchema
-from app.core.security import ALGORITHM, SECRET_KEY
 from app.domains.extraction.schema import ExtractionUrlResponse
 from app.storage.memory_store import (
     add_wardrobe_item,
@@ -15,31 +11,12 @@ from app.storage.memory_store import (
     list_wardrobe_items,
 )
 from app.utils.response_helpers import create_success_response, handle_route_exception
-
 from .schema import WardrobeItemCreate, WardrobeItemSchema, WardrobeResponse
+from app.core.auth import get_current_user_id
+from sqlalchemy.orm import Session
+from app.database import get_db
 
 wardrobe_router = APIRouter()
-security = HTTPBearer()
-
-
-def get_user_id_from_token(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> UUID:
-    """JWT 토큰에서 user_id를 추출하는 헬퍼 함수"""
-    credentials_exception = HTTPException(
-        status_code=401,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        token = credentials.credentials
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id_str = payload.get("user_id")
-        if user_id_str is None:
-            raise credentials_exception
-        return UUID(user_id_str)
-    except (JWTError, ValueError):
-        raise credentials_exception
 
 
 @wardrobe_router.get("/wardrobe/items", response_model=WardrobeResponse)
@@ -50,7 +27,11 @@ def get_wardrobe_items(category: Optional[str] = Query(None)):
         if category:
             filtered = []
             for item in items:
-                cat = item.attributes.get("category", {}) if isinstance(item.attributes, dict) else {}
+                cat = (
+                    item.attributes.get("category", {})
+                    if isinstance(item.attributes, dict)
+                    else {}
+                )
                 main = cat.get("main") if isinstance(cat, dict) else None
                 if main and main.lower() == category.lower():
                     filtered.append(item)
@@ -88,26 +69,19 @@ def get_my_wardrobe_images(
     ),
     skip: int = Query(0, ge=0, description="Number of items to skip (pagination)"),
     limit: int = Query(20, ge=1, le=100, description="Max number of items to return"),
-    user_id: UUID = Depends(get_user_id_from_token),
+    user_id: UUID = Depends(get_current_user_id),
+    db: Session = Depends(get_db),
 ):
     """Get all wardrobe images for the current user (from token)."""
     try:
-        result = list_wardrobe_items(
-            user_id=user_id, category=category, skip=skip, limit=limit
+        from .service import wardrobe_manager
+
+        result = wardrobe_manager.get_user_wardrobe_items(
+            db=db, user_id=user_id, category=category, skip=skip, limit=limit
         )
-        items_list = result.get("items") if isinstance(result, dict) else []
-        items_list = items_list if isinstance(items_list, list) else []
-        response_items = [
-            WardrobeItemSchema(
-                id=item.id,
-                filename=f"item_{item.id}",
-                attributes=AttributesSchema(**(item.attributes or {})),
-                image_url=item.image_url,
-            )
-            for item in items_list
-        ]
+
         return create_success_response(
-            {"items": response_items},
+            {"items": result["items"]},
             count=result["count"],
             total_count=result["total_count"],
             has_more=result["has_more"],
@@ -123,20 +97,63 @@ def get_my_wardrobe_images(
     description="옷장 아이템의 상세 정보를 조회합니다.",
 )
 def get_wardrobe_item_detail(
-    item_id: str,
-    user_id: UUID = Depends(get_user_id_from_token),
+    item_id: UUID,
+    user_id: UUID = Depends(get_current_user_id),
+    db: Session = Depends(get_db),
 ):
-    """Get generic wardrobe item details"""
+    """Get generic wardrobe item details from DB"""
     try:
-        item = get_wardrobe_item(user_id, item_id)
+        from .service import wardrobe_manager
+        from .model import ClosetItem
+
+        item = (
+            db.query(ClosetItem)
+            .filter(ClosetItem.id == item_id, ClosetItem.user_id == user_id)
+            .first()
+        )
+
         if not item:
             raise HTTPException(status_code=404, detail="Item not found")
+
+        features = item.features or {}
+        if "category" not in features:
+            features["category"] = {
+                "main": item.category.lower() if item.category else "unknown",
+                "sub": item.sub_category.lower() if item.sub_category else "",
+                "confidence": 1.0,
+            }
+
         return WardrobeItemSchema(
-            id=item.id,
+            id=str(item.id),
             filename=f"item_{item.id}",
-            attributes=AttributesSchema(**(item.attributes or {})),
-            image_url=item.image_url,
+            attributes=AttributesSchema(**features),
+            image_url=wardrobe_manager.get_signed_url(item.image_path),
         )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise handle_route_exception(e)
+
+
+@wardrobe_router.delete(
+    "/wardrobe/items/{item_id}",
+    summary="옷장 아이템 삭제",
+    description="옷장 아이템을 데이터베이스와 저장소에서 삭제합니다.",
+)
+def delete_wardrobe_item(
+    item_id: UUID,
+    user_id: UUID = Depends(get_current_user_id),
+    db: Session = Depends(get_db),
+):
+    """Delete wardrobe item"""
+    try:
+        from .service import wardrobe_manager
+
+        success = wardrobe_manager.delete_item(db=db, user_id=user_id, item_id=item_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Item not found")
+
+        return {"success": True, "message": "Item deleted successfully"}
     except HTTPException:
         raise
     except Exception as e:
@@ -151,7 +168,7 @@ def get_wardrobe_item_detail(
 )
 def create_manual_wardrobe_item(
     payload: WardrobeItemCreate,
-    user_id: UUID = Depends(get_user_id_from_token),
+    user_id: UUID = Depends(get_current_user_id),
 ):
     try:
         attributes = payload.attributes.model_dump(exclude_none=True)

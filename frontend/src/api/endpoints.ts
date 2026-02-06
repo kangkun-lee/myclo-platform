@@ -8,10 +8,12 @@ export const endpoints = {
   logout: "/api/auth/logout",
   extract: "/api/extract",
   userProfile: "/api/users/profile",
+  userFaceImage: "/api/users/profile/image",
   wardrobeUsersMe: "/api/wardrobe/users/me/images",
   wardrobeItems: "/api/wardrobe/items",
   recommendOutfit: "/api/recommend/outfit",
   todaysPick: "/api/recommend/todays-pick",
+  todaysPickRegenerate: "/api/recommend/todays-pick/regenerate",
   weatherSummary: "/api/today/summary",
   chat: "/api/chat",
 }

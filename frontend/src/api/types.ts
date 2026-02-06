@@ -6,6 +6,8 @@ export type User = {
   weight?: number | null
   gender?: string | null
   body_shape?: string | null
+  face_image_url?: string | null
+  face_image_path?: string | null
 }
 
 export type AuthResponse = {
@@ -20,19 +22,32 @@ export type WardrobeItem = {
   image_url?: string | null
   attributes: {
     category?: { main?: string; sub?: string; confidence?: number | null }
-    color?: { primary?: string; secondary?: string[]; tone?: string }
-    material?: { guess?: string }
-    pattern?: { type?: string }
-    fit?: { type?: string }
-    details?: { neckline?: string; sleeve?: string; length?: string }
+    color?: { primary?: string; secondary?: string[]; tone?: string; confidence?: number | null }
+    material?: { guess?: string; confidence?: number | null }
+    pattern?: { type?: string; confidence?: number | null }
+    fit?: { type?: string; confidence?: number | null }
+    details?: {
+      neckline?: string;
+      sleeve?: string;
+      length?: string;
+      closure?: string[];
+      print_or_logo?: boolean
+    }
     style_tags?: string[]
     scores?: {
       formality?: number
       warmth?: number
+      thickness?: number
       season?: string[]
       versatility?: number
     }
-    meta?: { notes?: string }
+    meta?: {
+      is_layering_piece?: boolean;
+      layering_rank?: number;
+      print_or_logo?: boolean;
+      notes?: string | null
+    }
+    confidence?: number
   }
 }
 
@@ -89,4 +104,10 @@ export type ExtractionResponse = {
   item_id: string
   blob_name?: string | null
   storage_type?: string | null
+}
+
+export type MultiExtractionResponse = {
+  success: boolean
+  items: ExtractionResponse[]
+  total_processed: number
 }

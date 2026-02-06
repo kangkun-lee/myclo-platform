@@ -160,12 +160,13 @@ def validate_uploaded_file(
 
     # 확장자 검증
     filename_lower = filename.lower()
-    file_ext = os.path.splitext(filename_lower)[1]
+    _, file_ext = os.path.splitext(filename_lower)
+    file_ext = file_ext.lstrip(".")  # dot 제거
 
     if file_ext not in Config.ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid file type. Allowed: {', '.join(Config.ALLOWED_EXTENSIONS)}",
+            detail=f"Invalid file type. Allowed: {', '.join(sorted(Config.ALLOWED_EXTENSIONS))}",
         )
 
     # MIME 타입 검증
@@ -197,7 +198,7 @@ def validate_file_extension(filename: str) -> str:
         HTTPException: 허용되지 않은 확장자일 경우
     """
     _, ext = os.path.splitext(filename)
-    ext_lower = ext.lower()
+    ext_lower = ext.lower().lstrip(".")
 
     if ext_lower not in Config.ALLOWED_EXTENSIONS:
         raise HTTPException(

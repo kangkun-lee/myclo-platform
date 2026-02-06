@@ -2,147 +2,78 @@ import os
 import json
 import uuid
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List, Dict, Any, Optional
 from uuid import UUID
-from azure.storage.blob import (
-    BlobServiceClient,
-    ContentSettings,
-    generate_blob_sas,
-    BlobSasPermissions,
-)
+from supabase import create_client, Client
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
 from app.core.config import Config
 from app.utils.validators import validate_file_extension
-
-# Import models inside methods to avoid circular imports where possible,
-# or use TYPE_CHECKING pattern. For simplicity in this file scope:
+from .schema import WardrobeResponse, WardrobeItemSchema
+from app.core.schemas import AttributesSchema
 
 logger = logging.getLogger(__name__)
-from .schema import WardrobeResponse, WardrobeItemSchema
-from app.core.schemas import AttributesSchema, CategoryModel
 
 
 class WardrobeManager:
     def __init__(self):
-        self.account_name = Config.AZURE_STORAGE_ACCOUNT_NAME
-        self.account_key = Config.AZURE_STORAGE_ACCOUNT_KEY
-        self.container_name = Config.AZURE_STORAGE_CONTAINER_NAME
-        self.blob_service_client = None
-        self.container_client = None
+        self.supabase_url = Config.SUPABASE_URL
+        self.supabase_key = Config.SUPABASE_SERVICE_KEY or Config.SUPABASE_ANON_KEY
+        self.bucket_name = Config.SUPABASE_STORAGE_BUCKET
+        self.supabase: Optional[Client] = None
 
-        if self.account_name and self.account_key:
+        if self.supabase_url and self.supabase_key:
             try:
-                account_url = f"https://{self.account_name}.blob.core.windows.net"
-                self.blob_service_client = BlobServiceClient(
-                    account_url=account_url, credential=self.account_key
-                )
-                self.container_client = self.blob_service_client.get_container_client(
-                    self.container_name
-                )
-                # Create container if it doesn't exist
-                if not self.container_client.exists():
-                    self.container_client.create_container()
+                self.supabase = create_client(self.supabase_url, self.supabase_key)
             except Exception as e:
-                print(f"Failed to initialize Blob Storage: {e}")
+                logger.error(f"Failed to initialize Supabase Client: {e}")
 
-    def generate_sas_token(self, blob_name: str, container_name: str = None) -> str:
-        """Generate a read-only SAS token for a specific blob"""
-        try:
-            if not self.account_name or not self.account_key:
-                return ""
-
-            target_container = container_name or self.container_name
-
-            sas_token = generate_blob_sas(
-                account_name=self.account_name,
-                container_name=target_container,
-                blob_name=blob_name,
-                account_key=self.account_key,
-                permission=BlobSasPermissions(read=True),
-                start=datetime.utcnow() - timedelta(minutes=15),  # Clock skew buffer
-                expiry=datetime.utcnow() + timedelta(hours=1),
-            )
-            return sas_token
-        except Exception as e:
-            print(f"Error generating SAS token: {e}")
+    def get_signed_url(self, image_path: str, expires_in: int = 3600) -> str:
+        """Supabase Storage에서 서명된 URL 생성 (실패 시 공용 URL 반환)"""
+        if not image_path:
             return ""
 
-    def get_sas_url(self, image_path: str) -> str:
-        """Helper to append SAS token to a blob URL, handling dynamic containers"""
-        if not ".blob.core.windows.net/" in image_path:
+        # 이미 절대 경로 URL인 경우 처리
+        if image_path.startswith("http"):
             return image_path
 
+        # Supabase 클라이언트가 없는 경우 공용 URL 추측 반환
+        if not self.supabase:
+            return f"{self.supabase_url}/storage/v1/object/public/{self.bucket_name}/{image_path}"
+
         try:
-            # Extract blob name from URL
-            parts = image_path.split(".blob.core.windows.net/")
-            if len(parts) > 1:
-                # e.g. "images/users/..." or "codify0blob0storage/users/..."
-                container_and_blob = parts[1]
+            # 버킷명 제거 (있다면)
+            path = image_path
+            if "/" in path and path.startswith(self.bucket_name):
+                path = path.replace(f"{self.bucket_name}/", "", 1)
 
-                # Split container and blob path dynamically
-                if "/" in container_and_blob:
-                    container_name, blob_name = container_and_blob.split("/", 1)
+            # 1. 서명된 URL 시도 (보안성 높음)
+            res = self.supabase.storage.from_(self.bucket_name).create_signed_url(
+                path, expires_in
+            )
+            signed_url = res.get("signedURL")
+            if signed_url:
+                return signed_url
 
-                    sas_token = self.generate_sas_token(
-                        blob_name, container_name=container_name
-                    )
-                    if sas_token:
-                        return f"{image_path}?{sas_token}"
-        except Exception:
-            pass
+            # 2. 실패 시 공용 URL로 폴백 (가시성 확보 우선)
+            logger.warning(
+                f"Signed URL generation returned None for {path}, falling back to public URL."
+            )
+            return f"{self.supabase_url}/storage/v1/object/public/{self.bucket_name}/{path}"
 
-        return image_path
-
-    def load_items(self) -> List[Dict[str, Any]]:
-        # ... (Legacy logic kept if needed, but we focusing on new methods)
-        items = []
-        if not self.container_client:
-            return items
-        # ... (Keeping existing implementation or placeholder if it's unused now.
-        # User only asked to move get_user_wardrobe_images_internal.
-        # I will leave load_items as is for safety of other endpoints.)
-        try:
-            blobs = self.container_client.list_blobs()
-            item_map = {}
-            for blob in blobs:
-                name_parts = os.path.splitext(blob.name)
-                item_id = name_parts[0]
-                ext = name_parts[1].lower()
-                if item_id not in item_map:
-                    item_map[item_id] = {"json": None, "image": None, "id": item_id}
-                if ext == ".json":
-                    item_map[item_id]["json"] = blob.name
-                elif ext in [".jpg", ".jpeg", ".png", ".gif", ".webp"]:
-                    item_map[item_id]["image"] = blob.name
-
-            for item_id, data in item_map.items():
-                if data["json"] and data["image"]:
-                    try:
-                        blob_client = self.container_client.get_blob_client(
-                            data["json"]
-                        )
-                        json_content = blob_client.download_blob().readall()
-                        attributes = json.loads(json_content)
-                        image_url = self.container_client.get_blob_client(
-                            data["image"]
-                        ).url
-
-                        items.append(
-                            {
-                                "id": item_id,
-                                "filename": data["image"],
-                                "attributes": attributes,
-                                "image_url": image_url,
-                            }
-                        )
-                    except Exception as e:
-                        print(f"Error loading item {item_id}: {e}")
         except Exception as e:
-            print(f"Error reading from Blob Storage: {e}")
-        return items
+            logger.warning(
+                f"Error generating Supabase signed URL for {image_path}: {e}"
+            )
+            # 에러 발생 시 공용 URL 포맷으로 반환하여 브라우저에서 시도하게 함
+            path = (
+                image_path.replace(f"{self.bucket_name}/", "", 1)
+                if image_path.startswith(self.bucket_name)
+                else image_path
+            )
+            return f"{self.supabase_url}/storage/v1/object/public/{self.bucket_name}/{path}"
 
     def get_user_wardrobe_items(
         self,
@@ -152,54 +83,58 @@ class WardrobeManager:
         skip: int = 0,
         limit: int = 20,
     ) -> Dict[str, Any]:
-        """Get paginated wardrobe items from DB (optimized for feed)"""
+        """Get paginated wardrobe items from DB"""
         from .model import ClosetItem
 
         try:
-            # 1. Base Query
             query = db.query(ClosetItem).filter(ClosetItem.user_id == user_id)
-
-            # 2. Filter by Category
             if category:
-                query = query.filter(ClosetItem.category == category.lower())
+                cat_upper = category.upper()
+                # Handle UI shorthand mapping
+                if cat_upper == "OUTER":
+                    cat_upper = "OUTERWEAR"
+                query = query.filter(ClosetItem.category == cat_upper)
 
-            # 3. Total Count
             total_count = query.count()
-
             if total_count == 0:
                 return {"items": [], "count": 0, "total_count": 0, "has_more": False}
 
-            # 4. Apply Pagination
+            from concurrent.futures import ThreadPoolExecutor
+
             closet_items = (
                 query.order_by(ClosetItem.id.desc()).offset(skip).limit(limit).all()
             )
-
-            # 5. Determine has_more
             has_more = (skip + len(closet_items)) < total_count
 
-            # 6. Convert to Schema (OPTIMIZED: No Blob Reading)
-            items: List[WardrobeItemSchema] = []
-
+            # Prepare simple data list in main thread to avoid SQLAlchemy thread-safety issues
+            item_data_list = []
             for item in closet_items:
-                # Minimal Attributes from DB only
-                attributes_schema = AttributesSchema(
-                    category={
+                features = item.features or {}
+                if "category" not in features:
+                    features["category"] = {
                         "main": item.category.lower() if item.category else "unknown",
                         "sub": item.sub_category.lower() if item.sub_category else "",
                         "confidence": 1.0,
-                    },
+                    }
+                item_data_list.append(
+                    {
+                        "id": str(item.id),
+                        "image_path": item.image_path,
+                        "features": features,
+                    }
                 )
 
-                # Generate SAS URL
-                final_image_url = self.get_sas_url(item.image_path)
-
-                wardrobe_item = WardrobeItemSchema(
-                    id=str(item.id),
-                    filename=f"item_{item.id}",
-                    attributes=attributes_schema,
-                    image_url=final_image_url,
+            items: List[WardrobeItemSchema] = []
+            for data in item_data_list:
+                final_image_url = self.get_signed_url(data["image_path"])
+                items.append(
+                    WardrobeItemSchema(
+                        id=data["id"],
+                        filename=f"item_{data['id']}",
+                        attributes=AttributesSchema(**data["features"]),
+                        image_url=final_image_url,
+                    )
                 )
-                items.append(wardrobe_item)
 
             return {
                 "items": items,
@@ -208,77 +143,44 @@ class WardrobeManager:
                 "has_more": has_more,
             }
         except Exception as e:
-            print(f"Error in get_user_wardrobe_items: {e}")
+            logger.error(f"Error in get_user_wardrobe_items: {e}")
             raise e
 
-    def get_item_detail(
-        self, db: Session, item_id: str, user_id: UUID
-    ) -> WardrobeItemSchema:
-        """Get detailed item info including Blob metadata"""
+    def delete_item(self, db: Session, user_id: UUID, item_id: UUID) -> bool:
+        """Delete an item from DB and Storage"""
         from .model import ClosetItem
 
-        # 1. Fetch from DB
-        item = db.query(ClosetItem).filter(ClosetItem.id == item_id).first()
-        if not item:
-            raise HTTPException(status_code=404, detail="Item not found")
-
-        # 2. Check ownership
-        if str(item.user_id) != str(user_id):
-            raise HTTPException(
-                status_code=403, detail="Not authorized to view this item"
+        try:
+            item = (
+                db.query(ClosetItem)
+                .filter(ClosetItem.id == item_id, ClosetItem.user_id == user_id)
+                .first()
             )
 
-        # 3. Load full attributes
-        image_path = item.image_path
-        blob_name = None
+            if not item:
+                return False
 
-        if ".blob.core.windows.net/" in image_path:
-            parts = image_path.split(".blob.core.windows.net/")
-            if len(parts) > 1:
-                container_and_blob = parts[1]
-                container_prefix = f"{self.container_name}/"
-                if container_and_blob.startswith(container_prefix):
-                    blob_name = container_and_blob[len(container_prefix) :]
+            # 1. Try to delete from Supabase Storage
+            if (
+                self.supabase
+                and item.image_path
+                and not item.image_path.startswith("http")
+            ):
+                try:
+                    self.supabase.storage.from_(self.bucket_name).remove(
+                        [item.image_path]
+                    )
+                except Exception as storage_err:
+                    logger.warning(f"Failed to delete storage file: {storage_err}")
 
-        attributes: Dict[str, Any] = {}
-        if blob_name and self.container_client:
-            try:
-                base_id = os.path.splitext(blob_name)[0]
-                json_blob_name = f"{base_id}.json"
-                json_client = self.container_client.get_blob_client(json_blob_name)
-                if json_client.exists():
-                    json_content = json_client.download_blob().readall()
-                    attributes = json.loads(json_content)
-            except Exception as e:
-                print(f"Warning: Could not load JSON for item {item.id}: {e}")
-                attributes = item.features or {}
-        else:
-            attributes = item.features or {}
-
-        # Merge DB fields
-        if "category" not in attributes:
-            attributes["category"] = {
-                "main": item.category.lower() if item.category else "unknown",
-                "sub": item.sub_category.lower() if item.sub_category else "",
-                "confidence": 1.0,
-            }
-        if item.season:
-            attributes["season"] = item.season
-        if item.mood_tags:
-            attributes["mood_tags"] = item.mood_tags
-
-        # Create Schema
-        attributes_schema = AttributesSchema(**attributes)
-
-        # Generate SAS URL
-        final_image_url = self.get_sas_url(image_path)
-
-        return WardrobeItemSchema(
-            id=str(item.id),
-            filename=blob_name.split("/")[-1] if blob_name else f"item_{item.id}",
-            attributes=attributes_schema,
-            image_url=final_image_url,
-        )
+            # 2. Delete from Database
+            db.delete(item)
+            db.commit()
+            return True
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error deleting item {item_id}: {e}")
+            raise e
 
     def save_item(
         self,
@@ -288,24 +190,21 @@ class WardrobeManager:
         attributes: dict,
         user_id: UUID,
     ) -> dict:
-        if not self.container_client:
-            raise Exception("Blob Storage not initialized")
+        if not self.supabase:
+            raise Exception("Supabase Storage not initialized")
 
-        # 1. Save Image to Blob
-        namespace_uuid = uuid.UUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")
-        user_uuid = str(uuid.uuid5(namespace_uuid, f"user_{user_id}"))
-
+        # 1. Save Image to Supabase Storage
+        user_uuid_folder = str(user_id)  # Supabase는 폴더 구조가 자유로움
         now = datetime.now()
         date_str = now.strftime("%Y%m%d")
         image_uuid = str(uuid.uuid4())
 
-        if original_filename:
-            ext = validate_file_extension(original_filename)
-        else:
-            ext = ".jpg"
+        ext = (
+            validate_file_extension(original_filename) if original_filename else ".jpg"
+        )
 
-        image_filename = f"users/{user_uuid}/{date_str}/{image_uuid}{ext}"
-        image_client = self.container_client.get_blob_client(image_filename)
+        # 파일 경로 설정 (Supabase Storage 구조: user_id/date/uuid.ext)
+        file_path = f"{user_uuid_folder}/{date_str}/{image_uuid}{ext}"
 
         content_type = "image/jpeg"
         if ext == ".png":
@@ -315,18 +214,25 @@ class WardrobeManager:
         elif ext == ".webp":
             content_type = "image/webp"
 
-        image_client.upload_blob(
-            image_bytes,
-            overwrite=True,
-            content_settings=ContentSettings(content_type=content_type),
-        )
+        try:
+            # Supabase Storage 업로드
+            self.supabase.storage.from_(self.bucket_name).upload(
+                path=file_path,
+                file=image_bytes,
+                file_options={"content-type": content_type},
+            )
 
-        image_url = image_client.url
+            # 공개 URL 또는 경로 저장 (경로로 저장하는 것이 나중에 Signed URL 생성에 유리)
+            # 여기서는 나중에 get_signed_url에서 처리하기 위해 상대 경로만 저장하거나 전체 공용 URL 저장 가능
+            # 우리는 DB의 image_path에 'bucket/path' 형태로 저장하거나 공용 URL 저장
+            image_url = file_path  # 여기서는 관례상 상대 경로 저장
+        except Exception as e:
+            logger.error(f"Supabase Storage Upload failed: {e}")
+            raise Exception(f"Failed to upload image to Supabase: {e}")
 
         # 2. Save to Database
         from .model import ClosetItem
 
-        # Extract primary category and sub-category
         category_raw = attributes.get("category", {})
         if isinstance(category_raw, dict):
             category = (category_raw.get("main") or "UNKNOWN").upper()
@@ -337,26 +243,20 @@ class WardrobeManager:
             category = str(category_raw).upper() if category_raw else "UNKNOWN"
             sub_category = (attributes.get("sub_category") or "UNKNOWN").upper()
 
-        # Features should include EVERYTHING as per user request
         features = attributes.copy()
 
-        # Robust extraction of season and mood_tags
-        # Try top-level first, then nested in scores
-        season = attributes.get("season")
-        if not season and "scores" in attributes:
-            season = attributes["scores"].get("season")
-
-        if not season:
-            season = []
-        elif isinstance(season, str):
+        # Season enrichment
+        season = attributes.get("season") or attributes.get("scores", {}).get(
+            "season", []
+        )
+        if isinstance(season, str):
             season = [season.upper()]
         else:
             season = [str(s).upper() for s in season]
 
-        mood_tags = attributes.get("mood_tags")
-        if not mood_tags:
-            mood_tags = []
-        elif isinstance(mood_tags, str):
+        # Mood/Style tags enrichment (Map style_tags from AI to mood_tags in DB)
+        mood_tags = attributes.get("style_tags") or attributes.get("mood_tags") or []
+        if isinstance(mood_tags, str):
             mood_tags = [mood_tags.upper()]
         else:
             mood_tags = [str(m).upper() for m in mood_tags]
@@ -376,9 +276,9 @@ class WardrobeManager:
 
         return {
             "success": "success",
-            "image_url": image_url,
+            "image_url": self.get_signed_url(image_url),
             "item_id": db_item.id,
-            "blob_name": image_filename,
+            "blob_name": file_path,
         }
 
     def save_manual_item(
@@ -394,34 +294,20 @@ class WardrobeManager:
         if isinstance(category_raw, dict):
             category = (category_raw.get("main") or "UNKNOWN").upper()
             sub_category = (
-                category_raw.get("sub")
-                or attributes.get("sub_category")
-                or "UNKNOWN"
+                category_raw.get("sub") or attributes.get("sub_category") or "UNKNOWN"
             ).upper()
         else:
             category = str(category_raw).upper() if category_raw else "UNKNOWN"
             sub_category = (attributes.get("sub_category") or "UNKNOWN").upper()
 
         features = attributes.copy()
-
-        season = attributes.get("season")
-        if not season and "scores" in attributes:
-            season = attributes["scores"].get("season")
-
-        if not season:
-            season = []
-        elif isinstance(season, str):
+        season = attributes.get("season") or attributes.get("scores", {}).get(
+            "season", []
+        )
+        if isinstance(season, str):
             season = [season.upper()]
         else:
             season = [str(s).upper() for s in season]
-
-        mood_tags = attributes.get("mood_tags")
-        if not mood_tags:
-            mood_tags = []
-        elif isinstance(mood_tags, str):
-            mood_tags = [mood_tags.upper()]
-        else:
-            mood_tags = [str(m).upper() for m in mood_tags]
 
         db_item = ClosetItem(
             user_id=user_id,
@@ -430,19 +316,17 @@ class WardrobeManager:
             sub_category=sub_category,
             features=features,
             season=season,
-            mood_tags=mood_tags,
+            mood_tags=attributes.get("style_tags") or attributes.get("mood_tags") or [],
         )
         db.add(db_item)
         db.commit()
         db.refresh(db_item)
 
-        attributes_schema = AttributesSchema(**attributes)
-
         return WardrobeItemSchema(
             id=str(db_item.id),
             filename=f"item_{db_item.id}",
-            attributes=attributes_schema,
-            image_url=image_url or None,
+            attributes=AttributesSchema(**attributes),
+            image_url=image_url,
         )
 
 

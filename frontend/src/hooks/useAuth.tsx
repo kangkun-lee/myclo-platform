@@ -27,6 +27,7 @@ type AuthContextValue = {
     body_shape?: string | null
   }) => Promise<void>
   logout: () => void
+  updateUser: (user: User) => void
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
@@ -39,6 +40,7 @@ const toStoredUser = (user: User): StoredUser => ({
   weight: user.weight ?? null,
   gender: user.gender ?? null,
   body_shape: user.body_shape ?? null,
+  face_image_url: user.face_image_url ?? null,
 })
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -97,6 +99,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }, [])
 
+  const updateUser = useCallback((updatedUser: User) => {
+    userStorage.set(toStoredUser(updatedUser))
+    setUser(updatedUser)
+  }, [])
+
   const value = useMemo(
     () => ({
       user,
@@ -107,8 +114,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       signup,
       logout,
+      updateUser,
     }),
-    [user, token, isLoading, error, login, signup, logout]
+    [user, token, isLoading, error, login, signup, logout, updateUser]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

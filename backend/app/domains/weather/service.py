@@ -12,25 +12,21 @@ logger = logging.getLogger(__name__)
 
 
 class DbSessionLike(Protocol):
-    def query(self, *args: Any, **kwargs: Any) -> Any:
-        ...
+    def query(self, *args: Any, **kwargs: Any) -> Any: ...
 
-    def add(self, *args: Any, **kwargs: Any) -> None:
-        ...
+    def add(self, *args: Any, **kwargs: Any) -> None: ...
 
-    def commit(self) -> None:
-        ...
+    def commit(self) -> None: ...
 
-    def refresh(self, *args: Any, **kwargs: Any) -> None:
-        ...
+    def refresh(self, *args: Any, **kwargs: Any) -> None: ...
 
-    def rollback(self) -> None:
-        ...
+    def rollback(self) -> None: ...
 
 
 class WeatherService:
     def __init__(self):
         self.client = KMAWeatherClient()
+        self._locks: Dict[str, asyncio.Lock] = {}
 
     async def fetchAndLoadWeather(self, db: Optional[DbSessionLike]):
         # 기상청 데이터는 02:10에 생성되므로, 02:16 실행 시 당일 데이터 조회
@@ -163,34 +159,65 @@ class WeatherService:
             }
 
     async def get_daily_weather_summary(
-        self, db: Optional[DbSessionLike], nx: int, ny: int, region: Optional[str] = None
+        self,
+        db: Optional[DbSessionLike],
+        nx: int,
+        ny: int,
+        region: Optional[str] = None,
     ) -> Tuple[Optional[DailyWeather], str]:
         """
         오늘 데이터가 DB에 없으면 KMA에서 가져와 저장하고 반환합니다.
         """
         # 1. DB 조회
         today_str = datetime.now().strftime("%Y%m%d")
-        if db is not None:
-            db_session: DbSessionLike = db
-            cached = (
-                db_session.query(DailyWeather)
-                .filter_by(base_date=today_str, nx=nx, ny=ny)
-                .first()
-            )
 
-            if cached:
-                return cached, "DB Cached"
+        # 병렬 요청 방지를 위한 락 획득
+        lock_key = f"{today_str}_{nx}_{ny}"
+        if lock_key not in self._locks:
+            self._locks[lock_key] = asyncio.Lock()
+
+        async with self._locks[lock_key]:
+            if db is not None:
+                db_session: DbSessionLike = db
+                cached = (
+                    db_session.query(DailyWeather)
+                    .filter_by(base_date=today_str, nx=nx, ny=ny)
+                    .first()
+                )
+
+                if cached:
+                    return cached, "DB Cached"
 
         # 2. KMA 요청
         # 02:00 데이터가 가장 안정적 (Min/Max 포함)
         data = await self.client.fetch_forecast(today_str, "0200", nx, ny, 300)
 
-        if not data or data["response"]["header"]["resultCode"] != "00":
-            # 02:00 실패 시 전날 23:00 등 시도할 수도 있지만,
-            # 여기서는 간단히 실패 처리 or "아직 생성 안됨"
-            return None, "API Error or No Data"
+        if not data or not isinstance(data, dict):
+            return None, "API Error: Invalid response format"
 
-        items = data["response"]["body"]["items"]["item"]
+        response = data.get("response", {})
+        if (
+            not isinstance(response, dict)
+            or response.get("header", {}).get("resultCode") != "00"
+        ):
+            return (
+                None,
+                f"API Error: {response.get('header', {}).get('resultMsg', 'Unknown error')}",
+            )
+
+        body = response.get("body", {})
+        if not isinstance(body, dict):
+            return None, "API Error: Missing body in response"
+
+        items_wrapper = body.get("items", {})
+        if not isinstance(items_wrapper, dict):
+            # API에서 데이터가 없을 때 items가 ""(문자열)로 오는 경우가 있음
+            return None, "오늘 기상 정보가 아직 생성되지 않았습니다. (02:15 이후 가능)"
+
+        items = items_wrapper.get("item")
+        if not items or not isinstance(items, list):
+            return None, "No weather data items found"
+
         min_val, max_val, rain_type, current_rain_type = self._parse_weather_data(items)
 
         # 3. 저장 (DB 오류가 나도 데이터는 반환하도록 예외 처리)

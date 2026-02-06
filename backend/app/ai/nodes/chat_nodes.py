@@ -63,7 +63,7 @@ def generate_chat_response_node(state: ChatState) -> ChatState:
     messages = state.get("messages", [])
 
     # 간단한 페르소나 설정
-    system_prompt = "당신은 친절한 패션 AI 어시스턴트 나노바나나입니다."
+    system_prompt = "당신은 Codify의 친절한 패션 AI 어시스턴트 MyClo입니다."
 
     prompt = f"{system_prompt}\n\nUser: {user_query}\nAI:"
 
@@ -106,7 +106,7 @@ async def handle_recommendation_node(state: ChatState) -> ChatState:
         weather_data = await weather_service.get_weather_info(None, lat, lon)
 
         user_uuid = cast(UUID, UUID(str(user_id)))
-        result = recommend_todays_pick_v2(
+        result = await recommend_todays_pick_v2(
             user_id=user_uuid,
             weather=weather_data,
             db=None,

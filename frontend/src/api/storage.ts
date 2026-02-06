@@ -9,6 +9,7 @@ export type StoredUser = {
   weight?: number | null
   gender?: string | null
   body_shape?: string | null
+  face_image_url?: string | null
 }
 
 export const tokenStorage = {

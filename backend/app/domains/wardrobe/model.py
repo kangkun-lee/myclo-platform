@@ -1,14 +1,16 @@
+import uuid
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.database import Base
+from app.domains.outfit.model import OutfitItem
 
 
 class ClosetItem(Base):
     __tablename__ = "closet_items"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     image_path = Column(String, nullable=False)
     category = Column(String, nullable=False)  # TOP, BOTTOM, etc.

@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 # 프로젝트 루트의 .env 파일 로드 (기존 방식 변경)
 project_root = Path(__file__).parent.parent.parent.parent
 env_path = project_root / ".env"
-load_dotenv(env_path)
+# override=True를 설정하여 시스템 환경변수에 placeholder가 있어도 .env 값으로 덮어씁니다.
+load_dotenv(env_path, override=True)
 
 
 class Config:
@@ -16,12 +17,39 @@ class Config:
     API_VERSION = os.getenv("API_VERSION", "v1")
 
     # Database Configuration (Supabase)
-    # .env 또는 환경변수에 DATABASE_URL 이 설정되어 있으면 사용하고,
-    # 없으면 로컬 개발용 기본값을 사용합니다.
-    DATABASE_URL = os.getenv(
-        "DATABASE_URL",
-        "postgresql://user:password@localhost:5432/myclo",
-    )
+    DATABASE_URL = os.getenv("DATABASE_URL", "")
+
+    # URL 내 패스워드에 특수문자(&, ?)가 포함된 경우를 위한 처리
+    if DATABASE_URL and "@" in DATABASE_URL:
+        try:
+            from urllib.parse import quote_plus, urlparse, urlunparse
+
+            result = urlparse(DATABASE_URL)
+            if result.password:
+                # 패스워드만 추출하여 인코딩
+                encoded_password = quote_plus(result.password)
+                # 새로운 URL 생성
+                userinfo = f"{result.username}:{encoded_password}"
+                if result.port:
+                    netloc = f"{userinfo}@{result.hostname}:{result.port}"
+                else:
+                    netloc = f"{userinfo}@{result.hostname}"
+
+                DATABASE_URL = urlunparse(
+                    (
+                        result.scheme,
+                        netloc,
+                        result.path,
+                        result.params,
+                        result.query,
+                        result.fragment,
+                    )
+                )
+        except Exception as e:
+            print(f"Warning: Failed to encode DATABASE_URL: {e}")
+
+    if not DATABASE_URL:
+        DATABASE_URL = "postgresql://user:password@localhost:5432/myclo"
 
     # Gemini Configuration (유지)
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
@@ -31,7 +59,9 @@ class Config:
     # KMA Weather API Configuration (유지)
     # NOTE: 프로젝트 내 설정 파일(.env / local.settings.json)에서 키 이름이
     # `KMA_SERVICE_KEY`로 쓰이는 경우가 있어 하위 호환을 지원합니다.
-    KMA_API_KEY = os.getenv("KMA_API_KEY") or os.getenv("KMA_SERVICE_KEY", "")
+    _KMA_TEMP = os.getenv("KMA_API_KEY") or os.getenv("KMA_SERVICE_KEY", "")
+    # placeholder 값인 경우 빈 문자열로 처리
+    KMA_API_KEY = "" if "your_kma_api_key_here" in _KMA_TEMP else _KMA_TEMP
 
     # Supabase Configuration (새로 추가)
     SUPABASE_URL = os.getenv("SUPABASE_URL", "")

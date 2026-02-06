@@ -1,41 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 @import "tailwindcss";
 
-:root {
-  color-scheme: dark;
-  font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --color-bg: #09090b;
-  --color-card: #18181b;
-  --color-primary: #cffafe;
-  --color-accent: #a78bfa;
-  --color-text: #fafafa;
-  --color-muted: #a1a1aa;
-  --color-border: rgba(255, 255, 255, 0.1);
+@theme {
+  /* 2. Color Palette */
+  --color-primary: #8c2bee;
+  --color-background-light: #f7f6f8;
+  --color-background-dark: #191022;
+
+  /* Legacy aliases for compatibility */
+  --color-bg: #191022;
+  --color-card: rgba(255, 255, 255, 0.03);
+  --color-text: #ffffff;
+  --color-muted: rgba(255, 255, 255, 0.5);
+
+  /* 3. Typography - Ensure exact font family names */
+  --font-display: "Space Grotesk", sans-serif;
+  --font-serif: "Playfair Display", serif;
+
+  /* 4. Spacing and Radius */
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+
+  /* 5. Animations */
+  --animate-fade-in: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-up: slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      transform: translateY(24px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
 }
 
-* {
-  box-sizing: border-box;
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-background-dark font-display text-white transition-colors duration-300;
+    font-family: var(--font-display);
+  }
+
+  h1,
+  h2,
+  .font-serif {
+    font-family: var(--font-serif);
+  }
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: var(--color-bg);
-  color: var(--color-text);
+@layer components {
+
+  /* Glassmorphism Classes */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-sidebar {
+    background: rgba(10, 5, 15, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .weather-gradient {
+    background: linear-gradient(135deg, rgba(140, 43, 238, 0.15) 0%, rgba(54, 35, 72, 0.4) 100%);
+  }
+
+  /* Material Symbols Configuration */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    @apply select-none leading-none inline-block align-middle;
+    font-family: 'Material Symbols Outlined';
+  }
+
+  .material-symbols-outlined.fill-1 {
+    font-variation-settings: 'FILL' 1;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 40px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
 }
 
-#root {
-  min-height: 100vh;
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 5px;
 }
 
-.auth-gradient {
-  background: linear-gradient(135deg, #09090b 0%, #0b1020 100%);
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.glass-panel {
-  background: rgba(24, 24, 27, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 43, 238, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 43, 238, 0.5);
 }
