@@ -2,6 +2,9 @@ import { useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { fetchWardrobe, deleteWardrobeItem } from "../api"
 import type { WardrobeItem } from "../api/types"
+import VirtualWardrobe from "../components/VirtualWardrobe/VirtualWardrobe"
+import "../components/VirtualWardrobe/VirtualWardrobe.css"
+import "../components/VirtualWardrobe/VirtualWardrobeWrapper.css"
 
 const tabs = [
   { label: "All", value: undefined },
@@ -39,7 +42,7 @@ export default function Wardrobe() {
     loadItems()
   }, [activeTab, loadItems])
 
-  const handleDelete = async (e: React.MouseEvent, itemId: string) => {
+const handleDelete = async (e: React.MouseEvent, itemId: string) => {
     e.preventDefault()
     e.stopPropagation()
     if (!window.confirm("Delete this item?")) return
@@ -55,12 +58,17 @@ export default function Wardrobe() {
     }
   }
 
-  return (
+  const handleItemSelect = (item: WardrobeItem) => {
+    // Navigate to item detail or show modal
+    window.location.href = `/wardrobe/${item.id}`
+  }
+
+return (
     <div className="flex flex-col gap-8 animate-fade-in">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 className="text-4xl font-bold tracking-tight mb-2">My Wardrobe</h2>
+          <h2 className="text-4xl font-bold tracking-tight mb-2">My Virtual Wardrobe</h2>
           <p className="text-white/50 flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-sm">smart_toy</span>
             {totalCount} premium items curated by AI
@@ -87,73 +95,35 @@ export default function Wardrobe() {
         </div>
       </div>
 
-      {/* Grid Layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {/* Add New Item Card */}
-        <Link
-          to="/wardrobe/new"
-          className="glass-card rounded-xl overflow-hidden border-dashed border-white/20 hover:border-primary/50 transition-all flex flex-col items-center justify-center p-8 text-slate-500 hover:text-primary cursor-pointer min-h-[400px]"
-        >
-          <span className="material-symbols-outlined text-5xl mb-4">add_circle</span>
-          <p className="font-semibold text-lg">Add New Item</p>
-          <p className="text-xs mt-2 text-center opacity-70">Let MyClo AI scan your new acquisition</p>
-        </Link>
+      {/* Virtual Wardrobe View */}
+      {!loading && items.length > 0 ? (
+        <div className="virtual-wardrobe-wrapper">
+          <VirtualWardrobe
+            items={items}
+            onDelete={handleDelete}
+            onItemSelect={handleItemSelect}
+          />
+        </div>
+      ) : (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Link
+            to="/wardrobe/new"
+            className="glass-card rounded-xl overflow-hidden border-dashed border-white/20 hover:border-primary/50 transition-all flex flex-col items-center justify-center p-12 text-slate-500 hover:text-primary cursor-pointer max-w-md"
+          >
+            <span className="material-symbols-outlined text-6xl mb-4">add_circle</span>
+            <p className="font-semibold text-xl mb-2">Start Your Virtual Wardrobe</p>
+            <p className="text-sm text-center opacity-70">Upload your first clothing item and let MyClo AI organize it beautifully</p>
+          </Link>
+        </div>
+      )}
 
-        {/* Real Items */}
-        {items.map((item) => (
-          <div key={item.id} className="glass-card rounded-xl overflow-hidden group relative min-h-[400px]">
-            <div className="aspect-[3/4] overflow-hidden bg-white/5">
-              <img
-                src={item.image_url ?? "https://via.placeholder.com/300x400?text=No+Image"}
-                alt={item.attributes?.category?.sub ?? "Wardrobe Item"}
-                loading="lazy"
-                decoding="async"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-            </div>
-
-            {/* Hover AI Tags & Actions */}
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 backdrop-blur-[2px]">
-              <button
-                onClick={(e) => handleDelete(e, item.id)}
-                className="absolute top-4 right-4 size-10 bg-black/40 hover:bg-red-500/80 text-white rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/10"
-              >
-                <span className="material-symbols-outlined text-xl">delete</span>
-              </button>
-
-              <div className="flex flex-wrap gap-2 mb-4 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                <span className="bg-primary/20 border border-primary/30 text-[10px] uppercase tracking-wider font-bold text-primary px-3 py-1 rounded-full">
-                  {item.attributes?.category?.main}
-                </span>
-                {item.attributes?.scores?.season?.slice(0, 2).map((s: string) => (
-                  <span key={s} className="bg-white/10 text-[10px] uppercase tracking-wider font-bold text-white/80 px-3 py-1 rounded-full">
-                    {s}
-                  </span>
-                ))}
-              </div>
-              <Link
-                to={`/wardrobe/${item.id}`}
-                className="w-full py-2.5 bg-white text-black text-center text-sm font-bold rounded-lg hover:bg-primary hover:text-white transition-colors"
-              >
-                Quick View
-              </Link>
-            </div>
-
-            <div className="p-4 flex justify-between items-center">
-              <h3 className="font-medium text-slate-200">
-                {item.attributes?.category?.sub ?? "Wardrobe Item"}
-              </h3>
-              <span className="material-symbols-outlined text-slate-500 text-lg group-hover:text-primary transition-colors cursor-pointer">favorite</span>
-            </div>
-          </div>
-        ))}
-      </div>
-
+      {/* Loading State */}
       {loading && items.length === 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="glass-card rounded-xl aspect-[3/4] animate-pulse"></div>
-          ))}
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+            <p className="text-white/50">Organizing your virtual wardrobe...</p>
+          </div>
         </div>
       )}
     </div>

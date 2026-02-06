@@ -1,0 +1,240 @@
+/* Wardrobe Controls Styles */
+.wardrobe-controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 16px;
+  padding: 16px;
+  min-width: 200px;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.control-group {
+  margin-bottom: 16px;
+}
+
+.control-group:last-child {
+  margin-bottom: 0;
+}
+
+.control-label {
+  display: block;
+  color: #a1a1aa;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.control-button {
+  width: 100%;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #c4b5fd;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.control-button:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+  transform: translateY(-1px);
+}
+
+.control-button:active {
+  transform: translateY(0);
+}
+
+.control-button .material-symbols-outlined {
+  font-size: 16px;
+}
+
+.view-toggle {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.2));
+}
+
+/* Slider Styles */
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.control-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: rgba(139, 92, 246, 0.2);
+  border-radius: 2px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.control-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #8b5cf6;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+}
+
+.control-slider::-webkit-slider-thumb:hover {
+  background: #a78bfa;
+  transform: scale(1.2);
+}
+
+.control-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #8b5cf6;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+}
+
+.control-slider::-moz-range-thumb:hover {
+  background: #a78bfa;
+  transform: scale(1.2);
+}
+
+.slider-value {
+  color: #c4b5fd;
+  font-size: 11px;
+  font-weight: 500;
+  min-width: 35px;
+  text-align: right;
+}
+
+/* Zoom Controls */
+.zoom-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.zoom-button {
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #c4b5fd;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-button:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+  transform: scale(1.05);
+}
+
+.zoom-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.zoom-button .material-symbols-outlined {
+  font-size: 16px;
+}
+
+.zoom-value {
+  color: #c4b5fd;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .wardrobe-controls {
+    top: 10px;
+    right: 10px;
+    padding: 12px;
+    min-width: 160px;
+  }
+  
+  .control-group {
+    margin-bottom: 12px;
+  }
+  
+  .control-button {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  
+  .zoom-button {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .zoom-button .material-symbols-outlined {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wardrobe-controls {
+    position: fixed;
+    top: auto;
+    bottom: 80px;
+    right: 10px;
+    left: 10px;
+    min-width: auto;
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    overflow-x: auto;
+  }
+  
+  .control-group {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .control-group:not(:last-child) {
+    border-right: 1px solid rgba(139, 92, 246, 0.3);
+    padding-right: 8px;
+  }
+  
+  .control-label {
+    display: none;
+  }
+  
+  .slider-container,
+  .zoom-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .zoom-value,
+  .slider-value {
+    font-size: 10px;
+  }
+}

@@ -1,0 +1,248 @@
+/* Performance Optimizer Styles */
+.performance-optimizer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.performance-indicator {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.performance-toggle {
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 8px;
+  color: #c4b5fd;
+  cursor: pointer;
+  padding: 6px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.performance-toggle:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+}
+
+.performance-toggle .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.performance-stats {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: #a1a1aa;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat .material-symbols-outlined {
+  font-size: 14px;
+}
+
+/* Battery Saver Mode Styles */
+.performance-optimizer.battery-saver .hanger-item {
+  animation: none !important;
+  transition: none !important;
+}
+
+.performance-optimizer.battery-saver .wardrobe-rod,
+.performance-optimizer.battery-saver .wardrobe-post {
+  background: linear-gradient(90deg, #666 0%, #999 50%, #666 100%);
+  box-shadow: none;
+}
+
+.performance-optimizer.battery-saver .clothing-shadow {
+  display: none;
+}
+
+.performance-optimizer.battery-saver .hanger-actions {
+  opacity: 1;
+}
+
+.performance-optimizer.battery-saver .wardrobe-wrapper {
+  background: none;
+  border: none;
+}
+
+.performance-optimizer.battery-saver .wardrobe-wrapper::before,
+.performance-optimizer.battery-saver .wardrobe-wrapper::after {
+  display: none;
+}
+
+/* Lazy Image Styles */
+.lazy-image.loading {
+  filter: blur(2px);
+  transform: scale(0.95);
+}
+
+.lazy-image.loaded {
+  filter: none;
+  transform: scale(1);
+}
+
+.image-loading-placeholder {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Virtual Scroll Styles */
+.virtual-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.3) transparent;
+}
+
+.virtual-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.virtual-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.virtual-scroll::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.virtual-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+}
+
+.simple-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .hanger-item {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .clothing-image {
+    transition: none !important;
+  }
+  
+  .wardrobe-wrapper::after {
+    animation: none !important;
+  }
+  
+  .performance-toggle {
+    transition: none !important;
+  }
+}
+
+/* GPU Acceleration */
+.hanger-item,
+.clothing-image,
+.wardrobe-rod,
+.wardrobe-post {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Performance Mode Specific Styles */
+.high-performance .hanger-item {
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.battery-saver .hanger-item {
+  will-change: auto;
+}
+
+/* Optimized Animations */
+@keyframes gentle-sway-optimized {
+  0%, 100% {
+    transform: rotate(0deg) translateZ(0);
+  }
+  50% {
+    transform: rotate(1deg) translateZ(0);
+  }
+}
+
+.performance-optimizer.high-performance .hanger-item {
+  animation: gentle-sway-optimized 6s ease-in-out infinite;
+}
+
+/* Memory Usage Indicator */
+.memory-warning {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.memory-caution {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fde047;
+}
+
+.memory-good {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #86efac;
+}
+
+/* Responsive Performance Adjustments */
+@media (max-width: 768px) {
+  .performance-indicator {
+    top: 10px;
+    left: 10px;
+    padding: 6px 8px;
+    gap: 8px;
+  }
+  
+  .performance-stats {
+    font-size: 10px;
+    gap: 6px;
+  }
+  
+  .performance-toggle .material-symbols-outlined {
+    font-size: 16px;
+  }
+  
+  .stat .material-symbols-outlined {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .performance-stats .stat:last-child {
+    display: none;
+  }
+}

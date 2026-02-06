@@ -45,7 +45,7 @@ logging.getLogger("fastapi").setLevel(logging.INFO)
 logging.getLogger("app").setLevel(logging.DEBUG)
 
 from app.domains.auth.router import router as auth_router
-
+from app.domains.image_processing.router import image_processor_router
 
 from contextlib import asynccontextmanager
 from sqlalchemy import create_engine, text
@@ -132,6 +132,9 @@ def create_app() -> FastAPI:
     from app.domains.user.router import router as user_router
 
     app.include_router(user_router, prefix="/api", tags=["Users"])
+
+    # Image processing router
+    app.include_router(image_processor_router, tags=["Image Processing"])
 
     # Swagger UI에서 Bearer 토큰 인증을 위한 OpenAPI 스키마 커스터마이징
     # 라우터를 모두 추가한 후에 설정해야 함

@@ -1,0 +1,189 @@
+/* Filter and Sort Controls */
+.filter-sort-controls {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.filter-select,
+.sort-select {
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #c4b5fd;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.filter-select:hover,
+.sort-select:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+}
+
+.filter-select:focus,
+.sort-select:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+/* Item Counter */
+.item-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+  z-index: 100;
+}
+
+.counter-text {
+  color: #a1a1aa;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Complete Virtual Wardrobe Container */
+.complete-virtual-wardrobe {
+  width: 100%;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Enhanced Wardrobe Container */
+.wardrobe-container.view-grid {
+  padding: 80px 20px 20px;
+}
+
+.wardrobe-container.view-3d {
+  padding: 80px 0 0;
+}
+
+/* Category Separators */
+.category-separator {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.3), transparent);
+  margin: 30px 0;
+  z-index: 5;
+}
+
+.category-label {
+  position: absolute;
+  left: 0;
+  top: -10px;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #c4b5fd;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive Design for Filter Controls */
+@media (max-width: 768px) {
+  .filter-sort-controls {
+    top: auto;
+    bottom: 120px;
+    left: 10px;
+    right: 10px;
+    transform: none;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .filter-select,
+  .sort-select {
+    width: 100%;
+  }
+  
+  .item-counter {
+    bottom: 80px;
+    left: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-sort-controls {
+    flex-direction: row;
+    bottom: 100px;
+  }
+  
+  .filter-select,
+  .sort-select {
+    flex: 1;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}
+
+/* Battery Saver Mode Optimizations */
+.battery-saver .filter-sort-controls {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.battery-saver .category-separator {
+  background: rgba(139, 92, 246, 0.2);
+}
+
+/* Loading States */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-content {
+  text-align: center;
+  color: #c4b5fd;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(139, 92, 246, 0.3);
+  border-top: 3px solid #8b5cf6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.battery-saver .loading-spinner {
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  border-top: 2px solid #8b5cf6;
+  width: 30px;
+  height: 30px;
+}

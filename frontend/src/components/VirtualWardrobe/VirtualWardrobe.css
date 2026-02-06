@@ -1,0 +1,568 @@
+/* Virtual Wardrobe CSS Styles */
+
+.virtual-wardrobe-container {
+  width: 100%;
+  height: 100vh;
+  perspective: 1500px;
+  perspective-origin: 50% 40%;
+  position: relative;
+  overflow: hidden;
+}
+
+.wardrobe-frame {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(5deg);
+}
+
+/* Wardrobe Structure */
+.wardrobe-rod {
+  position: absolute;
+  background: linear-gradient(90deg, #8b8b8b 0%, #c0c0c0 50%, #8b8b8b 100%);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.wardrobe-rod-top {
+  width: 90%;
+  height: 16px;
+  top: 20%;
+  left: 5%;
+  transform: rotateZ(-2deg);
+  z-index: 10;
+}
+
+.wardrobe-rod-bottom {
+  width: 90%;
+  height: 16px;
+  top: 50%;
+  left: 5%;
+  transform: rotateZ(1deg);
+  z-index: 10;
+}
+
+.wardrobe-post {
+  position: absolute;
+  width: 24px;
+  background: linear-gradient(180deg, #8b8b8b 0%, #c0c0c0 50%, #8b8b8b 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.wardrobe-post-left {
+  height: 60%;
+  top: 15%;
+  left: 5%;
+  transform: rotateZ(-1deg);
+}
+
+.wardrobe-post-right {
+  height: 60%;
+  top: 15%;
+  right: 5%;
+  transform: rotateZ(1deg);
+}
+
+/* Clothing Display Container */
+.clothing-display {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+/* Individual Hanger Item */
+.hanger-item {
+  position: absolute;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  top: 18%;
+}
+
+.hanger-item:hover {
+  transform: translateX(calc(var(--position) * 120px)) translateY(-10px) translateZ(60px) rotateY(5deg);
+  z-index: 100;
+}
+
+/* Hanger Structure */
+.hanger-hook {
+  position: absolute;
+  width: 20px;
+  height: 25px;
+  border: 3px solid #999;
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.hanger-body {
+  position: relative;
+  width: 120px;
+  height: 80px;
+  background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 50%, #e0e0e0 100%);
+  border-radius: 60px 60px 10px 10px;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Clothing Image Container */
+.clothing-image-container {
+  position: relative;
+  width: 100px;
+  height: 140px;
+  margin-top: 60px;
+  transform-origin: top center;
+}
+
+.clothing-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px 8px 12px 12px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s ease;
+}
+
+.clothing-shadow {
+  position: absolute;
+  bottom: -20px;
+  left: 10px;
+  right: 10px;
+  height: 20px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(8px);
+}
+
+/* Hover Actions */
+.hanger-actions {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.hanger-item:hover .hanger-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.action-button {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.action-button:hover {
+  transform: scale(1.1);
+}
+
+.delete-button:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.view-button:hover {
+  background: #8b5cf6;
+  color: white;
+}
+
+/* Item Info */
+.hanger-info {
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.hanger-item:hover .hanger-info {
+  opacity: 1;
+  bottom: -50px;
+}
+
+.item-name {
+  font-weight: 600;
+  color: white;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.item-tags {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.tag {
+  background: rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  color: #c4b5fd;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Add Item Hanger */
+.add-item-hanger {
+  position: absolute;
+  top: 18%;
+  right: 5%;
+  transform-style: preserve-3d;
+}
+
+.add-hanger-button {
+  width: 80px;
+  height: 80px;
+  background: rgba(139, 92, 246, 0.2);
+  border: 2px dashed rgba(139, 92, 246, 0.5);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #c4b5fd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 12px;
+}
+
+.add-hanger-button:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.8);
+  transform: scale(1.05);
+}
+
+.add-hanger-button .material-symbols-outlined {
+  font-size: 24px;
+}
+
+/* Animations */
+@keyframes gentle-sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(1deg);
+  }
+}
+
+.hanger-item {
+  animation: gentle-sway 6s ease-in-out infinite;
+  animation-delay: calc(var(--position) * 0.2s);
+}
+
+.hanger-item:hover {
+  animation-play-state: paused;
+}
+
+/* Loading Spinner */
+.image-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-top: 2px solid #8b5cf6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Advanced Drag & Drop Styles */
+.hanger-item.dragging {
+  cursor: grabbing !important;
+  opacity: 0.5;
+  z-index: 1000;
+}
+
+.hanger-item.drag-over {
+  transform: translateX(calc(var(--position) * var(--spacing))) translateY(-10px) translateZ(60px) scale(1.05);
+}
+
+.hanger-item[draggable="true"] {
+  cursor: grab;
+}
+
+.hanger-item[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* Advanced Container */
+.advanced-virtual-wardrobe {
+  width: 100%;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wardrobe-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+.wardrobe-container.view-3d {
+  perspective: 1500px;
+  perspective-origin: 50% 40%;
+}
+
+.wardrobe-frame-3d {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(5deg);
+}
+
+/* Grid View Styles */
+.wardrobe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  align-items: start;
+}
+
+.grid-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.grid-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.grid-image-container {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.grid-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.grid-item:hover .grid-image {
+  transform: scale(1.05);
+}
+
+.grid-info {
+  padding: 12px;
+}
+
+.grid-item-name {
+  font-weight: 600;
+  color: white;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.grid-item-tags {
+  display: flex;
+  gap: 4px;
+}
+
+.grid-delete-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-item:hover .grid-delete-button {
+  opacity: 1;
+}
+
+.grid-delete-button:hover {
+  background: #ef4444;
+  transform: scale(1.1);
+}
+
+.grid-item.add-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  border: 2px dashed rgba(139, 92, 246, 0.5);
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.add-grid-button {
+  background: transparent;
+  border: none;
+  color: #c4b5fd;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.add-grid-button:hover {
+  color: white;
+  transform: scale(1.05);
+}
+
+.add-grid-button .material-symbols-outlined {
+  font-size: 32px;
+}
+
+/* Spacing Controls */
+.hanger-item {
+  --spacing: 120px;
+  transition: all 0.3s ease;
+}
+
+/* Category Separators */
+.category-separator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+  margin: 20px 0;
+}
+
+.category-label {
+  position: absolute;
+  left: 10px;
+  top: -10px;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #c4b5fd;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hanger-item {
+    --spacing: 80px;
+    transform: translateX(calc(var(--position) * 80px)) translateZ(calc(var(--position) % 2 === 0 ? 0px : 15px));
+  }
+  
+  .clothing-image-container {
+    width: 70px;
+    height: 100px;
+  }
+  
+  .hanger-body {
+    width: 80px;
+    height: 60px;
+  }
+
+  .wardrobe-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .virtual-wardrobe-container {
+    perspective: 1000px;
+  }
+  
+  .hanger-item {
+    --spacing: 60px;
+    transform: translateX(calc(var(--position) * 60px)) translateZ(0px);
+  }
+  
+  .wardrobe-rod-top,
+  .wardrobe-rod-bottom {
+    width: 95%;
+  }
+
+  .wardrobe-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .grid-item-name {
+    font-size: 12px;
+  }
+
+  .add-grid-button {
+    font-size: 12px;
+  }
+
+  .add-grid-button .material-symbols-outlined {
+    font-size: 24px;
+  }
+}
