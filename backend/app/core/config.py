@@ -95,6 +95,9 @@ class Config:
     DEBUG = os.getenv("DEBUG", "true").lower() == "true"
     LOG_LEVEL = os.getenv("LOG_LEVEL", "info")
 
+    # Virtual Wardrobe Image Processing Configuration
+    REMOVE_BG_API_KEY = os.getenv("REMOVE_BG_API_KEY", "")
+
     @staticmethod
     def check_api_key():
         # Gemini API 키 체크
@@ -116,3 +119,10 @@ class Config:
             print("Warning: SUPABASE_ANON_KEY environment variable is not set.")
         if not Config.SUPABASE_SERVICE_KEY:
             print("Warning: SUPABASE_SERVICE_KEY environment variable is not set.")
+
+        # Virtual Wardrobe API 키 체크 (선택적)
+        if not Config.REMOVE_BG_API_KEY:
+            print("Info: REMOVE_BG_API_KEY not set. Using basic image processing.")
+            print(
+                "      For advanced background removal, get API key from https://www.remove.bg/api"
+            )
