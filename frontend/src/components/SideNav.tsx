@@ -52,7 +52,6 @@ export default function SideNav() {
         <nav className="flex flex-col gap-2">
           <NavItem to="/" icon="dashboard" label="Dashboard" />
           <NavItem to="/wardrobe" icon="styler" label="Virtual Closet" />
-          <NavItem to="/chat" icon="auto_awesome" label="AI Stylist" />
           <NavItem to="/profile" icon="settings" label="Settings" />
         </nav>
       </div>

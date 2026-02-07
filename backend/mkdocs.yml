@@ -1,0 +1,34 @@
+site_name: MyClo Backend Documentation
+site_description: MyClo backend API and architecture docs
+site_author: MyClo Team
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  language: ko
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - 소개: index.md
+  - API:
+      - Auth: api/auth.md
+      - Extraction: api/extraction.md
+      - Wardrobe: api/wardrobe.md
+      - Recommendation: api/recommendation.md
+      - Weather: api/weather-api.md
+  - Architecture:
+      - LangGraph Flows: architecture/langgraph-flows.md
+      - Weather Batch: architecture/weather-batch.md
+  - Development:
+      - Rules: development/rules.md
+  - Guides:
+      - VSCode Debugging: guides/vscode-debugging.md

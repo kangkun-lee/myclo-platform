@@ -1,4 +1,4 @@
-import logging
+﻿import logging
 import uuid
 from typing import Optional, List, Tuple
 
@@ -25,11 +25,11 @@ class NanoBananaClient:
         try:
             self.client = genai.Client(api_key=self.api_key)
 
-            # ✅ Nano Banana 모델 선택
+            # ??Nano Banana 紐⑤뜽 ?좏깮
             self.model_name = (
-                "gemini-2.5-flash-image"  # ✅ 빠름 (image_config 없이 사용)
+                "gemini-2.5-flash-image"  # ??鍮좊쫫 (image_config ?놁씠 ?ъ슜)
             )
-            # self.model_name = "gemini-3-pro-image-preview"  # 고품질 (느림, image_config 지원)
+            # self.model_name = "gemini-3-pro-image-preview"  # 怨좏뭹吏?(?먮┝, image_config 吏??
 
             logger.info(f"Nano Banana initialized. Model: {self.model_name}")
         except Exception as e:
@@ -37,7 +37,7 @@ class NanoBananaClient:
             self.client = None
 
     def _guess_mime(self, b: bytes) -> str:
-        # 아주 러프한 판별 (필요하면 더 보강 가능)
+        # ?꾩＜ ?ы봽???먮퀎 (?꾩슂?섎㈃ ??蹂닿컯 媛??
         if b.startswith(b"\x89PNG\r\n\x1a\n"):
             return "image/png"
         if b.startswith(b"\xff\xd8"):
@@ -48,7 +48,7 @@ class NanoBananaClient:
 
     def _extract_first_image(self, response) -> Optional[Tuple[bytes, str]]:
         """
-        Gemini generate_content 응답에서 첫 이미지(inline_data)를 찾아 (bytes, mime_type) 반환
+        Gemini generate_content ?묐떟?먯꽌 泥??대?吏(inline_data)瑜?李얠븘 (bytes, mime_type) 諛섑솚
         """
         if not response or not getattr(response, "candidates", None):
             return None
@@ -76,7 +76,7 @@ class NanoBananaClient:
         base_image_bytes: Optional[bytes] = None,
         style_reference_bytes: Optional[bytes] = None,
         few_shot_images: Optional[List[bytes]] = None,
-        image_size: str = "1K",  # AI Studio 예제 스타일
+        image_size: str = "1K",  # AI Studio ?덉젣 ?ㅽ???
         aspect_ratio: str = "1:1",
     ) -> Optional[Tuple[bytes, str]]:
         """
@@ -89,7 +89,7 @@ class NanoBananaClient:
         try:
             parts: List[types.Part] = []
 
-            # ✅ 참조 이미지들(편집/스타일/few-shot) 넣기: AI Studio 예제와 동일한 패턴
+            # ??李몄“ ?대?吏???몄쭛/?ㅽ???few-shot) ?ｊ린: AI Studio ?덉젣? ?숈씪???⑦꽩
             ref_images = []
             if base_image_bytes:
                 ref_images.append(base_image_bytes)
@@ -106,8 +106,8 @@ class NanoBananaClient:
                     )
                 )
 
-            # ✅ negative_prompt는 Gemini ImageConfig에 항상 있는 필드가 아니라,
-            #    프롬프트에 “포함하지 말 것”으로 녹이는 게 안전함
+            # ??negative_prompt??Gemini ImageConfig????긽 ?덈뒗 ?꾨뱶媛 ?꾨땲??
+            #    ?꾨＼?꾪듃???쒗룷?⑦븯吏 留?寃꺿앹쑝濡??뱀씠??寃??덉쟾??
             if negative_prompt:
                 prompt = f"{prompt}\n\nDo NOT include: {negative_prompt}"
 
@@ -174,10 +174,10 @@ class NanoBananaClient:
             )
             m_shape = (body_shape or "average").lower()
 
-            # ✅ AI Studio 패턴: 이미지들을 먼저 Parts에 추가
+            # ??AI Studio ?⑦꽩: ?대?吏?ㅼ쓣 癒쇱? Parts??異붽?
             parts: List[types.Part] = []
 
-            # 1. 실제 옷 이미지들을 먼저 추가 (가장 중요한 참조)
+            # 1. ?ㅼ젣 ???대?吏?ㅼ쓣 癒쇱? 異붽? (媛??以묒슂??李몄“)
             image_count = 0
             if top_image_bytes:
                 parts.append(
@@ -199,7 +199,7 @@ class NanoBananaClient:
                 image_count += 1
                 logger.info("Added bottom clothing image as reference")
 
-            # 2. 마네킹 이미지 (선택사항)
+            # 2. 留덈꽕???대?吏 (?좏깮?ы빆)
             if mannequin_bytes:
                 parts.append(
                     types.Part.from_bytes(
@@ -210,7 +210,7 @@ class NanoBananaClient:
                 image_count += 1
                 logger.info("Added mannequin image as reference")
 
-            # 2.5 유저 얼굴 이미지 (선택사항)
+            # 2.5 ?좎? ?쇨뎬 ?대?吏 (?좏깮?ы빆)
             if face_image_bytes:
                 parts.append(
                     types.Part.from_bytes(
@@ -221,14 +221,21 @@ class NanoBananaClient:
                 image_count += 1
                 logger.info("Added user face image as reference")
 
-            # 3. 프롬프트는 마지막에 추가 (AI Studio 패턴)
+            # 3. ?꾨＼?꾪듃??留덉?留됱뿉 異붽? (AI Studio ?⑦꽩)
             if image_count > 0:
-                # 사용자의 신체 정보가 있으면 반영
+                # ?ъ슜?먯쓽 ?좎껜 ?뺣낫媛 ?덉쑝硫?諛섏쁺
                 body_desc = f"{m_gender} model"
                 if height and weight:
                     body_desc += f", {height}cm tall, {weight}kg weight"
                 if body_shape:
                     body_desc += f", {body_shape} body type"
+                modesty_instruction = (
+                    "STRICT MODESTY REQUIREMENT: Never show bare torso, chest, nipples, abdomen, or back skin. "
+                    "The upper body must always be fully covered by clothing. "
+                    "If the top garment is open-front (shirt/cardigan/jacket), add a plain inner layer "
+                    "(crew-neck t-shirt or tank) underneath so no torso skin is visible. "
+                    "You may show face, neck, hands, and feet only."
+                )
 
                 face_instruction = (
                     "Head and face should be visible (generic model face)."
@@ -241,34 +248,42 @@ class NanoBananaClient:
                         "Apply consistent lighting and skin texture to the entire body based on the face."
                     )
 
-                # 실제 이미지가 있을 때: 사용자 맞춤형 모델 전신 샷
+                # ?ㅼ젣 ?대?吏媛 ?덉쓣 ?? ?ъ슜??留욎땄??紐⑤뜽 ?꾩떊 ??
                 prompt = (
                     f"Fashion photo, vertical portrait format (3:4 ratio). "
                     f"Full body shot of a realistic {body_desc} wearing the provided clothing items. "
                     f"The model should be standing in a natural pose against a clean white studio background. "
                     f"The model should be barefoot (no shoes, no socks). "
+                    f"{modesty_instruction} "
                     f"{face_instruction} "
                     f"Match exact colors and patterns from reference images."
                 )
             else:
-                # 이미지가 없을 때: 텍스트 설명 기반 모델
+                # ?대?吏媛 ?놁쓣 ?? ?띿뒪???ㅻ챸 湲곕컲 紐⑤뜽
                 body_desc = f"{m_gender} model"
                 if height and weight:
                     body_desc += f", {height}cm tall, {weight}kg weight"
+                modesty_instruction = (
+                    "STRICT MODESTY REQUIREMENT: Never show bare torso, chest, nipples, abdomen, or back skin. "
+                    "The upper body must always be fully covered by clothing. "
+                    "If the top garment is open-front, automatically include a plain inner layer underneath. "
+                    "Face, neck, hands, and feet may be visible."
+                )
 
                 prompt = (
                     f"Fashion photo, vertical portrait format (3:4 ratio). "
                     f"Full body shot of a realistic {body_desc} wearing {outfit_desc}. "
-                    f"Clean white studio background. Generic model face."
+                    f"Clean white studio background. Generic model face. "
+                    f"{modesty_instruction}"
                 )
 
             parts.append(types.Part.from_text(text=prompt))
 
-            # 4. Content 생성 (AI Studio 패턴)
+            # 4. Content ?앹꽦 (AI Studio ?⑦꽩)
             contents = [types.Content(role="user", parts=parts)]
 
-            # 5. Config 설정
-            # gemini-2.5-flash-image는 image_config를 지원하지 않음!
+            # 5. Config ?ㅼ젙
+            # gemini-2.5-flash-image??image_config瑜?吏?먰븯吏 ?딆쓬!
             config = types.GenerateContentConfig(
                 response_modalities=["IMAGE", "TEXT"],
             )
@@ -277,14 +292,14 @@ class NanoBananaClient:
                 f"Generating outfit composite with {image_count} reference images..."
             )
 
-            # 6. 생성 요청
+            # 6. ?앹꽦 ?붿껌
             response = self.client.models.generate_content(
                 model=self.model_name,
                 contents=contents,
                 config=config,
             )
 
-            # 7. 이미지 추출
+            # 7. ?대?吏 異붿텧
             extracted = self._extract_first_image(response)
             if not extracted:
                 logger.error("Failed to generate image bytes.")
@@ -338,3 +353,4 @@ class NanoBananaClient:
 
             logger.error(traceback.format_exc())
             return None
+

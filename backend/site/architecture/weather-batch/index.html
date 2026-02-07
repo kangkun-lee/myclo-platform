@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../..">
+        <link rel="prev" href="../langgraph-flows/">
       
       
-        <link rel="next" href="../extraction/">
+        <link rel="next" href="../../development/rules/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Auth - MyClo Backend Documentation</title>
+        <title>Weather Batch - MyClo Backend Documentation</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-auth" class="md-skip">
+        <a href="#weather-batch-system" class="md-skip">
           콘텐츠로 이동
         </a>
       
@@ -104,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Auth
+              Weather Batch
             
           </span>
         </div>
@@ -224,20 +224,18 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
@@ -258,7 +256,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -273,37 +271,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Auth
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../api/auth/" class="md-nav__link">
         
   
   
@@ -319,170 +290,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="목차">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      목차
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#base-url" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Base URL
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        엔드포인트
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="엔드포인트">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        회원가입
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        로그인
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        로그아웃
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        인증 토큰 사용
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        에러 응답
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="에러 응답">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#401-unauthorized" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        401 Unauthorized
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#400-bad-request" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        400 Bad Request
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        비밀번호 규칙
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        보안
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        관련 API
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -495,7 +302,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../extraction/" class="md-nav__link">
+      <a href="../../api/extraction/" class="md-nav__link">
         
   
   
@@ -523,7 +330,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../wardrobe/" class="md-nav__link">
+      <a href="../../api/wardrobe/" class="md-nav__link">
         
   
   
@@ -551,7 +358,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../recommendation/" class="md-nav__link">
+      <a href="../../api/recommendation/" class="md-nav__link">
         
   
   
@@ -579,7 +386,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../weather-api/" class="md-nav__link">
+      <a href="../../api/weather-api/" class="md-nav__link">
         
   
   
@@ -611,18 +418,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -643,7 +452,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -661,7 +470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/langgraph-flows/" class="md-nav__link">
+      <a href="../langgraph-flows/" class="md-nav__link">
         
   
   
@@ -686,10 +495,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../architecture/weather-batch/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Weather Batch
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -705,6 +541,92 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        개요
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        실행 흐름
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        동작 특성
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        반환 예시
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        수동 실행
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        참고
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -908,10 +830,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#base-url" class="md-nav__link">
+  <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Base URL
+        개요
       
     </span>
   </a>
@@ -919,52 +841,35 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        엔드포인트
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="엔드포인트">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        회원가입
+        실행 흐름
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        로그인
+        동작 특성
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        로그아웃
+        반환 예시
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -972,7 +877,7 @@
   <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
-        인증 토큰 사용
+        수동 실행
       
     </span>
   </a>
@@ -983,68 +888,7 @@
   <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
-        에러 응답
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="에러 응답">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#401-unauthorized" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        401 Unauthorized
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#400-bad-request" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        400 Bad Request
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        비밀번호 규칙
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        보안
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        관련 API
+        참고
       
     </span>
   </a>
@@ -1068,140 +912,56 @@
 
 
 
-<h1 id="api-auth">인증 API (Auth)<a class="headerlink" href="#api-auth" title="Permanent link">&para;</a></h1>
-<p>사용자 인증 및 회원가입 관련 API입니다.</p>
-<h2 id="base-url">Base URL<a class="headerlink" href="#base-url" title="Permanent link">&para;</a></h2>
-<pre><code>/api/auth
-</code></pre>
-<h2 id="_1">엔드포인트<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<h3 id="_2">회원가입<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
-<p>새로운 사용자를 등록합니다.</p>
-<p><strong>Endpoint</strong></p>
-<pre><code class="language-http">POST /auth/signup
-</code></pre>
-<p><strong>Request Body</strong></p>
-<pre><code class="language-json">{
-  &quot;username&quot;: &quot;user@example.com&quot;,
-  &quot;password&quot;: &quot;password123&quot;,
-  &quot;age&quot;: 25,
-  &quot;height&quot;: 170.5,
-  &quot;weight&quot;: 65.0,
-  &quot;gender&quot;: &quot;male&quot;,
-  &quot;body_shape&quot;: &quot;normal&quot;
-}
-</code></pre>
-<p><strong>Response</strong></p>
-<pre><code class="language-json">{
-  &quot;success&quot;: true,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;,
-  &quot;user&quot;: {
-    &quot;id&quot;: &quot;550e8400-e29b-41d4-a716-446655440000&quot;,
-    &quot;username&quot;: &quot;user@example.com&quot;,
-    &quot;age&quot;: 25,
-    &quot;height&quot;: 170.5,
-    &quot;weight&quot;: 65.0,
-    &quot;gender&quot;: &quot;male&quot;,
-    &quot;body_shape&quot;: &quot;normal&quot;
-  }
-}
-</code></pre>
-<p><strong>예제</strong></p>
-<pre><code class="language-bash">curl -X POST http://localhost:8000/api/auth/signup \
-  -H &quot;Content-Type: application/json&quot; \
-  -d '{
-    &quot;username&quot;: &quot;test@example.com&quot;,
-    &quot;password&quot;: &quot;mypassword&quot;,
-    &quot;age&quot;: 25,
-    &quot;height&quot;: 175,
-    &quot;weight&quot;: 70
-  }'
-</code></pre>
-<hr />
-<h3 id="_3">로그인<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
-<p>사용자 인증 후 JWT 토큰을 발급합니다.</p>
-<p><strong>Endpoint</strong></p>
-<pre><code class="language-http">POST /auth/login
-</code></pre>
-<p><strong>Request Body</strong></p>
-<pre><code class="language-json">{
-  &quot;username&quot;: &quot;user@example.com&quot;,
-  &quot;password&quot;: &quot;password123&quot;
-}
-</code></pre>
-<p><strong>Response</strong></p>
-<pre><code class="language-json">{
-  &quot;success&quot;: true,
-  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;,
-  &quot;user&quot;: {
-    &quot;id&quot;: &quot;550e8400-e29b-41d4-a716-446655440000&quot;,
-    &quot;username&quot;: &quot;user@example.com&quot;,
-    &quot;age&quot;: 25,
-    &quot;height&quot;: 170.5,
-    &quot;weight&quot;: 65.0,
-    &quot;gender&quot;: &quot;male&quot;,
-    &quot;body_shape&quot;: &quot;normal&quot;
-  }
-}
-</code></pre>
-<p><strong>예제</strong></p>
-<pre><code class="language-bash">curl -X POST http://localhost:8000/api/auth/login \
-  -H &quot;Content-Type: application/json&quot; \
-  -d '{
-    &quot;username&quot;: &quot;test@example.com&quot;,
-    &quot;password&quot;: &quot;mypassword&quot;
-  }'
-</code></pre>
-<hr />
-<h3 id="_4">로그아웃<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
-<p>사용자를 로그아웃 처리합니다.</p>
-<div class="admonition info">
-<p class="admonition-title">클라이언트 측 처리</p>
-<p>서버에서는 특별한 작업을 하지 않습니다. 클라이언트에서 저장된 토큰을 삭제하면 됩니다.</p>
-</div>
-<p><strong>Endpoint</strong></p>
-<pre><code class="language-http">POST /auth/logout
-</code></pre>
-<p><strong>Response</strong></p>
-<pre><code class="language-json">{
-  &quot;success&quot;: true,
-  &quot;message&quot;: &quot;Successfully logged out&quot;
-}
-</code></pre>
-<h2 id="_5">인증 토큰 사용<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<p>로그인 후 받은 JWT 토큰은 이후 모든 인증이 필요한 요청에 포함해야 합니다.</p>
-<p><strong>헤더 형식</strong></p>
-<pre><code class="language-http">Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-</code></pre>
-<p><strong>예제</strong></p>
-<pre><code class="language-bash">curl -X GET http://localhost:8000/api/users/me \
-  -H &quot;Authorization: Bearer YOUR_TOKEN_HERE&quot;
-</code></pre>
-<h2 id="_6">에러 응답<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<h3 id="401-unauthorized">401 Unauthorized<a class="headerlink" href="#401-unauthorized" title="Permanent link">&para;</a></h3>
-<pre><code class="language-json">{
-  &quot;detail&quot;: &quot;아이디 또는 비밀번호가 잘못되었습니다.&quot;
-}
-</code></pre>
-<h3 id="400-bad-request">400 Bad Request<a class="headerlink" href="#400-bad-request" title="Permanent link">&para;</a></h3>
-<pre><code class="language-json">{
-  &quot;detail&quot;: &quot;Username already registered&quot;
-}
-</code></pre>
-<h2 id="_7">비밀번호 규칙<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
-<div class="admonition warning">
-<p class="admonition-title">비밀번호 제한</p>
-<p>비밀번호는 UTF-8 인코딩 기준 <strong>72바이트를 초과할 수 없습니다</strong>.</p>
-</div>
-<h2 id="_8">보안<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<h1 id="weather-batch-system">Weather Batch System<a class="headerlink" href="#weather-batch-system" title="Permanent link">&para;</a></h1>
+<h2 id="_1">개요<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>전국 주요 지역의 날씨 데이터를 수집해 DB에 저장하는 배치 로직입니다.</p>
+<p>핵심 구현 위치:</p>
 <ul>
-<li>비밀번호는 <strong>bcrypt</strong>로 해싱되어 저장됩니다</li>
-<li>JWT 토큰은 <strong>HS256</strong> 알고리즘으로 서명됩니다</li>
-<li>토큰 유효기간은 설정에 따라 다릅니다</li>
+<li>엔트리 함수: <code>app/batch/weather.py</code></li>
+<li>도메인 서비스: <code>app/domains/weather/service.py</code></li>
+<li>외부 API 클라이언트: <code>app/domains/weather/client.py</code></li>
 </ul>
-<h2 id="api">관련 API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h2>
+<h2 id="_2">실행 흐름<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<pre><code class="language-text">run_daily_weather_batch(db)
+  -&gt; weather_service.fetchAndLoadWeather(db)
+  -&gt; 17개 지역 병렬 호출
+  -&gt; 파싱(TMN/TMX/PTY)
+  -&gt; DB upsert
+</code></pre>
+<h2 id="_3">동작 특성<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../wardrobe/">옷장 API</a> - 옷장 아이템 관리</li>
-<li>사용자 프로필 API: <code>GET /api/users/me</code>, <code>PUT /api/users/profile</code></li>
+<li>병렬 처리: <code>asyncio.gather</code>로 지역별 API 동시 호출</li>
+<li>재시도: 실패 지역만 최대 3회 재시도(백오프 적용)</li>
+<li>부분 성공 허용: 일부 지역 실패 시 <code>partial_success</code> 반환</li>
+<li>DB 저장: <code>(base_date, nx, ny)</code> 기준으로 기존 레코드 업데이트 또는 신규 추가</li>
+</ul>
+<h2 id="_4">반환 예시<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;success&quot;,
+  &quot;total&quot;: 17,
+  &quot;success&quot;: 17,
+  &quot;failed&quot;: 0,
+  &quot;message&quot;: &quot;All 17 regions saved successfully&quot;
+}
+</code></pre>
+<p>실패가 포함되면:</p>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;partial_success&quot;,
+  &quot;total&quot;: 17,
+  &quot;success&quot;: 15,
+  &quot;failed&quot;: 2,
+  &quot;failed_regions&quot;: [&quot;Busan&quot;, &quot;Jeju-do&quot;],
+  &quot;message&quot;: &quot;Saved 15/17 regions. Failed: ['Busan', 'Jeju-do']&quot;
+}
+</code></pre>
+<h2 id="_5">수동 실행<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>FastAPI 라우터를 통해 트리거할 수 있습니다.</p>
+<pre><code class="language-bash">curl -X GET &quot;http://localhost:8000/api/weather/batch&quot;
+</code></pre>
+<h2 id="_6">참고<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<ul>
+<li>현재 저장소 기준으로 <code>function_app.py</code>, <code>host.json</code> 전제는 사용하지 않습니다.</li>
+<li>운영 스케줄러가 필요하면 Cron/워크플로우/외부 스케줄러에서 위 엔트리 함수를 호출하도록 구성합니다.</li>
 </ul>
 
 

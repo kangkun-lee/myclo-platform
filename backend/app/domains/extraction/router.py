@@ -7,8 +7,7 @@ from .schema import ExtractionResponse, ExtractionUrlResponse, MultiExtractionRe
 from app.core.schemas import AttributesSchema
 from app.utils.validators import validate_uploaded_file
 from app.utils.response_helpers import handle_route_exception
-from app.storage.memory_store import add_wardrobe_item
-import base64
+from app.domains.image_processing.service import image_processing_service
 
 logger = logging.getLogger(__name__)
 
@@ -63,12 +62,19 @@ async def extract(
                     [contents]
                 )  # Pass as list of 1 for multi-image logic compatibility
 
+                # Remove background immediately after upload and before storage.
+                logger.info(f"Running background removal for image {idx+1}...")
+                processed_contents = await image_processing_service.remove_background_bytes(
+                    contents
+                )
+                processed_filename = f"{(img.filename or 'item').rsplit('.', 1)[0]}.png"
+
                 # Save as individual item
                 logger.info(f"Saving item {idx+1} to database...")
                 record = wardrobe_manager.save_item(
                     db=db,
-                    image_bytes=contents,
-                    original_filename=img.filename,
+                    image_bytes=processed_contents,
+                    original_filename=processed_filename,
                     attributes=attributes,
                     user_id=current_user.id,
                 )

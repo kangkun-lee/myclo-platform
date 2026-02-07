@@ -3,6 +3,7 @@ import json
 import uuid
 import logging
 from datetime import datetime
+import time
 from typing import List, Dict, Any, Optional
 from uuid import UUID
 from supabase import create_client, Client
@@ -23,6 +24,7 @@ class WardrobeManager:
         self.supabase_key = Config.SUPABASE_SERVICE_KEY or Config.SUPABASE_ANON_KEY
         self.bucket_name = Config.SUPABASE_STORAGE_BUCKET
         self.supabase: Optional[Client] = None
+        self._signed_url_cache: Dict[str, tuple[str, float]] = {}
 
         if self.supabase_url and self.supabase_key:
             try:
@@ -31,33 +33,41 @@ class WardrobeManager:
                 logger.error(f"Failed to initialize Supabase Client: {e}")
 
     def get_signed_url(self, image_path: str, expires_in: int = 3600) -> str:
-        """Supabase Storage에서 서명된 URL 생성 (실패 시 공용 URL 반환)"""
+        """Supabase Storage?먯꽌 ?쒕챸??URL ?앹꽦 (?ㅽ뙣 ??怨듭슜 URL 諛섑솚)"""
         if not image_path:
             return ""
 
-        # 이미 절대 경로 URL인 경우 처리
         if image_path.startswith("http"):
             return image_path
 
-        # Supabase 클라이언트가 없는 경우 공용 URL 추측 반환
+        now_ts = time.time()
+        cached = self._signed_url_cache.get(image_path)
+        if cached and cached[1] > now_ts:
+            return cached[0]
+
+        # Supabase ?대씪?댁뼵?멸? ?녿뒗 寃쎌슦 怨듭슜 URL 異붿륫 諛섑솚
         if not self.supabase:
             return f"{self.supabase_url}/storage/v1/object/public/{self.bucket_name}/{image_path}"
 
         try:
-            # 버킷명 제거 (있다면)
+            # 踰꾪궥紐??쒓굅 (?덈떎硫?
             path = image_path
             if "/" in path and path.startswith(self.bucket_name):
                 path = path.replace(f"{self.bucket_name}/", "", 1)
 
-            # 1. 서명된 URL 시도 (보안성 높음)
+            # 1. ?쒕챸??URL ?쒕룄 (蹂댁븞???믪쓬)
             res = self.supabase.storage.from_(self.bucket_name).create_signed_url(
                 path, expires_in
             )
             signed_url = res.get("signedURL")
             if signed_url:
+                self._signed_url_cache[image_path] = (
+                    signed_url,
+                    now_ts + max(60, expires_in - 30),
+                )
                 return signed_url
 
-            # 2. 실패 시 공용 URL로 폴백 (가시성 확보 우선)
+            # 2. ?ㅽ뙣 ??怨듭슜 URL濡??대갚 (媛?쒖꽦 ?뺣낫 ?곗꽑)
             logger.warning(
                 f"Signed URL generation returned None for {path}, falling back to public URL."
             )
@@ -67,7 +77,7 @@ class WardrobeManager:
             logger.warning(
                 f"Error generating Supabase signed URL for {image_path}: {e}"
             )
-            # 에러 발생 시 공용 URL 포맷으로 반환하여 브라우저에서 시도하게 함
+            # ?먮윭 諛쒖깮 ??怨듭슜 URL ?щ㎎?쇰줈 諛섑솚?섏뿬 釉뚮씪?곗??먯꽌 ?쒕룄?섍쾶 ??
             path = (
                 image_path.replace(f"{self.bucket_name}/", "", 1)
                 if image_path.startswith(self.bucket_name)
@@ -82,6 +92,7 @@ class WardrobeManager:
         category: Optional[str] = None,
         skip: int = 0,
         limit: int = 20,
+        resolve_image_urls: bool = True,
     ) -> Dict[str, Any]:
         """Get paginated wardrobe items from DB"""
         from .model import ClosetItem
@@ -90,10 +101,11 @@ class WardrobeManager:
             query = db.query(ClosetItem).filter(ClosetItem.user_id == user_id)
             if category:
                 cat_upper = category.upper()
-                # Handle UI shorthand mapping
-                if cat_upper == "OUTER":
-                    cat_upper = "OUTERWEAR"
-                query = query.filter(ClosetItem.category == cat_upper)
+                # Handle equivalent categories from UI/legacy data.
+                if cat_upper in {"OUTER", "OUTERWEAR"}:
+                    query = query.filter(ClosetItem.category.in_(["OUTER", "OUTERWEAR"]))
+                else:
+                    query = query.filter(ClosetItem.category == cat_upper)
 
             total_count = query.count()
             if total_count == 0:
@@ -126,7 +138,11 @@ class WardrobeManager:
 
             items: List[WardrobeItemSchema] = []
             for data in item_data_list:
-                final_image_url = self.get_signed_url(data["image_path"])
+                final_image_url = (
+                    self.get_signed_url(data["image_path"])
+                    if resolve_image_urls
+                    else data["image_path"]
+                )
                 items.append(
                     WardrobeItemSchema(
                         id=data["id"],
@@ -194,7 +210,7 @@ class WardrobeManager:
             raise Exception("Supabase Storage not initialized")
 
         # 1. Save Image to Supabase Storage
-        user_uuid_folder = str(user_id)  # Supabase는 폴더 구조가 자유로움
+        user_uuid_folder = str(user_id)  # Supabase???대뜑 援ъ“媛 ?먯쑀濡쒖?
         now = datetime.now()
         date_str = now.strftime("%Y%m%d")
         image_uuid = str(uuid.uuid4())
@@ -203,7 +219,7 @@ class WardrobeManager:
             validate_file_extension(original_filename) if original_filename else ".jpg"
         )
 
-        # 파일 경로 설정 (Supabase Storage 구조: user_id/date/uuid.ext)
+        # ?뚯씪 寃쎈줈 ?ㅼ젙 (Supabase Storage 援ъ“: user_id/date/uuid.ext)
         file_path = f"{user_uuid_folder}/{date_str}/{image_uuid}{ext}"
 
         content_type = "image/jpeg"
@@ -215,17 +231,17 @@ class WardrobeManager:
             content_type = "image/webp"
 
         try:
-            # Supabase Storage 업로드
+            # Supabase Storage ?낅줈??
             self.supabase.storage.from_(self.bucket_name).upload(
                 path=file_path,
                 file=image_bytes,
                 file_options={"content-type": content_type},
             )
 
-            # 공개 URL 또는 경로 저장 (경로로 저장하는 것이 나중에 Signed URL 생성에 유리)
-            # 여기서는 나중에 get_signed_url에서 처리하기 위해 상대 경로만 저장하거나 전체 공용 URL 저장 가능
-            # 우리는 DB의 image_path에 'bucket/path' 형태로 저장하거나 공용 URL 저장
-            image_url = file_path  # 여기서는 관례상 상대 경로 저장
+            # 怨듦컻 URL ?먮뒗 寃쎈줈 ???(寃쎈줈濡???ν븯??寃껋씠 ?섏쨷??Signed URL ?앹꽦???좊━)
+            # ?ш린?쒕뒗 ?섏쨷??get_signed_url?먯꽌 泥섎━?섍린 ?꾪빐 ?곷? 寃쎈줈留???ν븯嫄곕굹 ?꾩껜 怨듭슜 URL ???媛??
+            # ?곕━??DB??image_path??'bucket/path' ?뺥깭濡???ν븯嫄곕굹 怨듭슜 URL ???
+            image_url = file_path  # ?ш린?쒕뒗 愿濡???곷? 寃쎈줈 ???
         except Exception as e:
             logger.error(f"Supabase Storage Upload failed: {e}")
             raise Exception(f"Failed to upload image to Supabase: {e}")
@@ -331,3 +347,4 @@ class WardrobeManager:
 
 
 wardrobe_manager = WardrobeManager()
+

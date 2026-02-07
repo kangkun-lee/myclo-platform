@@ -37,7 +37,7 @@ async def recommend_todays_pick(
             db, request.lat, request.lon
         )
         result = await recommend_todays_pick_v2(
-            user_id=user_id, weather=weather_info, db=db
+            user_id=user_id, weather=weather_info, db=db, generate_image=True
         )
         return result
     except Exception as e:
@@ -59,12 +59,13 @@ async def regenerate_todays_pick(
     try:
         from app.llm.todays_pick_service import recommend_todays_pick_v2
         from app.domains.weather.service import weather_service
-        from datetime import datetime
+        from datetime import datetime, timedelta
 
-        # Delete today's existing picks
-        today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        # Delete recent picks (last 24h) so regenerate always creates a fresh style.
+        recent_window_start = datetime.now() - timedelta(hours=24)
         db.query(TodaysPick).filter(
-            TodaysPick.user_id == user_id, TodaysPick.created_at >= today_start
+            TodaysPick.user_id == user_id,
+            TodaysPick.created_at >= recent_window_start,
         ).delete()
         db.commit()
 
@@ -73,7 +74,7 @@ async def regenerate_todays_pick(
             db, request.lat, request.lon
         )
         result = await recommend_todays_pick_v2(
-            user_id=user_id, weather=weather_info, db=db
+            user_id=user_id, weather=weather_info, db=db, generate_image=True
         )
         return result
     except Exception as e:

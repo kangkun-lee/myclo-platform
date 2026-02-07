@@ -1,9 +1,8 @@
-from typing import Optional
 import requests
 import io
 import base64
 from PIL import Image, ImageFilter, ImageEnhance
-from app.core.config import settings
+from rembg import remove, new_session
 
 # Optional imports with fallbacks
 try:
@@ -19,10 +18,6 @@ except ImportError:
 
 class ImageProcessingService:
     """Service for processing clothing images for virtual wardrobe display"""
-
-    def __init__(self):
-        self.remove_bg_api_key = getattr(settings, "REMOVE_BG_API_KEY", None)
-        self.remove_bg_api_url = "https://api.remove.bg/v1.0/removebg"
 
     async def process_clothing_image(
         self, image_url: str, processing_type: str = "background_removal"
@@ -56,87 +51,50 @@ class ImageProcessingService:
     async def _remove_background(self, image_url: str) -> str:
         """Remove background from clothing image"""
         try:
-            # Try remove.bg API if available
-            if self.remove_bg_api_key:
-                return await self._remove_background_api(image_url)
-            else:
-                # Fallback to local processing
-                return await self._remove_background_local(image_url)
+            # Always use local rembg model.
+            return await self._remove_background_local(image_url)
 
         except Exception as e:
             print(f"Background removal failed: {e}")
             return image_url
 
-    async def _remove_background_api(self, image_url: str) -> str:
-        """Use remove.bg API for background removal"""
-        try:
-            response = requests.post(
-                self.remove_bg_api_url,
-                files={"image_url": image_url},
-                data={"size": "auto"},
-                headers={"X-Api-Key": self.remove_bg_api_key},
-            )
-
-            if response.status_code == requests.codes.ok:
-                # Return base64 encoded result
-                result_bytes = response.content
-                base64_str = base64.b64encode(result_bytes).decode()
-                return f"data:image/png;base64,{base64_str}"
-            else:
-                raise Exception(f"API request failed: {response.status_code}")
-
-        except Exception as e:
-            print(f"Remove.bg API error: {e}")
-            # Fallback to local processing
-            return await self._remove_background_local(image_url)
-
     async def _remove_background_local(self, image_url: str) -> str:
-        """Local background removal using image processing"""
+        """Local background removal using rembg (AI-powered)"""
+        print(f"[DEBUG] Starting local background removal for: {image_url}")
         try:
             # Download image
+            print("[DEBUG] Downloading image...")
             response = requests.get(image_url)
-            image = Image.open(io.BytesIO(response.content))
+            response.raise_for_status()
+            image_data = response.content
+            print(f"[DEBUG] Image downloaded. Size: {len(image_data)} bytes")
 
-            # Convert to RGBA
-            if image.mode != "RGBA":
-                image = image.convert("RGBA")
-
-            # Use PIL for simple background detection
-            if np is not None:
-                img_array = np.array(image)
-
-                # Create mask for white/light backgrounds
-                mask = (
-                    (img_array[:, :, 0] > 220)
-                    & (img_array[:, :, 1] > 220)
-                    & (img_array[:, :, 2] > 220)
-                )
-
-                # Apply Gaussian blur to edges for smooth transition
-                mask = mask.astype(np.uint8) * 255
-                mask_image = Image.fromarray(mask)
-                mask_image = mask_image.filter(ImageFilter.GaussianBlur(radius=2))
-                mask_array = np.array(mask_image)
-
-                # Apply mask to image
-                img_array[mask_array < 128, 3] = 0  # Set alpha to 0 for background
-
-                # Convert back to image
-                processed_image = Image.fromarray(img_array)
-            else:
-                # Fallback processing without numpy
-                processed_image = image
+            # Process with rembg using lightweight model (u2netp)
+            print("[DEBUG] Loading rembg session (u2netp)...")
+            session = new_session("u2netp")
+            print("[DEBUG] Running remove()...")
+            output_data = remove(image_data, session=session)
+            print(f"[DEBUG] Background removed. Output size: {len(output_data)} bytes")
 
             # Convert to base64
-            buffered = io.BytesIO()
-            processed_image.save(buffered, format="PNG", optimize=True)
-            img_str = base64.b64encode(buffered.getvalue()).decode()
-
+            img_str = base64.b64encode(output_data).decode()
             return f"data:image/png;base64,{img_str}"
 
         except Exception as e:
-            print(f"Local background removal error: {e}")
+            print(f"[ERROR] Local background removal error: {e}")
+            import traceback
+
+            traceback.print_exc()
             return image_url
+
+    async def remove_background_bytes(self, image_bytes: bytes) -> bytes:
+        """Remove background from raw image bytes using local rembg model."""
+        try:
+            session = new_session("u2netp")
+            return remove(image_bytes, session=session)
+        except Exception as e:
+            print(f"[ERROR] Byte background removal error: {e}")
+            return image_bytes
 
     async def _create_silhouette(self, image_url: str) -> str:
         """Create clothing silhouette for hanger display"""

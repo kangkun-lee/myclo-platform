@@ -1,6 +1,5 @@
 import React from 'react'
 import type { WardrobeItem } from '../../api/types'
-import ClothingProcessor from './ClothingProcessor'
 
 interface VirtualWardrobeProps {
   items: WardrobeItem[]
@@ -19,14 +18,14 @@ const VirtualWardrobe: React.FC<VirtualWardrobeProps> = ({
       <div className="wardrobe-frame">
         {/* Top Rod */}
         <div className="wardrobe-rod wardrobe-rod-top" />
-        
+
         {/* Bottom Rod */}
         <div className="wardrobe-rod wardrobe-rod-bottom" />
-        
+
         {/* Side Posts */}
         <div className="wardrobe-post wardrobe-post-left" />
         <div className="wardrobe-post wardrobe-post-right" />
-        
+
         {/* Clothing Items */}
         <div className="clothing-display">
           {items.map((item, index) => (
@@ -40,7 +39,7 @@ const VirtualWardrobe: React.FC<VirtualWardrobeProps> = ({
           ))}
         </div>
       </div>
-      
+
       {/* Add New Item */}
       <div className="add-item-hanger">
         <div className="hanger-structure">
@@ -77,67 +76,58 @@ const HangerItem: React.FC<HangerItemProps> = ({
   }
 
   return (
-    <ClothingProcessor imageUrl={item.image_url ?? "https://via.placeholder.com/150x200?text=No+Image"}>
-      {(processedImageUrl, isLoading) => (
-        <div 
-          className="hanger-item"
-          style={{
-            '--position': position,
-            transform: `translateX(${position * 120}px) translateZ(${position % 2 === 0 ? 0 : 20}px)`
-          } as React.CSSProperties}
-          onClick={handleSelect}
-        >
-          {/* Hanger Hook */}
-          <div className="hanger-hook" />
-          
-          {/* Hanger Body */}
-          <div className="hanger-body">
-            {/* Clothing Image */}
-            <div className="clothing-image-container">
-              {isLoading ? (
-                <div className="image-loading">
-                  <div className="loading-spinner"></div>
-                </div>
-              ) : (
-                <img
-                  src={processedImageUrl}
-                  alt={item.attributes?.category?.sub ?? "Clothing Item"}
-                  className="clothing-image"
-                />
-              )}
-              
-              {/* Clothing Shadow */}
-              <div className="clothing-shadow" />
-            </div>
-          </div>
-          
-          {/* Hover Actions */}
-          <div className="hanger-actions">
-            <button
-              onClick={handleDelete}
-              className="action-button delete-button"
-            >
-              <span className="material-symbols-outlined">delete</span>
-            </button>
-            <button className="action-button view-button">
-              <span className="material-symbols-outlined">visibility</span>
-            </button>
-          </div>
-          
-          {/* Item Info */}
-          <div className="hanger-info">
-            <h4 className="item-name">
-              {item.attributes?.category?.sub ?? "Item"}
-            </h4>
-            <div className="item-tags">
-              <span className="tag">
-                {item.attributes?.category?.main}
-              </span>
-            </div>
-          </div>
+    <div
+      className="hanger-item"
+      style={{
+        '--position': position,
+        '--z-offset': position % 2 === 0 ? '0px' : '12px',
+        '--item-spacing': '120px',
+      } as React.CSSProperties}
+      onClick={handleSelect}
+    >
+      {/* Hanger Hook */}
+      <div className="hanger-hook" />
+
+      {/* Hanger Body */}
+      <div className="hanger-body">
+        {/* Clothing Image */}
+        <div className="clothing-image-container">
+          <img
+            src={item.image_url ?? "https://via.placeholder.com/150x200?text=No+Image"}
+            alt={item.attributes?.category?.sub ?? "Clothing Item"}
+            className="clothing-image"
+          />
+
+          {/* Clothing Shadow */}
+          <div className="clothing-shadow" />
         </div>
-      )}
-    </ClothingProcessor>
+      </div>
+
+      {/* Hover Actions */}
+      <div className="hanger-actions">
+        <button
+          onClick={handleDelete}
+          className="action-button delete-button"
+        >
+          <span className="material-symbols-outlined">delete</span>
+        </button>
+        <button className="action-button view-button">
+          <span className="material-symbols-outlined">visibility</span>
+        </button>
+      </div>
+
+      {/* Item Info */}
+      <div className="hanger-info">
+        <h4 className="item-name">
+          {position + 1}. {item.attributes?.category?.sub ?? "Item"}
+        </h4>
+        <div className="item-tags">
+          <span className="tag">
+            {item.attributes?.category?.main}
+          </span>
+        </div>
+      </div>
+    </div>
   )
 }
 

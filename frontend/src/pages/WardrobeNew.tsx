@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { uploadWardrobeImage } from "../api"
-import type { WardrobeItem, ExtractionResponse } from "../api/types"
+import type { ExtractionResponse } from "../api/types"
+import { processImage } from "../utils/image-processor"
 
 type Step = "upload" | "analyzing" | "result"
 
@@ -57,7 +58,7 @@ export default function WardrobeNew() {
     }
   }, [selectedImageIdx, extractionResults, step])
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFiles = Array.from(e.target.files)
       const validFiles = selectedFiles.filter(file => {
@@ -70,8 +71,19 @@ export default function WardrobeNew() {
 
       if (validFiles.length === 0) return
 
-      setFiles(validFiles)
-      const newPreviews = validFiles.map(file => URL.createObjectURL(file))
+      // Pre-compress images client-side before upload to reduce 413 errors.
+      const optimizedFiles: File[] = []
+      for (const file of validFiles) {
+        try {
+          const optimized = await processImage(file, 4)
+          optimizedFiles.push(optimized)
+        } catch {
+          optimizedFiles.push(file)
+        }
+      }
+
+      setFiles(optimizedFiles)
+      const newPreviews = optimizedFiles.map(file => URL.createObjectURL(file))
       setPreviews(newPreviews)
       setSelectedImageIdx(0) // Reset to first image
       setExtractionResults([]) // Clear old results

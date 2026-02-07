@@ -18,7 +18,7 @@ backend/app/ai/
 │   ├── extraction_prompts.py
 │   └── recommendation_prompts.py
 └── clients/                # AI 클라이언트
-    └── azure_openai_client.py
+    └── gemini_client.py
 ```
 
 ---
@@ -43,7 +43,7 @@ backend/app/ai/
 ```mermaid
 graph TD
     START([시작]) --> preprocess[preprocess_image_node<br/>이미지 전처리]
-    preprocess --> call_api[call_azure_openai_node<br/>Azure OpenAI Vision API 호출]
+    preprocess --> call_api[call_gemini_vision_node<br/>Gemini Vision API 호출]
     call_api --> parse_json[parse_json_node<br/>JSON 파싱]
     parse_json --> validate[validate_schema_node<br/>스키마 검증]
     
@@ -70,7 +70,7 @@ graph TD
 | 노드 | 설명 | 입력 | 출력 |
 |------|------|------|------|
 | **preprocess_image_node** | 이미지 전처리 | `image_bytes` | 검증된 `image_bytes` |
-| **call_azure_openai_node** | Azure OpenAI Vision API 호출 | `image_bytes`, `USER_PROMPT` | `raw_response` |
+| **call_gemini_vision_node** | Gemini Vision API 호출 | `image_bytes`, `USER_PROMPT` | `raw_response` |
 | **parse_json_node** | JSON 파싱 및 복구 | `raw_response` | `parsed_json` |
 | **validate_schema_node** | 스키마 검증 | `parsed_json` | `final_result` (성공 시) 또는 `errors` |
 | **retry_node** | 재시도 로직 | `errors`, `retry_count` | 새로운 `raw_response` |
@@ -116,7 +116,7 @@ graph TD
     generate_candidates --> prepare_llm[prepare_llm_input_node<br/>LLM 입력 준비<br/>후보 요약]
     prepare_llm --> should_use_llm{should_use_llm<br/>LLM 사용 여부?}
     
-    should_use_llm -->|후보 있음| call_llm[call_llm_node<br/>LLM 호출<br/>Azure OpenAI]
+    should_use_llm -->|후보 있음| call_llm[call_llm_node<br/>LLM 호출<br/>Gemini]
     should_use_llm -->|후보 없음| fallback[fallback_recommendation_node<br/>폴백 추천<br/>규칙 기반]
     
     call_llm --> process_llm[process_llm_results_node<br/>LLM 결과 처리<br/>최종 코디 생성]
@@ -182,8 +182,8 @@ graph LR
 - **기능**: 이미지 전처리 및 검증
 - **현재**: 단순 패스 (이미지가 bytes로 들어옴)
 
-#### 2. call_azure_openai_node
-- **기능**: Azure OpenAI Vision API 호출
+#### 2. call_gemini_vision_node
+- **기능**: Gemini Vision API 호출
 - **프롬프트**: `USER_PROMPT` (extraction_prompts.py)
 - **에러 처리**: API 실패 시 `errors`에 기록
 

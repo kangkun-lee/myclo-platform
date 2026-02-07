@@ -1,4 +1,4 @@
-import logging
+﻿import logging
 import uuid
 from uuid import UUID
 from datetime import datetime
@@ -30,7 +30,7 @@ class UserManager:
                 logger.error(f"Failed to initialize Supabase Client: {e}")
 
     def get_signed_url(self, image_path: str, expires_in: int = 3600) -> str:
-        """Supabase Storage에서 서명된 URL 생성"""
+        """Generate a signed URL from Supabase Storage with public URL fallback."""
         if not image_path:
             return ""
 
@@ -38,10 +38,9 @@ class UserManager:
             return image_path
 
         if not self.supabase:
-            return ""
+            return f"{self.supabase_url}/storage/v1/object/public/{self.bucket_name}/{image_path}"
 
         try:
-            # 버킷명 제거 (있다면)
             path = image_path
             if "/" in path and path.startswith(self.bucket_name):
                 path = path.replace(f"{self.bucket_name}/", "", 1)
@@ -49,12 +48,28 @@ class UserManager:
             res = self.supabase.storage.from_(self.bucket_name).create_signed_url(
                 path, expires_in
             )
-            return res.get("signedURL", "")
+            signed = (
+                res.get("signedURL")
+                or res.get("signedUrl")
+                or res.get("signed_url")
+            )
+            if signed:
+                return signed
+
+            logger.warning(
+                f"Signed URL missing in response for {image_path}, using public URL fallback."
+            )
+            return f"{self.supabase_url}/storage/v1/object/public/{self.bucket_name}/{path}"
         except Exception as e:
             logger.warning(
                 f"Error generating Supabase signed URL for {image_path}: {e}"
             )
-            return ""
+            path = (
+                image_path.replace(f"{self.bucket_name}/", "", 1)
+                if image_path.startswith(self.bucket_name)
+                else image_path
+            )
+            return f"{self.supabase_url}/storage/v1/object/public/{self.bucket_name}/{path}"
 
     async def upload_face_image(
         self, db: Session, user_id: UUID, file: UploadFile

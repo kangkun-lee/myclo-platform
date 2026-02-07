@@ -3,7 +3,7 @@
 import logging
 from typing import Any, Optional
 from uuid import UUID
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
@@ -55,6 +55,7 @@ async def recommend_todays_pick_v2(
     weather: dict[str, Any],
     db: Optional[Session] = None,
     context: Optional[str] = None,
+    generate_image: bool = False,
 ) -> dict[str, Any]:
     """Return Today's Pick using DB persistence + Gemini reasoning."""
     try:
@@ -69,14 +70,13 @@ async def recommend_todays_pick_v2(
         if db:
             from app.domains.wardrobe.service import wardrobe_manager
 
-            # 1. Check DB for existing pick today
-            today_start = datetime.now().replace(
-                hour=0, minute=0, second=0, microsecond=0
-            )
+            # 1. Check DB for existing pick in the recent 24h window
+            recent_window_start = datetime.now() - timedelta(hours=24)
             existing_pick = (
                 db.query(TodaysPick)
                 .filter(
-                    TodaysPick.user_id == user_id, TodaysPick.created_at >= today_start
+                    TodaysPick.user_id == user_id,
+                    TodaysPick.created_at >= recent_window_start,
                 )
                 .order_by(desc(TodaysPick.created_at))
                 .first()
@@ -84,7 +84,11 @@ async def recommend_todays_pick_v2(
 
             # Load Wardrobe Items
             res = wardrobe_manager.get_user_wardrobe_items(
-                db=db, user_id=user_id, skip=0, limit=200
+                db=db,
+                user_id=user_id,
+                skip=0,
+                limit=200,
+                resolve_image_urls=generate_image,
             )
             items_list = res.get("items", [])
             for item in items_list:
@@ -141,6 +145,15 @@ async def recommend_todays_pick_v2(
                 (i for i in items if str(i["id"]) == str(existing_pick.bottom_id)), None
             )
 
+            def _resolve_item_image(item: dict[str, Any] | None) -> dict[str, Any] | None:
+                if not item:
+                    return item
+                resolved = dict(item)
+                image_url = resolved.get("image_url")
+                if image_url and isinstance(image_url, str) and not image_url.startswith("http"):
+                    resolved["image_url"] = wardrobe_manager.get_signed_url(image_url)
+                return resolved
+
             clean_reasoning = existing_pick.reasoning
             if clean_reasoning:
                 parsed_r, _ = parse_dict_from_text(clean_reasoning)
@@ -156,6 +169,72 @@ async def recommend_todays_pick_v2(
                         )
 
             if top_item and bottom_item:
+                existing_image_url = (
+                    wardrobe_manager.get_signed_url(existing_pick.image_url)
+                    if existing_pick.image_url
+                    and not existing_pick.image_url.startswith("http")
+                    else existing_pick.image_url
+                )
+
+                if not existing_image_url and generate_image:
+                    try:
+                        top_schema = full_schemas.get(str(existing_pick.top_id))
+                        bottom_schema = full_schemas.get(str(existing_pick.bottom_id))
+                        if top_schema and bottom_schema:
+                            user_height = None
+                            user_weight = None
+                            user_gender = "unisex"
+                            user_body_shape = None
+                            user_face_url = None
+
+                            user_obj = db.query(User).filter(User.id == user_id).first()
+                            if user_obj:
+                                user_height = (
+                                    float(user_obj.height) if user_obj.height else None
+                                )
+                                user_weight = (
+                                    float(user_obj.weight) if user_obj.weight else None
+                                )
+                                user_gender = (
+                                    user_obj.gender if user_obj.gender else "unisex"
+                                )
+                                user_body_shape = user_obj.body_shape
+                                if user_obj.face_image_path:
+                                    user_face_url = user_manager.get_signed_url(
+                                        user_obj.face_image_path
+                                    )
+
+                            gen_request = OutfitGenerationRequest(
+                                top=top_schema,
+                                bottom=bottom_schema,
+                                style_description="Previously Saved Style",
+                                gender=user_gender,
+                                height=user_height,
+                                weight=user_weight,
+                                body_shape=user_body_shape,
+                                face_image_url=user_face_url,
+                            )
+                            generated_image_url = (
+                                await generation_service.create_outfit_image(
+                                    gen_request, user_id
+                                )
+                            )
+                            if generated_image_url:
+                                existing_pick.image_url = generated_image_url
+                                db.commit()
+                                db.refresh(existing_pick)
+                                existing_image_url = (
+                                    user_manager.get_signed_url(generated_image_url)
+                                    if not generated_image_url.startswith("http")
+                                    else generated_image_url
+                                )
+                    except Exception as gen_err:
+                        logger.error(
+                            f"Failed to backfill existing Today's Pick image: {gen_err}"
+                        )
+
+                top_item_resolved = _resolve_item_image(top_item)
+                bottom_item_resolved = _resolve_item_image(bottom_item)
                 return {
                     "success": True,
                     "pick_id": existing_pick.id,
@@ -167,12 +246,7 @@ async def recommend_todays_pick_v2(
                         if existing_pick.bottom_id
                         else None
                     ),
-                    "image_url": (
-                        wardrobe_manager.get_signed_url(existing_pick.image_url)
-                        if existing_pick.image_url
-                        and not existing_pick.image_url.startswith("http")
-                        else existing_pick.image_url
-                    ),
+                    "image_url": existing_image_url,
                     "reasoning": clean_reasoning,
                     "score": existing_pick.score,
                     "weather": existing_pick.weather,
@@ -181,8 +255,8 @@ async def recommend_todays_pick_v2(
                     "temp_max": float(weather.get("temp_max", 0.0)),
                     "message": "이전에 생성된 오늘의 추천을 반환합니다.",
                     "outfit": {
-                        "top": top_item,
-                        "bottom": bottom_item,
+                        "top": top_item_resolved,
+                        "bottom": bottom_item_resolved,
                         "score": existing_pick.score,
                         "reasons": [],
                         "reasoning": clean_reasoning,
@@ -270,66 +344,79 @@ async def recommend_todays_pick_v2(
 
         # 2. Generate Outfit Image using Nano Banana (Gemini)
         generated_image_url = None
-        try:
-            top_schema = full_schemas.get(str(picked["top"]["id"]))
-            bottom_schema = full_schemas.get(str(picked["bottom"]["id"]))
+        if generate_image:
+            try:
+                top_schema = full_schemas.get(str(picked["top"]["id"]))
+                bottom_schema = full_schemas.get(str(picked["bottom"]["id"]))
 
-            if top_schema and bottom_schema:
-                # User info fetch
-                user_height = None
-                user_weight = None
-                user_gender = "unisex"
-                user_body_shape = None
-                user_face_url = None
+                if top_schema and bottom_schema:
+                    # User info fetch
+                    user_height = None
+                    user_weight = None
+                    user_gender = "unisex"
+                    user_body_shape = None
+                    user_face_url = None
 
-                if db:
-                    user_obj = db.query(User).filter(User.id == user_id).first()
-                    if user_obj:
-                        user_height = (
-                            float(user_obj.height) if user_obj.height else None
-                        )
-                        user_weight = (
-                            float(user_obj.weight) if user_obj.weight else None
-                        )
-                        user_gender = user_obj.gender if user_obj.gender else "unisex"
-                        user_body_shape = user_obj.body_shape
-                        if user_obj.face_image_path:
-                            user_face_url = user_manager.get_signed_url(
-                                user_obj.face_image_path
+                    if db:
+                        user_obj = db.query(User).filter(User.id == user_id).first()
+                        if user_obj:
+                            user_height = (
+                                float(user_obj.height) if user_obj.height else None
                             )
+                            user_weight = (
+                                float(user_obj.weight) if user_obj.weight else None
+                            )
+                            user_gender = user_obj.gender if user_obj.gender else "unisex"
+                            user_body_shape = user_obj.body_shape
+                            if user_obj.face_image_path:
+                                user_face_url = user_manager.get_signed_url(
+                                    user_obj.face_image_path
+                                )
 
-                logger.info(
-                    f"Creating outfit image request for top: {picked['top']['id']}, bottom: {picked['bottom']['id']}"
-                )
-                gen_request = OutfitGenerationRequest(
-                    top=top_schema,
-                    bottom=bottom_schema,
-                    style_description=style_description,
-                    gender=user_gender,
-                    height=user_height,
-                    weight=user_weight,
-                    body_shape=user_body_shape,
-                    face_image_url=user_face_url,
-                )
-                generated_image_url = await generation_service.create_outfit_image(
-                    gen_request, user_id
-                )
-                if generated_image_url:
-                    logger.info(f"✅ Generated outfit image: {generated_image_url}")
+                    logger.info(
+                        f"Creating outfit image request for top: {picked['top']['id']}, bottom: {picked['bottom']['id']}"
+                    )
+                    gen_request = OutfitGenerationRequest(
+                        top=top_schema,
+                        bottom=bottom_schema,
+                        style_description=style_description,
+                        gender=user_gender,
+                        height=user_height,
+                        weight=user_weight,
+                        body_shape=user_body_shape,
+                        face_image_url=user_face_url,
+                    )
+                    generated_image_url = await generation_service.create_outfit_image(
+                        gen_request, user_id
+                    )
+                    if generated_image_url:
+                        logger.info(f"✅ Generated outfit image: {generated_image_url}")
+                    else:
+                        logger.warning("⚠️ Image generation returned None (no URL)")
                 else:
-                    logger.warning("⚠️ Image generation returned None (no URL)")
-            else:
-                logger.warning(
-                    f"Missing schemas - top: {top_schema is not None}, bottom: {bottom_schema is not None}"
-                )
-        except Exception as gen_err:
-            logger.error(f"❌ Failed to generate outfit image: {gen_err}")
-            import traceback
+                    logger.warning(
+                        f"Missing schemas - top: {top_schema is not None}, bottom: {bottom_schema is not None}"
+                    )
+            except Exception as gen_err:
+                logger.error(f"❌ Failed to generate outfit image: {gen_err}")
+                import traceback
 
-            logger.error(traceback.format_exc())
-            # Continue without image if generation fails
+                logger.error(traceback.format_exc())
+                # Continue without image if generation fails
 
         # 3. Save and Return
+        top_for_response = dict(picked["top"])
+        bottom_for_response = dict(picked["bottom"])
+        if db:
+            from app.domains.wardrobe.service import wardrobe_manager
+
+            top_img = top_for_response.get("image_url")
+            bottom_img = bottom_for_response.get("image_url")
+            if isinstance(top_img, str) and top_img and not top_img.startswith("http"):
+                top_for_response["image_url"] = wardrobe_manager.get_signed_url(top_img)
+            if isinstance(bottom_img, str) and bottom_img and not bottom_img.startswith("http"):
+                bottom_for_response["image_url"] = wardrobe_manager.get_signed_url(bottom_img)
+
         pick_id = None
         if db:
             new_pick = TodaysPick(
@@ -358,6 +445,10 @@ async def recommend_todays_pick_v2(
             )
             pick_id = saved.id
 
+        result_message = "새로운 오늘의 추천을 생성했습니다."
+        if generate_image and generated_image_url:
+            result_message = "새로운 오늘의 추천과 AI 실착 이미지를 생성했습니다."
+
         return {
             "success": True,
             "pick_id": pick_id,
@@ -374,10 +465,10 @@ async def recommend_todays_pick_v2(
             "weather_summary": weather.get("summary", ""),
             "temp_min": float(weather.get("temp_min", 0.0)),
             "temp_max": float(weather.get("temp_max", 0.0)),
-            "message": "새로운 오늘의 추천과 AI 실착 이미지를 생성했습니다.",
+            "message": result_message,
             "outfit": {
-                "top": picked["top"],
-                "bottom": picked["bottom"],
+                "top": top_for_response,
+                "bottom": bottom_for_response,
                 "score": round(float(picked["score"]), 3),
                 "reasons": [],
                 "reasoning": reasoning,

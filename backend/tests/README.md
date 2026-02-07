@@ -28,11 +28,11 @@ pytest -v
 
 # 특정 테스트 파일 실행
 pytest tests/unit/test_validators.py
-pytest tests/integration/test_health.py
+pytest tests/test_health.py
 ```
 
 ## 📁 디렉토리 구조
 
-- `unit/`: 단위 테스트 (외부 의존성 없음)
-- `integration/`: 통합 테스트 (API 엔드포인트 테스트)
+- `unit/`: 단위 테스트 (유틸리티/헬퍼 중심)
+- `tests/*.py`: API 엔드포인트 테스트
 - `conftest.py`: 공용 픽스처 (TestClient 설정 등)

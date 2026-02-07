@@ -1,16 +1,8 @@
 # 프로젝트 규칙 (Project Rules)
 
 ## 📋 목차
-1. [프로젝트 개요](#프로젝트-개요)
-2. [디렉토리 구조](#디렉토리-구조)
-3. [코딩 스타일](#코딩-스타일)
-4. [네이밍 컨벤션](#네이밍-컨벤션)
-5. [파일 구조 규칙](#파일-구조-규칙)
-6. [API 설계 규칙](#api-설계-규칙)
-7. [에러 처리](#에러-처리)
-8. [의존성 관리](#의존성-관리)
-9. [환경 변수 관리](#환경-변수-관리)
-10. [코드 리뷰 가이드라인](#코드-리뷰-가이드라인)
+
+이 문서는 MkDocs 자동 목차(TOC)를 사용합니다.
 
 ---
 
@@ -30,7 +22,7 @@ backend/
 ├── app/
 │   ├── ai/               # AI 관련 코드 통합
 │   │   ├── clients/      # LLM 클라이언트
-│   │   │   └── azure_openai_client.py
+│   │   │   └── gemini_client.py
 │   │   ├── workflows/    # LangGraph 워크플로우
 │   │   │   ├── extraction_workflow.py
 │   │   │   └── recommendation_workflow.py
@@ -45,17 +37,13 @@ backend/
 │   ├── core/             # 핵심 설정 및 상수
 │   │   ├── config.py     # 환경 설정
 │   │   └── constants.py  # 상수 정의 (레거시)
-│   ├── models/           # 데이터 모델 (Pydantic 스키마)
-│   │   └── schemas.py    # API 요청/응답 스키마
-│   ├── routers/          # API 라우터
-│   │   ├── health_routes.py
-│   │   ├── extraction_routes.py
-│   │   ├── wardrobe_routes.py
-│   │   └── recommendation_routes.py
-│   ├── services/         # 비즈니스 로직
-│   │   ├── extractor.py  # 속성 추출 서비스 (LangGraph 래퍼)
-│   │   ├── recommender.py # 코디 추천 서비스 (LangGraph 래퍼)
-│   │   └── wardrobe_manager.py
+│   ├── domains/          # 도메인별 라우터/서비스/스키마/모델
+│   │   ├── auth/
+│   │   ├── user/
+│   │   ├── wardrobe/
+│   │   ├── extraction/
+│   │   ├── recommendation/
+│   │   └── weather/
 │   ├── utils/            # 유틸리티 함수
 │   │   ├── helpers.py
 │   │   ├── json_parser.py
@@ -78,9 +66,8 @@ backend/
 ### 디렉토리 역할
 
 - **`app/core/`**: 애플리케이션 전역 설정 및 상수
-- **`app/models/`**: Pydantic 기반 데이터 모델 및 스키마
-- **`app/routers/`**: FastAPI 라우터 정의 (엔드포인트)
-- **`app/services/`**: 비즈니스 로직 및 외부 API 통신
+- **`app/domains/`**: 도메인별 라우터/서비스/스키마/모델
+- **`app/ai/`**: Gemini 기반 LLM 호출 및 워크플로우
 - **`app/utils/`**: 재사용 가능한 유틸리티 함수
 
 ---
@@ -178,14 +165,14 @@ wardrobe-manager.py
 
 ## 파일 구조 규칙
 
-### 라우터 파일 (`app/routers/`)
-- 각 도메인별로 분리된 라우터 파일
+### 라우터 파일 (`app/domains/*/router.py`)
+- 각 도메인 폴더에서 라우터를 관리
 - `APIRouter` 인스턴스 생성 및 엔드포인트 정의
-- 파일명: `{domain}_routes.py`
+- 파일명: `router.py`
 
 ```python
 from fastapi import APIRouter
-from app.models.schemas import SomeResponse
+from app.domains.some_domain.schema import SomeResponse
 
 router = APIRouter()
 
@@ -194,22 +181,22 @@ async def endpoint_handler():
     pass
 ```
 
-### 서비스 파일 (`app/services/`)
-- 비즈니스 로직 구현
-- 싱글톤 패턴 사용 (인스턴스 생성 후 export)
-- 파일명: `{service_name}.py`
+### 서비스 파일 (`app/domains/*/service.py`)
+- 도메인 비즈니스 로직 구현
+- 필요 시 싱글톤 인스턴스 export
+- 파일명: `service.py`
 
 ```python
-class SomeService:
+class SomeDomainService:
     def method(self, param: str) -> dict:
         pass
 
-service = SomeService()  # 싱글톤 인스턴스
+service = SomeDomainService()  # 싱글톤 인스턴스
 ```
 
-### 모델 파일 (`app/models/`)
-- Pydantic `BaseModel` 상속
-- 모든 API 요청/응답 스키마 정의
+### 스키마/모델 파일 (`app/domains/*/schema.py`, `app/domains/*/model.py`)
+- API 요청/응답 스키마는 `schema.py`
+- DB 모델은 `model.py`
 - 중첩 모델은 상단에 정의
 
 ```python
@@ -352,8 +339,10 @@ class Config:
 ```
 
 ### 필수 환경 변수
-- `AZURE_OPENAI_API_KEY`: Azure OpenAI API 키
-- `AZURE_OPENAI_ENDPOINT`: Azure OpenAI 엔드포인트 URL
+- `GEMINI_API_KEY`: Gemini API 키
+- `SUPABASE_URL`: Supabase 프로젝트 URL
+- `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_KEY`: Supabase 인증 키
+- `DATABASE_URL`: 데이터베이스 연결 문자열
 - 기타 필요한 환경 변수는 `Config` 클래스에 정의
 
 ---
@@ -364,8 +353,8 @@ class Config:
 - [ ] 타입 힌팅이 모든 함수/메서드에 적용되었는가?
 - [ ] PEP 8 스타일 가이드를 준수하는가?
 - [ ] 적절한 에러 처리가 되어 있는가?
-- [ ] API 응답 스키마가 `app/models/schemas.py`에 정의되어 있는가?
-- [ ] 비즈니스 로직이 `app/services/`에 분리되어 있는가?
+- [ ] API 응답 스키마가 각 도메인의 `schema.py`에 정의되어 있는가?
+- [ ] 비즈니스 로직이 각 도메인의 `service.py`에 분리되어 있는가?
 - [ ] 환경 변수는 `app/core/config.py`에서 관리되는가?
 - [ ] 불필요한 주석이나 디버그 코드가 없는가?
 - [ ] 함수/클래스에 의미 있는 이름이 사용되었는가?

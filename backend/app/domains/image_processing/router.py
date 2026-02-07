@@ -75,20 +75,12 @@ async def remove_background(
 async def process_clothing_image(image_url: str, processing_type: str) -> str:
     """Process clothing image based on type"""
     try:
-        # In production, this would integrate with external services
-        # For now, return the original URL with simulated processing
-
-        if processing_type == "background_removal":
-            # Simulate background removal
-            return f"{image_url}?processed=bg_removed"
-        elif processing_type == "silhouette":
-            # Simulate silhouette extraction
-            return f"{image_url}?processed=silhouette"
-        elif processing_type == "shadow":
-            # Simulate shadow enhancement
-            return f"{image_url}?processed=shadow"
-        else:
-            return image_url
+        # Use the dedicated service when available.
+        if image_processing_service is not None:
+            return await image_processing_service.process_clothing_image(
+                image_url=image_url, processing_type=processing_type
+            )
+        return image_url
 
     except Exception as e:
         print(f"Image processing error: {e}")

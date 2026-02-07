@@ -31,16 +31,12 @@ venv.bak/
 # Application Data
 extracted_attributes/
 
-# Azure Functions
+# Local runtime settings
 local.settings.json
 
 # Logs
 *.log
 logs/
-
-# Azure (if any local config files)
-azure_config.json
-*.publishsettings
 
 # Temporary files
 *.tmp
@@ -60,12 +56,6 @@ closet/
 
 # Ruff cache
 .ruff_cache/
-# Azurite Emulator
-__azurite_db*__.json
-__blobstorage__
-__queuestorage__
-__tablestorage__
-AzuriteConfig
 google_credentials.json
 service_account.json
 

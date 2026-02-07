@@ -51,7 +51,7 @@ POST /auth/signup
 
 **예제**
 ```bash
-curl -X POST http://localhost:7071/api/auth/signup \
+curl -X POST http://localhost:8000/api/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
     "username": "test@example.com",
@@ -100,7 +100,7 @@ POST /auth/login
 
 **예제**
 ```bash
-curl -X POST http://localhost:7071/api/auth/login \
+curl -X POST http://localhost:8000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "username": "test@example.com",
@@ -141,7 +141,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 **예제**
 ```bash
-curl -X GET http://localhost:7071/api/users/me \
+curl -X GET http://localhost:8000/api/users/me \
   -H "Authorization: Bearer YOUR_TOKEN_HERE"
 ```
 
@@ -174,5 +174,5 @@ curl -X GET http://localhost:7071/api/users/me \
 
 ## 관련 API
 
-- [사용자 API](../user.md) - 프로필 관리
 - [옷장 API](wardrobe.md) - 옷장 아이템 관리
+- 사용자 프로필 API: `GET /api/users/me`, `PUT /api/users/profile`

@@ -273,3 +273,6 @@ yarl==1.22.0
     # via aiohttp
 zstandard==0.25.0
     # via langsmith
+rembg==2.0.59
+onnxruntime==1.19.2
+numpy>=1.26.0

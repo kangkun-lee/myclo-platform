@@ -7,7 +7,6 @@
 - Python 3.12+
 - VS Code 확장
   - Python (`ms-python.python`)
-  - Azure Functions (`ms-azuretools.vscode-azurefunctions`) (Functions 디버깅/실행 시)
 - (권장) `uv` 설치 및 `uv sync`로 의존성 설치
 
 ## 인터프리터 설정
@@ -54,15 +53,7 @@ uv run pytest
 
 - `.env`는 보통 Git에 올리지 않고(`.gitignore`), 로컬에서만 관리합니다.
 
-## Azure Functions 실행/디버깅 (참고)
+## 참고
 
-이 프로젝트는 `function_app.py`를 통해 Azure Functions(ASGI)로도 실행됩니다.
-
-- 로컬 실행:
-
-```bash
-func start
-```
-
-Functions 디버깅은 VS Code의 Azure Functions 확장을 통해 “Run/Debug” 구성을 별도로 잡는 경우가 많습니다(프로젝트 형태/호스트 설정에 따라 방식이 달라질 수 있음).
+이 프로젝트의 기본 개발/디버깅 경로는 FastAPI(`uvicorn`)입니다.
 

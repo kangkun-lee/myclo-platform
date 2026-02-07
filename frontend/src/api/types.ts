@@ -90,10 +90,31 @@ export type DailyWeather = {
 
 export type ChatResponse = {
   success: boolean
+  session_id?: string | null
   response?: string | null
   is_pick_updated?: boolean
   recommendations?: unknown
   todays_pick?: TodaysPick | null
+}
+
+export type ChatHistoryMessage = {
+  role: "user" | "assistant"
+  content: string
+}
+
+export type ChatSessionSummary = {
+  session_id: string
+  title: string
+  message_count: number
+  created_at?: string | null
+  updated_at?: string | null
+}
+
+export type ChatSessionMessage = {
+  id: string
+  role: "user" | "assistant"
+  content: string
+  created_at?: string | null
 }
 
 export type ExtractionResponse = {

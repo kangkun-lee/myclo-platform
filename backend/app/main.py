@@ -35,10 +35,17 @@ logging.basicConfig(
 )
 
 # SQLAlchemy 로그 레벨 조정 (너무 많은 로그 방지)
+# SQLAlchemy 로그 레벨 조정 (너무 많은 로그 방지)
 logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
 logging.getLogger("sqlalchemy.pool").setLevel(logging.WARNING)
-logging.getLogger("uvicorn").setLevel(logging.INFO)
-logging.getLogger("fastapi").setLevel(logging.INFO)
+
+# Noisy libraries suppression
+logging.getLogger("numba").setLevel(logging.WARNING)
+logging.getLogger("rembg").setLevel(logging.WARNING)
+logging.getLogger("pymatting").setLevel(logging.WARNING)
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+logging.getLogger("hpack").setLevel(logging.WARNING)
 
 
 # 애플리케이션 로거는 DEBUG 레벨 유지
@@ -57,14 +64,14 @@ async def lifespan(app: FastAPI):
     logger = logging.getLogger("app.startup")
     logger.info("Starting up application...")
 
-    # 1. Run Migrations (Add face_image_path)
+    # 1. Run simple startup migrations
     try:
         from app.core.config import Config
 
         # Create a transient engine for migration check
         engine = create_engine(Config.DATABASE_URL)
         with engine.connect() as conn:
-            # Check if column exists
+            # users.face_image_path
             check_sql = text(
                 """
                 SELECT column_name 
@@ -81,6 +88,106 @@ async def lifespan(app: FastAPI):
                 )
                 conn.commit()
                 logger.info("Migration successful.")
+
+            # chat_messages.content
+            content_check_sql = text(
+                """
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name='chat_messages' AND column_name='content';
+            """
+            )
+            content_result = conn.execute(content_check_sql).fetchone()
+            if not content_result:
+                logger.info("Migrating: Adding content to chat_messages table")
+                conn.execute(
+                    text("ALTER TABLE chat_messages ADD COLUMN content TEXT DEFAULT '';")
+                )
+                conn.execute(
+                    text("UPDATE chat_messages SET content = COALESCE(extracted_5w1h->>'text', '') WHERE content IS NULL;")
+                )
+                conn.execute(
+                    text("ALTER TABLE chat_messages ALTER COLUMN content SET NOT NULL;")
+                )
+                conn.commit()
+                logger.info("Migration successful: chat_messages.content")
+
+            # chat_messages.created_at
+            chat_msg_created_check_sql = text(
+                """
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name='chat_messages' AND column_name='created_at';
+            """
+            )
+            chat_msg_created_result = conn.execute(chat_msg_created_check_sql).fetchone()
+            if not chat_msg_created_result:
+                logger.info("Migrating: Adding created_at to chat_messages table")
+                conn.execute(
+                    text("ALTER TABLE chat_messages ADD COLUMN created_at TIMESTAMPTZ DEFAULT NOW();")
+                )
+                conn.execute(
+                    text("ALTER TABLE chat_messages ALTER COLUMN created_at SET NOT NULL;")
+                )
+                conn.commit()
+                logger.info("Migration successful: chat_messages.created_at")
+
+            # chat_messages.clarification_count
+            clarification_count_check_sql = text(
+                """
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name='chat_messages' AND column_name='clarification_count';
+            """
+            )
+            clarification_count_result = conn.execute(
+                clarification_count_check_sql
+            ).fetchone()
+            if not clarification_count_result:
+                logger.info(
+                    "Migrating: Adding clarification_count to chat_messages table"
+                )
+                conn.execute(
+                    text(
+                        "ALTER TABLE chat_messages ADD COLUMN clarification_count INTEGER DEFAULT 0;"
+                    )
+                )
+                conn.execute(
+                    text(
+                        "UPDATE chat_messages SET clarification_count = 0 WHERE clarification_count IS NULL;"
+                    )
+                )
+                conn.execute(
+                    text(
+                        "ALTER TABLE chat_messages ALTER COLUMN clarification_count SET NOT NULL;"
+                    )
+                )
+                conn.commit()
+                logger.info(
+                    "Migration successful: chat_messages.clarification_count"
+                )
+
+            # chat_sessions.created_at
+            chat_session_created_check_sql = text(
+                """
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_name='chat_sessions' AND column_name='created_at';
+            """
+            )
+            chat_session_created_result = conn.execute(
+                chat_session_created_check_sql
+            ).fetchone()
+            if not chat_session_created_result:
+                logger.info("Migrating: Adding created_at to chat_sessions table")
+                conn.execute(
+                    text("ALTER TABLE chat_sessions ADD COLUMN created_at TIMESTAMPTZ DEFAULT NOW();")
+                )
+                conn.execute(
+                    text("ALTER TABLE chat_sessions ALTER COLUMN created_at SET NOT NULL;")
+                )
+                conn.commit()
+                logger.info("Migration successful: chat_sessions.created_at")
     except Exception as e:
         logger.error(f"Startup migration failed: {e}")
 

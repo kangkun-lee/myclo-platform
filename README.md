@@ -220,7 +220,7 @@ myclo-platform/
 │   │   │   └── ...
 │   │   ├── ai/           # 🤖 AI 관련 모듈
 │   │   ├── domains/      # 📦 도메인별 비즈니스 로직
-│   │   ├── routers/      # 🛣️ API 라우터
+│   │   ├── utils/        # 🔧 공용 유틸리티
 │   │   └── main.py       # 🚀 애플리케이션 진입점
 │   ├── requirements.txt   # 📦 Python 의존성
 │   └── pyproject.toml    # 📋 프로젝트 설정
@@ -323,7 +323,7 @@ pytest
 pytest --cov=app
 
 # 특정 테스트 파일
-pytest tests/test_extraction.py
+pytest tests/test_auth.py
 ```
 
 ### 프론트엔드 테스트
@@ -332,14 +332,8 @@ pytest tests/test_extraction.py
 # 프론트엔드 디렉토리에서
 cd frontend
 
-# 단위 테스트 실행
+# 테스트 실행
 npm test
-
-# E2E 테스트 실행 (Playwright)
-npm run test:e2e
-
-# 테스트 커버리지
-npm run test:coverage
 ```
 
 ## 🤝 기여 가이드
@@ -357,7 +351,7 @@ npm run test:coverage
 ### 코드 스타일
 
 - **Python**: PEP 8 준수, 4 spaces 들여쓰기
-- **TypeScript**: ESLint + Prettier 설정 준수
+- **TypeScript**: ESLint 설정 준수
 - **네이밍**: snake_case (Python), camelCase (TypeScript)
 
 ### 커밋 메시지 컨벤션
@@ -374,15 +368,15 @@ npm run test:coverage
 
 ## 📄 라이선스
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
+현재 별도 라이선스 파일은 아직 추가되지 않았습니다.
 
 ---
 
 ### 🆘 도움이 필요하시면?
 
 - 📧 **이메일**: contact@myclo.com
-- 🐛 **버그 리포트**: [GitHub Issues](../../issues/new?template=bug_report.md)
-- 💡 **기능 요청**: [GitHub Issues](../../issues/new?template=feature_request.md)
+- 🐛 **버그 리포트**: [GitHub Issues](../../issues)
+- 💡 **기능 요청**: [GitHub Issues](../../issues)
 - 💬 **디스커션**: [GitHub Discussions](../../discussions)
 
 **Happy Coding! 🎉**

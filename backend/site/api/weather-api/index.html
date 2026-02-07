@@ -6,19 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="AI 기반 옷 이미지 특징 추출 및 코디 추천 백엔드 API 문서">
+        <meta name="description" content="MyClo backend API and architecture docs">
       
       
         <meta name="author" content="MyClo Team">
       
       
-        <link rel="canonical" href="https://myclo1234.github.io/backend/api/weather-api/">
+      
+        <link rel="prev" href="../recommendation/">
       
       
-        <link rel="prev" href="../wardrobe/">
-      
-      
-        <link rel="next" href="../recommendation/">
+        <link rel="next" href="../../architecture/langgraph-flows/">
       
       
         
@@ -29,14 +27,11 @@
     
     
       
-        <title>날씨 (Weather) - MyClo Backend Documentation</title>
+        <title>Weather - MyClo Backend Documentation</title>
       
     
     
       <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
-      
-        
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -64,14 +59,7 @@
   </head>
   
   
-    
-    
-      
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+    <body dir="ltr">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -89,16 +77,12 @@
       
     </div>
     
-      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
-        
-      </div>
-    
     
       
 
   
 
-<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+<header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="상단/헤더">
     <a href="../.." title="MyClo Backend Documentation" class="md-header__button md-logo" aria-label="MyClo Backend Documentation" data-md-component="logo">
       
@@ -120,38 +104,12 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              날씨 (Weather)
+              Weather
             
           </span>
         </div>
       </div>
     </div>
-    
-      
-        <form class="md-header__option" data-md-component="palette">
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="다크 모드로 전환"  type="radio" name="__palette" id="__palette_0">
-    
-      <label class="md-header__button md-icon" title="다크 모드로 전환" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
-      </label>
-    
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="라이트 모드로 전환"  type="radio" name="__palette" id="__palette_1">
-    
-      <label class="md-header__button md-icon" title="라이트 모드로 전환" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
-      </label>
-    
-  
-</form>
-      
     
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
@@ -177,18 +135,11 @@
       </label>
       <nav class="md-search__options" aria-label="검색">
         
-          <a href="javascript:void(0)" class="md-search__icon md-icon" title="공유" aria-label="공유" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
-            
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
-          </a>
-        
         <button type="reset" class="md-search__icon md-icon" title="지우기" aria-label="지우기" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
-      
-        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -206,138 +157,15 @@
       
     
     
-      <div class="md-header__source">
-        <a href="https://github.com/MyClo1234/backend" title="저장소로 이동" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MyClo1234/backend
-  </div>
-</a>
-      </div>
-    
   </nav>
-  
-    
-      
-<nav class="md-tabs" aria-label="탭" data-md-component="tabs">
-  <div class="md-grid">
-    <ul class="md-tabs__list">
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../.." class="md-tabs__link">
-          
-  
-  
-  홈
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../architecture/overview/" class="md-tabs__link">
-          
-  
-  
-  아키텍처
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-  
-  
-    
-    
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../overview/" class="md-tabs__link">
-          
-  
-  
-  API 가이드
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../development/rules/" class="md-tabs__link">
-          
-  
-  
-  개발 가이드
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../deployment/azure-functions.md" class="md-tabs__link">
-          
-  
-  
-  배포
-
-        </a>
-      </li>
-    
-  
-
-      
-    </ul>
-  </div>
-</nav>
-    
   
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
+        
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -351,10 +179,8 @@
                     
 
 
-  
 
-
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="네비게이션" data-md-level="0">
+<nav class="md-nav md-nav--primary" aria-label="네비게이션" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="MyClo Backend Documentation" class="md-nav__button md-logo" aria-label="MyClo Backend Documentation" data-md-component="logo">
       
@@ -365,76 +191,10 @@
     MyClo Backend Documentation
   </label>
   
-    <div class="md-nav__source">
-      <a href="https://github.com/MyClo1234/backend" title="저장소로 이동" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MyClo1234/backend
-  </div>
-</a>
-    </div>
-  
   <ul class="md-nav__list" data-md-scrollfix>
     
       
       
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
-        
-          
-          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    홈
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    홈
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
   
   
   
@@ -459,66 +219,25 @@
     </li>
   
 
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    빠른 시작
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
     
       
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-        
-      
     
-    
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
@@ -528,7 +247,7 @@
   <span class="md-ellipsis">
     
   
-    아키텍처
+    API
   
 
     
@@ -539,192 +258,16 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
   
-    아키텍처
+    API
   
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    개요
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/ddd/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Domain-Driven Design
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/langgraph-flows/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    LangGraph 워크플로우
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API 가이드
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    API 가이드
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    개요
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -740,7 +283,35 @@
   <span class="md-ellipsis">
     
   
-    인증 (Auth)
+    Auth
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extraction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extraction
   
 
     
@@ -768,7 +339,35 @@
   <span class="md-ellipsis">
     
   
-    옷장 (Wardrobe)
+    Wardrobe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recommendation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recommendation
   
 
     
@@ -805,7 +404,7 @@
   <span class="md-ellipsis">
     
   
-    날씨 (Weather)
+    Weather
   
 
     
@@ -823,7 +422,7 @@
   <span class="md-ellipsis">
     
   
-    날씨 (Weather)
+    Weather
   
 
     
@@ -1585,6 +1184,60 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
               
                 
   
@@ -1592,14 +1245,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../recommendation/" class="md-nav__link">
+      <a href="../../architecture/langgraph-flows/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    추천 (Recommendation)
+    LangGraph Flows
   
 
     
@@ -1620,14 +1273,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../extraction/" class="md-nav__link">
+      <a href="../../architecture/weather-batch/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    이미지 분석 (Extraction)
+    Weather Batch
   
 
     
@@ -1658,19 +1311,12 @@
     
     
     
-      
-      
-        
-      
-    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -1680,7 +1326,7 @@
   <span class="md-ellipsis">
     
   
-    개발 가이드
+    Development
   
 
     
@@ -1696,7 +1342,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    개발 가이드
+    Development
   
 
           </label>
@@ -1716,63 +1362,7 @@
   <span class="md-ellipsis">
     
   
-    프로젝트 규칙
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../development/environment.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    환경 설정
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../development/testing.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    테스트
+    Rules
   
 
     
@@ -1803,19 +1393,12 @@
     
     
     
-      
-      
-        
-      
-    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -1825,7 +1408,7 @@
   <span class="md-ellipsis">
     
   
-    배포
+    Guides
   
 
     
@@ -1841,7 +1424,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    배포
+    Guides
   
 
           </label>
@@ -1854,42 +1437,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deployment/azure-functions.md" class="md-nav__link">
+      <a href="../../guides/vscode-debugging/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Azure Functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../deployment/environment-variables.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    환경 변수
+    VSCode Debugging
   
 
     
@@ -2675,32 +2230,16 @@
           
             <div class="md-content" data-md-component="content">
               
-                
-
-
-
-
-              
               <article class="md-content__inner md-typeset">
                 
                   
 
 
-  
-  
-
 
 <h1 id="api">기상청 날씨 데이터 API 가이드<a class="headerlink" href="#api" title="Permanent link">&para;</a></h1>
 <p>이 문서는 기상청 API를 활용하여 날씨 데이터를 조회하는 방법을 정리한 가이드입니다.</p>
 <h2 id="_1">목차<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<ol>
-<li><a href="#단기예보">단기예보</a></li>
-<li><a href="#중기예보">중기예보</a></li>
-<li><a href="#기상특보">기상특보</a></li>
-<li><a href="#기상정보속보">기상정보/속보</a></li>
-<li><a href="#영향예보">영향예보</a></li>
-<li><a href="#api-기본-정보">API 기본 정보</a></li>
-</ol>
+<p>이 문서는 MkDocs 자동 목차(TOC)를 사용합니다.</p>
 <hr />
 <h2 id="_2">단기예보<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>단기예보는 단기예보구역별 날씨 예보 정보를 제공합니다.</p>
@@ -3088,32 +2627,32 @@
 <h3 id="api_1">API 엔드포인트<a class="headerlink" href="#api_1" title="Permanent link">&para;</a></h3>
 <h4 id="1">1. 영향예보 발표 현황(발표구역별 위험수준) 조회<a class="headerlink" href="#1" title="Permanent link">&para;</a></h4>
 <p><strong>1.1.1 폭염영향예보 기간 조회(발효시각 기준)</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>GET https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php
-</span></code></pre></div>
+<pre><code>GET https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php
+</code></pre>
 <p><strong>요청 파라미터</strong>:
 - <code>tmef1</code> (string): 기준일 시작 (YYYYMMDD, KST)
 - <code>tmef2</code> (string): 기준일 종료 (YYYYMMDD, KST)
 - <code>ifpar</code> (string): 영향예보 요소 - <code>hw</code> (폭염)
 - <code>help</code> (number, optional): 도움말 표시 여부 (1: 표시)
 - <code>authKey</code> (string, required): API 인증키</p>
-<p><strong>예시</strong>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php?tmef1=20210701&amp;tmef2=20210730&amp;ifpar=hw&amp;help=1&amp;authKey=YOUR_AUTH_KEY
-</span></code></pre></div></p>
+<p><strong>예시</strong>:</p>
+<pre><code>https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php?tmef1=20210701&amp;tmef2=20210730&amp;ifpar=hw&amp;help=1&amp;authKey=YOUR_AUTH_KEY
+</code></pre>
 <p><strong>1.1.2 한파영향예보 기간 조회(발표시각 기준)</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>GET https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php
-</span></code></pre></div>
+<pre><code>GET https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php
+</code></pre>
 <p><strong>요청 파라미터</strong>:
 - <code>tmfc1</code> (string): 발표시간 시작 (YYYYMMDD, KST)
 - <code>tmfc2</code> (string): 발표시간 종료 (YYYYMMDD, KST)
 - <code>ifpar</code> (string): 영향예보 요소 - <code>cw</code> (한파)
 - <code>help</code> (number, optional): 도움말 표시 여부 (1: 표시)
 - <code>authKey</code> (string, required): API 인증키</p>
-<p><strong>예시</strong>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php?tmfc1=20210101&amp;tmfc2=20210131&amp;ifpar=cw&amp;help=1&amp;authKey=YOUR_AUTH_KEY
-</span></code></pre></div></p>
+<p><strong>예시</strong>:</p>
+<pre><code>https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php?tmfc1=20210101&amp;tmfc2=20210131&amp;ifpar=cw&amp;help=1&amp;authKey=YOUR_AUTH_KEY
+</code></pre>
 <p><strong>1.1.3 기간, 특보구역 조회(발효시각 기준)</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>GET https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php
-</span></code></pre></div>
+<pre><code>GET https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php
+</code></pre>
 <p><strong>요청 파라미터</strong>:
 - <code>tmef1</code> (string): 기준일 시작 (YYYYMMDD, KST)
 - <code>tmef2</code> (string): 기준일 종료 (YYYYMMDD, KST)
@@ -3124,9 +2663,9 @@
 - <code>regid</code> (string, optional): 특보구역 코드 (예: <code>L1050100</code>)
 - <code>help</code> (number, optional): 도움말 표시 여부 (1: 표시)
 - <code>authKey</code> (string, required): API 인증키</p>
-<p><strong>예시</strong>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php?tmef1=20210701&amp;tmef2=20210730&amp;ifarea=0&amp;regid=L1050100&amp;help=1&amp;authKey=YOUR_AUTH_KEY
-</span></code></pre></div></p>
+<p><strong>예시</strong>:</p>
+<pre><code>https://apihub.kma.go.kr/api/typ01/url/ifs_fct_pstt.php?tmef1=20210701&amp;tmef2=20210730&amp;ifarea=0&amp;regid=L1050100&amp;help=1&amp;authKey=YOUR_AUTH_KEY
+</code></pre>
 <p><strong>공통 요청 파라미터</strong>:
 - <code>tmfc1</code>, <code>tmfc2</code>: 발표시간 기간 (YYYYMMDD, KST) - 생략 시 금일 발표시간으로 처리
 - <code>tmef1</code>, <code>tmef2</code>: 기준일 기간 (YYYYMMDD, KST) - 기준일로부터 2일 유효, 매일갱신, 생략 시 금일로 처리
@@ -3146,8 +2685,8 @@
 - <code>IFAREA</code>: 영향분야
 - <code>ILVL</code>: 위험 수준(영향 등급)</p>
 <h4 id="2">2. 영향예보 위험수준별 발표지역 수 조회<a class="headerlink" href="#2" title="Permanent link">&para;</a></h4>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>GET https://apihub.kma.go.kr/api/typ01/url/ifs_ilvl_zone_cnt.php
-</span></code></pre></div>
+<pre><code>GET https://apihub.kma.go.kr/api/typ01/url/ifs_ilvl_zone_cnt.php
+</code></pre>
 <p><strong>요청 파라미터</strong>:
 - <code>tmfc1</code>, <code>tmfc2</code> (string, optional): 발표시간 기간 (YYYYMMDD, KST)
 - <code>tmef1</code>, <code>tmef2</code> (string, optional): 기준일 기간 (YYYYMMDD, KST)
@@ -3157,9 +2696,9 @@
 - <code>ilvl</code> (number, optional): 위험수준
 - <code>help</code> (number, optional): 도움말 표시 여부 (1: 표시)
 - <code>authKey</code> (string, required): API 인증키</p>
-<p><strong>예시</strong>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>https://apihub.kma.go.kr/api/typ01/url/ifs_ilvl_zone_cnt.php?help=1&amp;tmef1=20210701&amp;tmef2=20210730&amp;ifarea=0&amp;stn=108&amp;authKey=YOUR_AUTH_KEY
-</span></code></pre></div></p>
+<p><strong>예시</strong>:</p>
+<pre><code>https://apihub.kma.go.kr/api/typ01/url/ifs_ilvl_zone_cnt.php?help=1&amp;tmef1=20210701&amp;tmef2=20210730&amp;ifarea=0&amp;stn=108&amp;authKey=YOUR_AUTH_KEY
+</code></pre>
 <p><strong>응답 필드</strong>:
 - <code>TM_FC</code>: 발표시각 (KST)
 - <code>TM_EF</code>: 기준일 (KST)
@@ -3170,17 +2709,17 @@
 - <code>ILVL_NUM</code>: [출력전용] 위험 수준별 발표지역 수
 - <code>ILVL_ID</code>: [출력전용] 위험 수준별 발표구역 코드</p>
 <h4 id="3">3. 영향예보 위험수준 분포도<a class="headerlink" href="#3" title="Permanent link">&para;</a></h4>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>GET https://apihub.kma.go.kr/api/typ01/url/ifs_ilvl_dmap.php
-</span></code></pre></div>
+<pre><code>GET https://apihub.kma.go.kr/api/typ01/url/ifs_ilvl_dmap.php
+</code></pre>
 <p><strong>요청 파라미터</strong>:
 - <code>tmfc</code> (string, optional): 발표시간 (YYYYMMDD, KST) - 생략 시 금일 발표시간으로 처리
 - <code>stn</code> (string, optional): 관서 코드 - 생략 시 108 관서로 처리
 - <code>ifpar</code> (string, optional): 영향예보 요소 - <code>hw</code> (폭염), <code>cw</code> (한파) - 생략 시 폭염(hw) 요소 처리
 - <code>ifarea</code> (number, optional): 영향분야 - 생략 시 1(보건 일반인/보건)로 처리
 - <code>authKey</code> (string, required): API 인증키</p>
-<p><strong>예시</strong>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>https://apihub.kma.go.kr/api/typ01/url/ifs_ilvl_dmap.php?tmfc=20220601&amp;ifpar=hw&amp;ifarea=1&amp;authKey=YOUR_AUTH_KEY
-</span></code></pre></div></p>
+<p><strong>예시</strong>:</p>
+<pre><code>https://apihub.kma.go.kr/api/typ01/url/ifs_ilvl_dmap.php?tmfc=20220601&amp;ifpar=hw&amp;ifarea=1&amp;authKey=YOUR_AUTH_KEY
+</code></pre>
 <hr />
 <h2 id="api_2">API 기본 정보<a class="headerlink" href="#api_2" title="Permanent link">&para;</a></h2>
 <h3 id="_14">인증<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h3>
@@ -3205,174 +2744,174 @@
 <hr />
 <h2 id="_19">구현 예시<a class="headerlink" href="#_19" title="Permanent link">&para;</a></h2>
 <h3 id="python">Python 예시<a class="headerlink" href="#python" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">WeatherAPIClient</span><span class="p">:</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;기상청 날씨 데이터 API 클라이언트&quot;&quot;&quot;</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;https://apihub.kma.go.kr/api/typ01/url&quot;</span>
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auth_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">auth_key</span> <span class="o">=</span> <span class="n">auth_key</span>
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_impact_forecast_status</span><span class="p">(</span>
-</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>        <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>        <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>        <span class="n">ifpar</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;hw&quot;</span><span class="p">,</span>  <span class="c1"># hw: 폭염, cw: 한파</span>
-</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>        <span class="n">ifarea</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>        <span class="n">regid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>        <span class="n">ilvl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>        <span class="n">use_effective_date</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="sd">        영향예보 발표 현황 조회</span>
-</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>
-</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="sd">        Args:</span>
-</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="sd">            start_date: 시작일 (YYYYMMDD)</span>
-</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="sd">            end_date: 종료일 (YYYYMMDD)</span>
-</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="sd">            ifpar: 영향예보 요소 (hw: 폭염, cw: 한파)</span>
-</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="sd">            ifarea: 영향분야</span>
-</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="sd">            regid: 특보구역 코드</span>
-</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="sd">            ilvl: 위험수준</span>
-</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="sd">            use_effective_date: True면 기준일(tmef), False면 발표시간(tmfc) 사용</span>
-</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a>
-</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a><span class="sd">        Returns:</span>
-</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a><span class="sd">            API 응답 데이터</span>
-</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="__span-10-38"><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a>        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/ifs_fct_pstt.php&quot;</span>
-</span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a>        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a>            <span class="s2">&quot;authKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_key</span><span class="p">,</span>
-</span><span id="__span-10-41"><a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a>            <span class="s2">&quot;ifpar&quot;</span><span class="p">:</span> <span class="n">ifpar</span><span class="p">,</span>
-</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a>            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="mi">1</span>
-</span><span id="__span-10-43"><a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a>        <span class="p">}</span>
-</span><span id="__span-10-44"><a id="__codelineno-10-44" name="__codelineno-10-44" href="#__codelineno-10-44"></a>
-</span><span id="__span-10-45"><a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a>        <span class="k">if</span> <span class="n">use_effective_date</span><span class="p">:</span>
-</span><span id="__span-10-46"><a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;tmef1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">start_date</span>
-</span><span id="__span-10-47"><a id="__codelineno-10-47" name="__codelineno-10-47" href="#__codelineno-10-47"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;tmef2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">end_date</span>
-</span><span id="__span-10-48"><a id="__codelineno-10-48" name="__codelineno-10-48" href="#__codelineno-10-48"></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-10-49"><a id="__codelineno-10-49" name="__codelineno-10-49" href="#__codelineno-10-49"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;tmfc1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">start_date</span>
-</span><span id="__span-10-50"><a id="__codelineno-10-50" name="__codelineno-10-50" href="#__codelineno-10-50"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;tmfc2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">end_date</span>
-</span><span id="__span-10-51"><a id="__codelineno-10-51" name="__codelineno-10-51" href="#__codelineno-10-51"></a>
-</span><span id="__span-10-52"><a id="__codelineno-10-52" name="__codelineno-10-52" href="#__codelineno-10-52"></a>        <span class="k">if</span> <span class="n">ifarea</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-10-53"><a id="__codelineno-10-53" name="__codelineno-10-53" href="#__codelineno-10-53"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;ifarea&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ifarea</span>
-</span><span id="__span-10-54"><a id="__codelineno-10-54" name="__codelineno-10-54" href="#__codelineno-10-54"></a>        <span class="k">if</span> <span class="n">regid</span><span class="p">:</span>
-</span><span id="__span-10-55"><a id="__codelineno-10-55" name="__codelineno-10-55" href="#__codelineno-10-55"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;regid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">regid</span>
-</span><span id="__span-10-56"><a id="__codelineno-10-56" name="__codelineno-10-56" href="#__codelineno-10-56"></a>        <span class="k">if</span> <span class="n">ilvl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-10-57"><a id="__codelineno-10-57" name="__codelineno-10-57" href="#__codelineno-10-57"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;ilvl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ilvl</span>
-</span><span id="__span-10-58"><a id="__codelineno-10-58" name="__codelineno-10-58" href="#__codelineno-10-58"></a>
-</span><span id="__span-10-59"><a id="__codelineno-10-59" name="__codelineno-10-59" href="#__codelineno-10-59"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-</span><span id="__span-10-60"><a id="__codelineno-10-60" name="__codelineno-10-60" href="#__codelineno-10-60"></a>        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-</span><span id="__span-10-61"><a id="__codelineno-10-61" name="__codelineno-10-61" href="#__codelineno-10-61"></a>        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-</span><span id="__span-10-62"><a id="__codelineno-10-62" name="__codelineno-10-62" href="#__codelineno-10-62"></a>
-</span><span id="__span-10-63"><a id="__codelineno-10-63" name="__codelineno-10-63" href="#__codelineno-10-63"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_impact_forecast_zone_count</span><span class="p">(</span>
-</span><span id="__span-10-64"><a id="__codelineno-10-64" name="__codelineno-10-64" href="#__codelineno-10-64"></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="__span-10-65"><a id="__codelineno-10-65" name="__codelineno-10-65" href="#__codelineno-10-65"></a>        <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-10-66"><a id="__codelineno-10-66" name="__codelineno-10-66" href="#__codelineno-10-66"></a>        <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-10-67"><a id="__codelineno-10-67" name="__codelineno-10-67" href="#__codelineno-10-67"></a>        <span class="n">ifpar</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-10-68"><a id="__codelineno-10-68" name="__codelineno-10-68" href="#__codelineno-10-68"></a>        <span class="n">ifarea</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-10-69"><a id="__codelineno-10-69" name="__codelineno-10-69" href="#__codelineno-10-69"></a>        <span class="n">stn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-10-70"><a id="__codelineno-10-70" name="__codelineno-10-70" href="#__codelineno-10-70"></a>        <span class="n">ilvl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-10-71"><a id="__codelineno-10-71" name="__codelineno-10-71" href="#__codelineno-10-71"></a>        <span class="n">use_effective_date</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="__span-10-72"><a id="__codelineno-10-72" name="__codelineno-10-72" href="#__codelineno-10-72"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-</span><span id="__span-10-73"><a id="__codelineno-10-73" name="__codelineno-10-73" href="#__codelineno-10-73"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-10-74"><a id="__codelineno-10-74" name="__codelineno-10-74" href="#__codelineno-10-74"></a><span class="sd">        영향예보 위험수준별 발표지역 수 조회</span>
-</span><span id="__span-10-75"><a id="__codelineno-10-75" name="__codelineno-10-75" href="#__codelineno-10-75"></a>
-</span><span id="__span-10-76"><a id="__codelineno-10-76" name="__codelineno-10-76" href="#__codelineno-10-76"></a><span class="sd">        Args:</span>
-</span><span id="__span-10-77"><a id="__codelineno-10-77" name="__codelineno-10-77" href="#__codelineno-10-77"></a><span class="sd">            start_date: 시작일 (YYYYMMDD)</span>
-</span><span id="__span-10-78"><a id="__codelineno-10-78" name="__codelineno-10-78" href="#__codelineno-10-78"></a><span class="sd">            end_date: 종료일 (YYYYMMDD)</span>
-</span><span id="__span-10-79"><a id="__codelineno-10-79" name="__codelineno-10-79" href="#__codelineno-10-79"></a><span class="sd">            ifpar: 영향예보 요소</span>
-</span><span id="__span-10-80"><a id="__codelineno-10-80" name="__codelineno-10-80" href="#__codelineno-10-80"></a><span class="sd">            ifarea: 영향분야</span>
-</span><span id="__span-10-81"><a id="__codelineno-10-81" name="__codelineno-10-81" href="#__codelineno-10-81"></a><span class="sd">            stn: 관서 코드</span>
-</span><span id="__span-10-82"><a id="__codelineno-10-82" name="__codelineno-10-82" href="#__codelineno-10-82"></a><span class="sd">            ilvl: 위험수준</span>
-</span><span id="__span-10-83"><a id="__codelineno-10-83" name="__codelineno-10-83" href="#__codelineno-10-83"></a><span class="sd">            use_effective_date: True면 기준일(tmef), False면 발표시간(tmfc) 사용</span>
-</span><span id="__span-10-84"><a id="__codelineno-10-84" name="__codelineno-10-84" href="#__codelineno-10-84"></a>
-</span><span id="__span-10-85"><a id="__codelineno-10-85" name="__codelineno-10-85" href="#__codelineno-10-85"></a><span class="sd">        Returns:</span>
-</span><span id="__span-10-86"><a id="__codelineno-10-86" name="__codelineno-10-86" href="#__codelineno-10-86"></a><span class="sd">            API 응답 데이터</span>
-</span><span id="__span-10-87"><a id="__codelineno-10-87" name="__codelineno-10-87" href="#__codelineno-10-87"></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="__span-10-88"><a id="__codelineno-10-88" name="__codelineno-10-88" href="#__codelineno-10-88"></a>        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/ifs_ilvl_zone_cnt.php&quot;</span>
-</span><span id="__span-10-89"><a id="__codelineno-10-89" name="__codelineno-10-89" href="#__codelineno-10-89"></a>        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-10-90"><a id="__codelineno-10-90" name="__codelineno-10-90" href="#__codelineno-10-90"></a>            <span class="s2">&quot;authKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_key</span><span class="p">,</span>
-</span><span id="__span-10-91"><a id="__codelineno-10-91" name="__codelineno-10-91" href="#__codelineno-10-91"></a>            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="mi">1</span>
-</span><span id="__span-10-92"><a id="__codelineno-10-92" name="__codelineno-10-92" href="#__codelineno-10-92"></a>        <span class="p">}</span>
-</span><span id="__span-10-93"><a id="__codelineno-10-93" name="__codelineno-10-93" href="#__codelineno-10-93"></a>
-</span><span id="__span-10-94"><a id="__codelineno-10-94" name="__codelineno-10-94" href="#__codelineno-10-94"></a>        <span class="k">if</span> <span class="n">use_effective_date</span><span class="p">:</span>
-</span><span id="__span-10-95"><a id="__codelineno-10-95" name="__codelineno-10-95" href="#__codelineno-10-95"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;tmef1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">start_date</span>
-</span><span id="__span-10-96"><a id="__codelineno-10-96" name="__codelineno-10-96" href="#__codelineno-10-96"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;tmef2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">end_date</span>
-</span><span id="__span-10-97"><a id="__codelineno-10-97" name="__codelineno-10-97" href="#__codelineno-10-97"></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-10-98"><a id="__codelineno-10-98" name="__codelineno-10-98" href="#__codelineno-10-98"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;tmfc1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">start_date</span>
-</span><span id="__span-10-99"><a id="__codelineno-10-99" name="__codelineno-10-99" href="#__codelineno-10-99"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;tmfc2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">end_date</span>
-</span><span id="__span-10-100"><a id="__codelineno-10-100" name="__codelineno-10-100" href="#__codelineno-10-100"></a>
-</span><span id="__span-10-101"><a id="__codelineno-10-101" name="__codelineno-10-101" href="#__codelineno-10-101"></a>        <span class="k">if</span> <span class="n">ifpar</span><span class="p">:</span>
-</span><span id="__span-10-102"><a id="__codelineno-10-102" name="__codelineno-10-102" href="#__codelineno-10-102"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;ifpar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ifpar</span>
-</span><span id="__span-10-103"><a id="__codelineno-10-103" name="__codelineno-10-103" href="#__codelineno-10-103"></a>        <span class="k">if</span> <span class="n">ifarea</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-10-104"><a id="__codelineno-10-104" name="__codelineno-10-104" href="#__codelineno-10-104"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;ifarea&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ifarea</span>
-</span><span id="__span-10-105"><a id="__codelineno-10-105" name="__codelineno-10-105" href="#__codelineno-10-105"></a>        <span class="k">if</span> <span class="n">stn</span><span class="p">:</span>
-</span><span id="__span-10-106"><a id="__codelineno-10-106" name="__codelineno-10-106" href="#__codelineno-10-106"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;stn&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stn</span>
-</span><span id="__span-10-107"><a id="__codelineno-10-107" name="__codelineno-10-107" href="#__codelineno-10-107"></a>        <span class="k">if</span> <span class="n">ilvl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-10-108"><a id="__codelineno-10-108" name="__codelineno-10-108" href="#__codelineno-10-108"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;ilvl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ilvl</span>
-</span><span id="__span-10-109"><a id="__codelineno-10-109" name="__codelineno-10-109" href="#__codelineno-10-109"></a>
-</span><span id="__span-10-110"><a id="__codelineno-10-110" name="__codelineno-10-110" href="#__codelineno-10-110"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-</span><span id="__span-10-111"><a id="__codelineno-10-111" name="__codelineno-10-111" href="#__codelineno-10-111"></a>        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-</span><span id="__span-10-112"><a id="__codelineno-10-112" name="__codelineno-10-112" href="#__codelineno-10-112"></a>        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-</span><span id="__span-10-113"><a id="__codelineno-10-113" name="__codelineno-10-113" href="#__codelineno-10-113"></a>
-</span><span id="__span-10-114"><a id="__codelineno-10-114" name="__codelineno-10-114" href="#__codelineno-10-114"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_impact_forecast_distribution</span><span class="p">(</span>
-</span><span id="__span-10-115"><a id="__codelineno-10-115" name="__codelineno-10-115" href="#__codelineno-10-115"></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="__span-10-116"><a id="__codelineno-10-116" name="__codelineno-10-116" href="#__codelineno-10-116"></a>        <span class="n">date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="__span-10-117"><a id="__codelineno-10-117" name="__codelineno-10-117" href="#__codelineno-10-117"></a>        <span class="n">ifpar</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;hw&quot;</span><span class="p">,</span>
-</span><span id="__span-10-118"><a id="__codelineno-10-118" name="__codelineno-10-118" href="#__codelineno-10-118"></a>        <span class="n">ifarea</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span id="__span-10-119"><a id="__codelineno-10-119" name="__codelineno-10-119" href="#__codelineno-10-119"></a>        <span class="n">stn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-10-120"><a id="__codelineno-10-120" name="__codelineno-10-120" href="#__codelineno-10-120"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-</span><span id="__span-10-121"><a id="__codelineno-10-121" name="__codelineno-10-121" href="#__codelineno-10-121"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-10-122"><a id="__codelineno-10-122" name="__codelineno-10-122" href="#__codelineno-10-122"></a><span class="sd">        영향예보 위험수준 분포도 조회</span>
-</span><span id="__span-10-123"><a id="__codelineno-10-123" name="__codelineno-10-123" href="#__codelineno-10-123"></a>
-</span><span id="__span-10-124"><a id="__codelineno-10-124" name="__codelineno-10-124" href="#__codelineno-10-124"></a><span class="sd">        Args:</span>
-</span><span id="__span-10-125"><a id="__codelineno-10-125" name="__codelineno-10-125" href="#__codelineno-10-125"></a><span class="sd">            date: 발표시간 (YYYYMMDD)</span>
-</span><span id="__span-10-126"><a id="__codelineno-10-126" name="__codelineno-10-126" href="#__codelineno-10-126"></a><span class="sd">            ifpar: 영향예보 요소</span>
-</span><span id="__span-10-127"><a id="__codelineno-10-127" name="__codelineno-10-127" href="#__codelineno-10-127"></a><span class="sd">            ifarea: 영향분야</span>
-</span><span id="__span-10-128"><a id="__codelineno-10-128" name="__codelineno-10-128" href="#__codelineno-10-128"></a><span class="sd">            stn: 관서 코드</span>
-</span><span id="__span-10-129"><a id="__codelineno-10-129" name="__codelineno-10-129" href="#__codelineno-10-129"></a>
-</span><span id="__span-10-130"><a id="__codelineno-10-130" name="__codelineno-10-130" href="#__codelineno-10-130"></a><span class="sd">        Returns:</span>
-</span><span id="__span-10-131"><a id="__codelineno-10-131" name="__codelineno-10-131" href="#__codelineno-10-131"></a><span class="sd">            API 응답 데이터</span>
-</span><span id="__span-10-132"><a id="__codelineno-10-132" name="__codelineno-10-132" href="#__codelineno-10-132"></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="__span-10-133"><a id="__codelineno-10-133" name="__codelineno-10-133" href="#__codelineno-10-133"></a>        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/ifs_ilvl_dmap.php&quot;</span>
-</span><span id="__span-10-134"><a id="__codelineno-10-134" name="__codelineno-10-134" href="#__codelineno-10-134"></a>        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-10-135"><a id="__codelineno-10-135" name="__codelineno-10-135" href="#__codelineno-10-135"></a>            <span class="s2">&quot;authKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_key</span><span class="p">,</span>
-</span><span id="__span-10-136"><a id="__codelineno-10-136" name="__codelineno-10-136" href="#__codelineno-10-136"></a>            <span class="s2">&quot;tmfc&quot;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
-</span><span id="__span-10-137"><a id="__codelineno-10-137" name="__codelineno-10-137" href="#__codelineno-10-137"></a>            <span class="s2">&quot;ifpar&quot;</span><span class="p">:</span> <span class="n">ifpar</span><span class="p">,</span>
-</span><span id="__span-10-138"><a id="__codelineno-10-138" name="__codelineno-10-138" href="#__codelineno-10-138"></a>            <span class="s2">&quot;ifarea&quot;</span><span class="p">:</span> <span class="n">ifarea</span>
-</span><span id="__span-10-139"><a id="__codelineno-10-139" name="__codelineno-10-139" href="#__codelineno-10-139"></a>        <span class="p">}</span>
-</span><span id="__span-10-140"><a id="__codelineno-10-140" name="__codelineno-10-140" href="#__codelineno-10-140"></a>
-</span><span id="__span-10-141"><a id="__codelineno-10-141" name="__codelineno-10-141" href="#__codelineno-10-141"></a>        <span class="k">if</span> <span class="n">stn</span><span class="p">:</span>
-</span><span id="__span-10-142"><a id="__codelineno-10-142" name="__codelineno-10-142" href="#__codelineno-10-142"></a>            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;stn&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stn</span>
-</span><span id="__span-10-143"><a id="__codelineno-10-143" name="__codelineno-10-143" href="#__codelineno-10-143"></a>
-</span><span id="__span-10-144"><a id="__codelineno-10-144" name="__codelineno-10-144" href="#__codelineno-10-144"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-</span><span id="__span-10-145"><a id="__codelineno-10-145" name="__codelineno-10-145" href="#__codelineno-10-145"></a>        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-</span><span id="__span-10-146"><a id="__codelineno-10-146" name="__codelineno-10-146" href="#__codelineno-10-146"></a>        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-</span><span id="__span-10-147"><a id="__codelineno-10-147" name="__codelineno-10-147" href="#__codelineno-10-147"></a>
-</span><span id="__span-10-148"><a id="__codelineno-10-148" name="__codelineno-10-148" href="#__codelineno-10-148"></a>
-</span><span id="__span-10-149"><a id="__codelineno-10-149" name="__codelineno-10-149" href="#__codelineno-10-149"></a><span class="c1"># 사용 예시</span>
-</span><span id="__span-10-150"><a id="__codelineno-10-150" name="__codelineno-10-150" href="#__codelineno-10-150"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="__span-10-151"><a id="__codelineno-10-151" name="__codelineno-10-151" href="#__codelineno-10-151"></a>    <span class="c1"># 인증키 설정 (환경변수에서 가져오는 것을 권장)</span>
-</span><span id="__span-10-152"><a id="__codelineno-10-152" name="__codelineno-10-152" href="#__codelineno-10-152"></a>    <span class="n">auth_key</span> <span class="o">=</span> <span class="s2">&quot;YOUR_AUTH_KEY&quot;</span>
-</span><span id="__span-10-153"><a id="__codelineno-10-153" name="__codelineno-10-153" href="#__codelineno-10-153"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">WeatherAPIClient</span><span class="p">(</span><span class="n">auth_key</span><span class="p">)</span>
-</span><span id="__span-10-154"><a id="__codelineno-10-154" name="__codelineno-10-154" href="#__codelineno-10-154"></a>
-</span><span id="__span-10-155"><a id="__codelineno-10-155" name="__codelineno-10-155" href="#__codelineno-10-155"></a>    <span class="c1"># 오늘 날짜 기준으로 폭염 영향예보 조회</span>
-</span><span id="__span-10-156"><a id="__codelineno-10-156" name="__codelineno-10-156" href="#__codelineno-10-156"></a>    <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-10-157"><a id="__codelineno-10-157" name="__codelineno-10-157" href="#__codelineno-10-157"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_impact_forecast_status</span><span class="p">(</span>
-</span><span id="__span-10-158"><a id="__codelineno-10-158" name="__codelineno-10-158" href="#__codelineno-10-158"></a>        <span class="n">start_date</span><span class="o">=</span><span class="n">today</span><span class="p">,</span>
-</span><span id="__span-10-159"><a id="__codelineno-10-159" name="__codelineno-10-159" href="#__codelineno-10-159"></a>        <span class="n">end_date</span><span class="o">=</span><span class="n">today</span><span class="p">,</span>
-</span><span id="__span-10-160"><a id="__codelineno-10-160" name="__codelineno-10-160" href="#__codelineno-10-160"></a>        <span class="n">ifpar</span><span class="o">=</span><span class="s2">&quot;hw&quot;</span><span class="p">,</span>
-</span><span id="__span-10-161"><a id="__codelineno-10-161" name="__codelineno-10-161" href="#__codelineno-10-161"></a>        <span class="n">ifarea</span><span class="o">=</span><span class="mi">1</span>  <span class="c1"># 보건 일반인</span>
-</span><span id="__span-10-162"><a id="__codelineno-10-162" name="__codelineno-10-162" href="#__codelineno-10-162"></a>    <span class="p">)</span>
-</span><span id="__span-10-163"><a id="__codelineno-10-163" name="__codelineno-10-163" href="#__codelineno-10-163"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-</span></code></pre></div>
+<pre><code class="language-python">import requests
+from datetime import datetime, timedelta
+from typing import Optional, Dict, Any
+
+class WeatherAPIClient:
+    &quot;&quot;&quot;기상청 날씨 데이터 API 클라이언트&quot;&quot;&quot;
+
+    BASE_URL = &quot;https://apihub.kma.go.kr/api/typ01/url&quot;
+
+    def __init__(self, auth_key: str):
+        self.auth_key = auth_key
+
+    def get_impact_forecast_status(
+        self,
+        start_date: str,
+        end_date: str,
+        ifpar: str = &quot;hw&quot;,  # hw: 폭염, cw: 한파
+        ifarea: Optional[int] = None,
+        regid: Optional[str] = None,
+        ilvl: Optional[int] = None,
+        use_effective_date: bool = True
+    ) -&gt; Dict[str, Any]:
+        &quot;&quot;&quot;
+        영향예보 발표 현황 조회
+
+        Args:
+            start_date: 시작일 (YYYYMMDD)
+            end_date: 종료일 (YYYYMMDD)
+            ifpar: 영향예보 요소 (hw: 폭염, cw: 한파)
+            ifarea: 영향분야
+            regid: 특보구역 코드
+            ilvl: 위험수준
+            use_effective_date: True면 기준일(tmef), False면 발표시간(tmfc) 사용
+
+        Returns:
+            API 응답 데이터
+        &quot;&quot;&quot;
+        url = f&quot;{self.BASE_URL}/ifs_fct_pstt.php&quot;
+        params = {
+            &quot;authKey&quot;: self.auth_key,
+            &quot;ifpar&quot;: ifpar,
+            &quot;help&quot;: 1
+        }
+
+        if use_effective_date:
+            params[&quot;tmef1&quot;] = start_date
+            params[&quot;tmef2&quot;] = end_date
+        else:
+            params[&quot;tmfc1&quot;] = start_date
+            params[&quot;tmfc2&quot;] = end_date
+
+        if ifarea is not None:
+            params[&quot;ifarea&quot;] = ifarea
+        if regid:
+            params[&quot;regid&quot;] = regid
+        if ilvl is not None:
+            params[&quot;ilvl&quot;] = ilvl
+
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return response.json()
+
+    def get_impact_forecast_zone_count(
+        self,
+        start_date: str,
+        end_date: str,
+        ifpar: Optional[str] = None,
+        ifarea: Optional[int] = None,
+        stn: Optional[str] = None,
+        ilvl: Optional[int] = None,
+        use_effective_date: bool = True
+    ) -&gt; Dict[str, Any]:
+        &quot;&quot;&quot;
+        영향예보 위험수준별 발표지역 수 조회
+
+        Args:
+            start_date: 시작일 (YYYYMMDD)
+            end_date: 종료일 (YYYYMMDD)
+            ifpar: 영향예보 요소
+            ifarea: 영향분야
+            stn: 관서 코드
+            ilvl: 위험수준
+            use_effective_date: True면 기준일(tmef), False면 발표시간(tmfc) 사용
+
+        Returns:
+            API 응답 데이터
+        &quot;&quot;&quot;
+        url = f&quot;{self.BASE_URL}/ifs_ilvl_zone_cnt.php&quot;
+        params = {
+            &quot;authKey&quot;: self.auth_key,
+            &quot;help&quot;: 1
+        }
+
+        if use_effective_date:
+            params[&quot;tmef1&quot;] = start_date
+            params[&quot;tmef2&quot;] = end_date
+        else:
+            params[&quot;tmfc1&quot;] = start_date
+            params[&quot;tmfc2&quot;] = end_date
+
+        if ifpar:
+            params[&quot;ifpar&quot;] = ifpar
+        if ifarea is not None:
+            params[&quot;ifarea&quot;] = ifarea
+        if stn:
+            params[&quot;stn&quot;] = stn
+        if ilvl is not None:
+            params[&quot;ilvl&quot;] = ilvl
+
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return response.json()
+
+    def get_impact_forecast_distribution(
+        self,
+        date: str,
+        ifpar: str = &quot;hw&quot;,
+        ifarea: int = 1,
+        stn: Optional[str] = None
+    ) -&gt; Dict[str, Any]:
+        &quot;&quot;&quot;
+        영향예보 위험수준 분포도 조회
+
+        Args:
+            date: 발표시간 (YYYYMMDD)
+            ifpar: 영향예보 요소
+            ifarea: 영향분야
+            stn: 관서 코드
+
+        Returns:
+            API 응답 데이터
+        &quot;&quot;&quot;
+        url = f&quot;{self.BASE_URL}/ifs_ilvl_dmap.php&quot;
+        params = {
+            &quot;authKey&quot;: self.auth_key,
+            &quot;tmfc&quot;: date,
+            &quot;ifpar&quot;: ifpar,
+            &quot;ifarea&quot;: ifarea
+        }
+
+        if stn:
+            params[&quot;stn&quot;] = stn
+
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return response.json()
+
+
+# 사용 예시
+if __name__ == &quot;__main__&quot;:
+    # 인증키 설정 (환경변수에서 가져오는 것을 권장)
+    auth_key = &quot;YOUR_AUTH_KEY&quot;
+    client = WeatherAPIClient(auth_key)
+
+    # 오늘 날짜 기준으로 폭염 영향예보 조회
+    today = datetime.now().strftime(&quot;%Y%m%d&quot;)
+    result = client.get_impact_forecast_status(
+        start_date=today,
+        end_date=today,
+        ifpar=&quot;hw&quot;,
+        ifarea=1  # 보건 일반인
+    )
+    print(result)
+</code></pre>
 <h3 id="_20">환경변수 설정<a class="headerlink" href="#_20" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># .env 파일</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nv">KMA_API_KEY</span><span class="o">=</span>your_api_key_here
-</span></code></pre></div>
+<pre><code class="language-bash"># .env 파일
+KMA_API_KEY=your_api_key_here
+</code></pre>
 <hr />
 <h2 id="_21">주의사항<a class="headerlink" href="#_21" title="Permanent link">&para;</a></h2>
 <ol>
@@ -3396,25 +2935,25 @@
 <h2 id="_22">추가 개발 가이드<a class="headerlink" href="#_22" title="Permanent link">&para;</a></h2>
 <h3 id="_23">캐싱 전략<a class="headerlink" href="#_23" title="Permanent link">&para;</a></h3>
 <p>날씨 데이터는 자주 변경되지 않으므로, 적절한 캐싱 전략을 사용하면 API 호출을 줄일 수 있습니다.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_cached_weather_data</span><span class="p">(</span><span class="n">date</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;날씨 데이터 캐싱&quot;&quot;&quot;</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="c1"># 캐시된 데이터가 있으면 반환</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="c1"># 없으면 API 호출 후 캐시에 저장</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="k">pass</span>
-</span></code></pre></div>
+<pre><code class="language-python">from functools import lru_cache
+from datetime import datetime, timedelta
+
+@lru_cache(maxsize=128)
+def get_cached_weather_data(date: str, region: str):
+    &quot;&quot;&quot;날씨 데이터 캐싱&quot;&quot;&quot;
+    # 캐시된 데이터가 있으면 반환
+    # 없으면 API 호출 후 캐시에 저장
+    pass
+</code></pre>
 <h3 id="_24">비동기 처리<a class="headerlink" href="#_24" title="Permanent link">&para;</a></h3>
 <p>대량의 데이터를 조회할 경우 비동기 처리를 고려하세요.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">aiohttp</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_weather_data_async</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>        <span class="k">return</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-</span></code></pre></div>
+<pre><code class="language-python">import asyncio
+import aiohttp
+
+async def fetch_weather_data_async(session, url, params):
+    async with session.get(url, params=params) as response:
+        return await response.json()
+</code></pre>
 <hr />
 <hr />
 <h2 id="_25">실전 예시: 서울시 마포구 내일 날씨 조회<a class="headerlink" href="#_25" title="Permanent link">&para;</a></h2>
@@ -3439,101 +2978,101 @@
 </blockquote>
 <h4 id="api_4">API 요청 예시<a class="headerlink" href="#api_4" title="Permanent link">&para;</a></h4>
 <p><strong>1. 단기예보 조회 (내일 날씨 포함)</strong></p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlencode</span><span class="p">,</span> <span class="n">quote_plus</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_tomorrow_weather_mapo</span><span class="p">():</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="sd">    서울시 마포구 내일 날씨 조회</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
-</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="sd">    Returns:</span>
-</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="sd">        dict: 날씨 정보</span>
-</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>    <span class="c1"># API 설정</span>
-</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>    <span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst&quot;</span>
-</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>    <span class="n">SERVICE_KEY</span> <span class="o">=</span> <span class="s2">&quot;YOUR_SERVICE_KEY&quot;</span>  <span class="c1"># 공공데이터포털에서 발급받은 키</span>
-</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>
-</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>    <span class="c1"># 서울시 마포구 좌표</span>
-</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>    <span class="n">nx</span> <span class="o">=</span> <span class="mi">55</span>
-</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>    <span class="n">ny</span> <span class="o">=</span> <span class="mi">126</span>
-</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a>
-</span><span id="__span-14-20"><a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a>    <span class="c1"># 오늘 날짜와 시간 계산</span>
-</span><span id="__span-14-21"><a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a>    <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-</span><span id="__span-14-22"><a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a>    <span class="n">base_date</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-14-23"><a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a>
-</span><span id="__span-14-24"><a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a>    <span class="c1"># base_time은 현재 시각으로부터 30분 이전의 정시 단위</span>
-</span><span id="__span-14-25"><a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a>    <span class="c1"># 예: 현재가 14:35면 base_time은 1400 (14시)</span>
-</span><span id="__span-14-26"><a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a>    <span class="n">current_hour</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">hour</span>
-</span><span id="__span-14-27"><a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a>    <span class="n">current_minute</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">minute</span>
-</span><span id="__span-14-28"><a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a>
-</span><span id="__span-14-29"><a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a>    <span class="c1"># 30분 이전 시각 계산</span>
-</span><span id="__span-14-30"><a id="__codelineno-14-30" name="__codelineno-14-30" href="#__codelineno-14-30"></a>    <span class="k">if</span> <span class="n">current_minute</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
-</span><span id="__span-14-31"><a id="__codelineno-14-31" name="__codelineno-14-31" href="#__codelineno-14-31"></a>        <span class="n">base_time_hour</span> <span class="o">=</span> <span class="n">current_hour</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span id="__span-14-32"><a id="__codelineno-14-32" name="__codelineno-14-32" href="#__codelineno-14-32"></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-14-33"><a id="__codelineno-14-33" name="__codelineno-14-33" href="#__codelineno-14-33"></a>        <span class="n">base_time_hour</span> <span class="o">=</span> <span class="n">current_hour</span>
-</span><span id="__span-14-34"><a id="__codelineno-14-34" name="__codelineno-14-34" href="#__codelineno-14-34"></a>
-</span><span id="__span-14-35"><a id="__codelineno-14-35" name="__codelineno-14-35" href="#__codelineno-14-35"></a>    <span class="c1"># base_time은 0200, 0500, 0800, 1100, 1400, 1700, 2000, 2300 중 하나여야 함</span>
-</span><span id="__span-14-36"><a id="__codelineno-14-36" name="__codelineno-14-36" href="#__codelineno-14-36"></a>    <span class="c1"># 가장 가까운 발표 시각 찾기</span>
-</span><span id="__span-14-37"><a id="__codelineno-14-37" name="__codelineno-14-37" href="#__codelineno-14-37"></a>    <span class="n">valid_times</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">23</span><span class="p">]</span>
-</span><span id="__span-14-38"><a id="__codelineno-14-38" name="__codelineno-14-38" href="#__codelineno-14-38"></a>    <span class="n">base_time_hour</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">valid_times</span> <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">base_time_hour</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="mi">23</span><span class="p">)</span>
-</span><span id="__span-14-39"><a id="__codelineno-14-39" name="__codelineno-14-39" href="#__codelineno-14-39"></a>    <span class="n">base_time</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_time_hour</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">00&quot;</span>
-</span><span id="__span-14-40"><a id="__codelineno-14-40" name="__codelineno-14-40" href="#__codelineno-14-40"></a>
-</span><span id="__span-14-41"><a id="__codelineno-14-41" name="__codelineno-14-41" href="#__codelineno-14-41"></a>    <span class="c1"># 요청 파라미터</span>
-</span><span id="__span-14-42"><a id="__codelineno-14-42" name="__codelineno-14-42" href="#__codelineno-14-42"></a>    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-14-43"><a id="__codelineno-14-43" name="__codelineno-14-43" href="#__codelineno-14-43"></a>        <span class="s2">&quot;serviceKey&quot;</span><span class="p">:</span> <span class="n">SERVICE_KEY</span><span class="p">,</span>
-</span><span id="__span-14-44"><a id="__codelineno-14-44" name="__codelineno-14-44" href="#__codelineno-14-44"></a>        <span class="s2">&quot;pageNo&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
-</span><span id="__span-14-45"><a id="__codelineno-14-45" name="__codelineno-14-45" href="#__codelineno-14-45"></a>        <span class="s2">&quot;numOfRows&quot;</span><span class="p">:</span> <span class="s2">&quot;1000&quot;</span><span class="p">,</span>
-</span><span id="__span-14-46"><a id="__codelineno-14-46" name="__codelineno-14-46" href="#__codelineno-14-46"></a>        <span class="s2">&quot;dataType&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON&quot;</span><span class="p">,</span>
-</span><span id="__span-14-47"><a id="__codelineno-14-47" name="__codelineno-14-47" href="#__codelineno-14-47"></a>        <span class="s2">&quot;base_date&quot;</span><span class="p">:</span> <span class="n">base_date</span><span class="p">,</span>
-</span><span id="__span-14-48"><a id="__codelineno-14-48" name="__codelineno-14-48" href="#__codelineno-14-48"></a>        <span class="s2">&quot;base_time&quot;</span><span class="p">:</span> <span class="n">base_time</span><span class="p">,</span>
-</span><span id="__span-14-49"><a id="__codelineno-14-49" name="__codelineno-14-49" href="#__codelineno-14-49"></a>        <span class="s2">&quot;nx&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">nx</span><span class="p">),</span>
-</span><span id="__span-14-50"><a id="__codelineno-14-50" name="__codelineno-14-50" href="#__codelineno-14-50"></a>        <span class="s2">&quot;ny&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ny</span><span class="p">)</span>
-</span><span id="__span-14-51"><a id="__codelineno-14-51" name="__codelineno-14-51" href="#__codelineno-14-51"></a>    <span class="p">}</span>
-</span><span id="__span-14-52"><a id="__codelineno-14-52" name="__codelineno-14-52" href="#__codelineno-14-52"></a>
-</span><span id="__span-14-53"><a id="__codelineno-14-53" name="__codelineno-14-53" href="#__codelineno-14-53"></a>    <span class="c1"># API 요청</span>
-</span><span id="__span-14-54"><a id="__codelineno-14-54" name="__codelineno-14-54" href="#__codelineno-14-54"></a>    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">BASE_URL</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-</span><span id="__span-14-55"><a id="__codelineno-14-55" name="__codelineno-14-55" href="#__codelineno-14-55"></a>    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-</span><span id="__span-14-56"><a id="__codelineno-14-56" name="__codelineno-14-56" href="#__codelineno-14-56"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-</span><span id="__span-14-57"><a id="__codelineno-14-57" name="__codelineno-14-57" href="#__codelineno-14-57"></a>
-</span><span id="__span-14-58"><a id="__codelineno-14-58" name="__codelineno-14-58" href="#__codelineno-14-58"></a>    <span class="c1"># 응답 파싱</span>
-</span><span id="__span-14-59"><a id="__codelineno-14-59" name="__codelineno-14-59" href="#__codelineno-14-59"></a>    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;header&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resultCode&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;00&quot;</span><span class="p">:</span>
-</span><span id="__span-14-60"><a id="__codelineno-14-60" name="__codelineno-14-60" href="#__codelineno-14-60"></a>        <span class="n">items</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;items&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="p">[])</span>
-</span><span id="__span-14-61"><a id="__codelineno-14-61" name="__codelineno-14-61" href="#__codelineno-14-61"></a>
-</span><span id="__span-14-62"><a id="__codelineno-14-62" name="__codelineno-14-62" href="#__codelineno-14-62"></a>        <span class="c1"># 내일 날짜 계산</span>
-</span><span id="__span-14-63"><a id="__codelineno-14-63" name="__codelineno-14-63" href="#__codelineno-14-63"></a>        <span class="n">tomorrow</span> <span class="o">=</span> <span class="n">today</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-14-64"><a id="__codelineno-14-64" name="__codelineno-14-64" href="#__codelineno-14-64"></a>        <span class="n">tomorrow_date</span> <span class="o">=</span> <span class="n">tomorrow</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-14-65"><a id="__codelineno-14-65" name="__codelineno-14-65" href="#__codelineno-14-65"></a>
-</span><span id="__span-14-66"><a id="__codelineno-14-66" name="__codelineno-14-66" href="#__codelineno-14-66"></a>        <span class="c1"># 내일 날씨 정보 필터링</span>
-</span><span id="__span-14-67"><a id="__codelineno-14-67" name="__codelineno-14-67" href="#__codelineno-14-67"></a>        <span class="n">tomorrow_weather</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-14-68"><a id="__codelineno-14-68" name="__codelineno-14-68" href="#__codelineno-14-68"></a>        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
-</span><span id="__span-14-69"><a id="__codelineno-14-69" name="__codelineno-14-69" href="#__codelineno-14-69"></a>            <span class="n">fcst_date</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fcstDate&quot;</span><span class="p">)</span>
-</span><span id="__span-14-70"><a id="__codelineno-14-70" name="__codelineno-14-70" href="#__codelineno-14-70"></a>            <span class="n">fcst_time</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fcstTime&quot;</span><span class="p">)</span>
-</span><span id="__span-14-71"><a id="__codelineno-14-71" name="__codelineno-14-71" href="#__codelineno-14-71"></a>            <span class="n">category</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">)</span>
-</span><span id="__span-14-72"><a id="__codelineno-14-72" name="__codelineno-14-72" href="#__codelineno-14-72"></a>            <span class="n">fcst_value</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fcstValue&quot;</span><span class="p">)</span>
-</span><span id="__span-14-73"><a id="__codelineno-14-73" name="__codelineno-14-73" href="#__codelineno-14-73"></a>
-</span><span id="__span-14-74"><a id="__codelineno-14-74" name="__codelineno-14-74" href="#__codelineno-14-74"></a>            <span class="k">if</span> <span class="n">fcst_date</span> <span class="o">==</span> <span class="n">tomorrow_date</span><span class="p">:</span>
-</span><span id="__span-14-75"><a id="__codelineno-14-75" name="__codelineno-14-75" href="#__codelineno-14-75"></a>                <span class="k">if</span> <span class="n">fcst_time</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tomorrow_weather</span><span class="p">:</span>
-</span><span id="__span-14-76"><a id="__codelineno-14-76" name="__codelineno-14-76" href="#__codelineno-14-76"></a>                    <span class="n">tomorrow_weather</span><span class="p">[</span><span class="n">fcst_time</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-14-77"><a id="__codelineno-14-77" name="__codelineno-14-77" href="#__codelineno-14-77"></a>                <span class="n">tomorrow_weather</span><span class="p">[</span><span class="n">fcst_time</span><span class="p">][</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="n">fcst_value</span>
-</span><span id="__span-14-78"><a id="__codelineno-14-78" name="__codelineno-14-78" href="#__codelineno-14-78"></a>
-</span><span id="__span-14-79"><a id="__codelineno-14-79" name="__codelineno-14-79" href="#__codelineno-14-79"></a>        <span class="k">return</span> <span class="p">{</span>
-</span><span id="__span-14-80"><a id="__codelineno-14-80" name="__codelineno-14-80" href="#__codelineno-14-80"></a>            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">tomorrow_date</span><span class="p">,</span>
-</span><span id="__span-14-81"><a id="__codelineno-14-81" name="__codelineno-14-81" href="#__codelineno-14-81"></a>            <span class="s2">&quot;weather&quot;</span><span class="p">:</span> <span class="n">tomorrow_weather</span>
-</span><span id="__span-14-82"><a id="__codelineno-14-82" name="__codelineno-14-82" href="#__codelineno-14-82"></a>        <span class="p">}</span>
-</span><span id="__span-14-83"><a id="__codelineno-14-83" name="__codelineno-14-83" href="#__codelineno-14-83"></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-14-84"><a id="__codelineno-14-84" name="__codelineno-14-84" href="#__codelineno-14-84"></a>        <span class="n">error_msg</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;header&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resultMsg&quot;</span><span class="p">,</span> <span class="s2">&quot;알 수 없는 오류&quot;</span><span class="p">)</span>
-</span><span id="__span-14-85"><a id="__codelineno-14-85" name="__codelineno-14-85" href="#__codelineno-14-85"></a>        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;API 오류: </span><span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-14-86"><a id="__codelineno-14-86" name="__codelineno-14-86" href="#__codelineno-14-86"></a>
-</span><span id="__span-14-87"><a id="__codelineno-14-87" name="__codelineno-14-87" href="#__codelineno-14-87"></a>
-</span><span id="__span-14-88"><a id="__codelineno-14-88" name="__codelineno-14-88" href="#__codelineno-14-88"></a><span class="c1"># 사용 예시</span>
-</span><span id="__span-14-89"><a id="__codelineno-14-89" name="__codelineno-14-89" href="#__codelineno-14-89"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="__span-14-90"><a id="__codelineno-14-90" name="__codelineno-14-90" href="#__codelineno-14-90"></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="__span-14-91"><a id="__codelineno-14-91" name="__codelineno-14-91" href="#__codelineno-14-91"></a>        <span class="n">weather_data</span> <span class="o">=</span> <span class="n">get_tomorrow_weather_mapo</span><span class="p">()</span>
-</span><span id="__span-14-92"><a id="__codelineno-14-92" name="__codelineno-14-92" href="#__codelineno-14-92"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;내일 날씨 정보: </span><span class="si">{</span><span class="n">weather_data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-14-93"><a id="__codelineno-14-93" name="__codelineno-14-93" href="#__codelineno-14-93"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="__span-14-94"><a id="__codelineno-14-94" name="__codelineno-14-94" href="#__codelineno-14-94"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;오류 발생: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span></code></pre></div>
+<pre><code class="language-python">import requests
+from datetime import datetime, timedelta
+from urllib.parse import urlencode, quote_plus
+
+def get_tomorrow_weather_mapo():
+    &quot;&quot;&quot;
+    서울시 마포구 내일 날씨 조회
+
+    Returns:
+        dict: 날씨 정보
+    &quot;&quot;&quot;
+    # API 설정
+    BASE_URL = &quot;http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst&quot;
+    SERVICE_KEY = &quot;YOUR_SERVICE_KEY&quot;  # 공공데이터포털에서 발급받은 키
+
+    # 서울시 마포구 좌표
+    nx = 55
+    ny = 126
+
+    # 오늘 날짜와 시간 계산
+    today = datetime.now()
+    base_date = today.strftime(&quot;%Y%m%d&quot;)
+
+    # base_time은 현재 시각으로부터 30분 이전의 정시 단위
+    # 예: 현재가 14:35면 base_time은 1400 (14시)
+    current_hour = today.hour
+    current_minute = today.minute
+
+    # 30분 이전 시각 계산
+    if current_minute &lt; 30:
+        base_time_hour = current_hour - 1
+    else:
+        base_time_hour = current_hour
+
+    # base_time은 0200, 0500, 0800, 1100, 1400, 1700, 2000, 2300 중 하나여야 함
+    # 가장 가까운 발표 시각 찾기
+    valid_times = [2, 5, 8, 11, 14, 17, 20, 23]
+    base_time_hour = max([t for t in valid_times if t &lt;= base_time_hour], default=23)
+    base_time = f&quot;{base_time_hour:02d}00&quot;
+
+    # 요청 파라미터
+    params = {
+        &quot;serviceKey&quot;: SERVICE_KEY,
+        &quot;pageNo&quot;: &quot;1&quot;,
+        &quot;numOfRows&quot;: &quot;1000&quot;,
+        &quot;dataType&quot;: &quot;JSON&quot;,
+        &quot;base_date&quot;: base_date,
+        &quot;base_time&quot;: base_time,
+        &quot;nx&quot;: str(nx),
+        &quot;ny&quot;: str(ny)
+    }
+
+    # API 요청
+    response = requests.get(BASE_URL, params=params)
+    response.raise_for_status()
+    data = response.json()
+
+    # 응답 파싱
+    if data.get(&quot;response&quot;, {}).get(&quot;header&quot;, {}).get(&quot;resultCode&quot;) == &quot;00&quot;:
+        items = data.get(&quot;response&quot;, {}).get(&quot;body&quot;, {}).get(&quot;items&quot;, {}).get(&quot;item&quot;, [])
+
+        # 내일 날짜 계산
+        tomorrow = today + timedelta(days=1)
+        tomorrow_date = tomorrow.strftime(&quot;%Y%m%d&quot;)
+
+        # 내일 날씨 정보 필터링
+        tomorrow_weather = {}
+        for item in items:
+            fcst_date = item.get(&quot;fcstDate&quot;)
+            fcst_time = item.get(&quot;fcstTime&quot;)
+            category = item.get(&quot;category&quot;)
+            fcst_value = item.get(&quot;fcstValue&quot;)
+
+            if fcst_date == tomorrow_date:
+                if fcst_time not in tomorrow_weather:
+                    tomorrow_weather[fcst_time] = {}
+                tomorrow_weather[fcst_time][category] = fcst_value
+
+        return {
+            &quot;date&quot;: tomorrow_date,
+            &quot;weather&quot;: tomorrow_weather
+        }
+    else:
+        error_msg = data.get(&quot;response&quot;, {}).get(&quot;header&quot;, {}).get(&quot;resultMsg&quot;, &quot;알 수 없는 오류&quot;)
+        raise Exception(f&quot;API 오류: {error_msg}&quot;)
+
+
+# 사용 예시
+if __name__ == &quot;__main__&quot;:
+    try:
+        weather_data = get_tomorrow_weather_mapo()
+        print(f&quot;내일 날씨 정보: {weather_data}&quot;)
+    except Exception as e:
+        print(f&quot;오류 발생: {e}&quot;)
+</code></pre>
 <p><strong>2. 날씨 카테고리 설명</strong></p>
 <p>API 응답의 <code>category</code> 필드 값과 의미:</p>
 <ul>
@@ -3558,17 +3097,17 @@
 <li><code>WAV</code>: 파고 (m)</li>
 </ul>
 <p><strong>3. 간단한 사용 예시 (cURL)</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># 오늘 날짜와 적절한 base_time 설정 필요</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>curl<span class="w"> </span><span class="s2">&quot;http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?\</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="s2">serviceKey=YOUR_SERVICE_KEY&amp;\</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="s2">pageNo=1&amp;\</span>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="s2">numOfRows=1000&amp;\</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="s2">dataType=JSON&amp;\</span>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="s2">base_date=20250122&amp;\</span>
-</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="s2">base_time=1100&amp;\</span>
-</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="s2">nx=55&amp;\</span>
-</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="s2">ny=126&quot;</span>
-</span></code></pre></div>
+<pre><code class="language-bash"># 오늘 날짜와 적절한 base_time 설정 필요
+curl &quot;http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?\
+serviceKey=YOUR_SERVICE_KEY&amp;\
+pageNo=1&amp;\
+numOfRows=1000&amp;\
+dataType=JSON&amp;\
+base_date=20250122&amp;\
+base_time=1100&amp;\
+nx=55&amp;\
+ny=126&quot;
+</code></pre>
 <h3 id="2-api">2. API 신청 절차<a class="headerlink" href="#2-api" title="Permanent link">&para;</a></h3>
 <ol>
 <li><a href="https://www.data.go.kr">공공데이터포털</a> 회원가입 및 로그인</li>
@@ -3604,161 +3143,161 @@
 <li>일일 요청 제한이 있을 수 있으므로 적절한 캐싱을 사용하세요</li>
 </ol>
 <h3 id="4">4. 완전한 예제 코드<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">MapoWeatherClient</span><span class="p">:</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;서울시 마포구 날씨 조회 클라이언트&quot;&quot;&quot;</span>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst&quot;</span>
-</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>    <span class="n">NX</span> <span class="o">=</span> <span class="mi">55</span>  <span class="c1"># 마포구 격자 X 좌표</span>
-</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>    <span class="n">NY</span> <span class="o">=</span> <span class="mi">126</span>  <span class="c1"># 마포구 격자 Y 좌표</span>
-</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>
-</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">service_key</span> <span class="o">=</span> <span class="n">service_key</span>
-</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>
-</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_base_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;현재 시각 기준으로 유효한 base_date와 base_time 계산&quot;&quot;&quot;</span>
-</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>        <span class="n">base_date</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>
-</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a>        <span class="c1"># 유효한 발표 시각 목록</span>
-</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>        <span class="n">valid_times</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">23</span><span class="p">]</span>
-</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a>        <span class="n">current_hour</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">hour</span>
-</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>        <span class="n">current_minute</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">minute</span>
-</span><span id="__span-16-24"><a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a>
-</span><span id="__span-16-25"><a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a>        <span class="c1"># 30분 이전 시각 계산</span>
-</span><span id="__span-16-26"><a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a>        <span class="k">if</span> <span class="n">current_minute</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
-</span><span id="__span-16-27"><a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a>            <span class="n">target_hour</span> <span class="o">=</span> <span class="n">current_hour</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span id="__span-16-28"><a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-16-29"><a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a>            <span class="n">target_hour</span> <span class="o">=</span> <span class="n">current_hour</span>
-</span><span id="__span-16-30"><a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a>
-</span><span id="__span-16-31"><a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a>        <span class="c1"># 가장 가까운 유효한 발표 시각 찾기</span>
-</span><span id="__span-16-32"><a id="__codelineno-16-32" name="__codelineno-16-32" href="#__codelineno-16-32"></a>        <span class="n">base_time_hour</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">valid_times</span> <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">target_hour</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="mi">23</span><span class="p">)</span>
-</span><span id="__span-16-33"><a id="__codelineno-16-33" name="__codelineno-16-33" href="#__codelineno-16-33"></a>
-</span><span id="__span-16-34"><a id="__codelineno-16-34" name="__codelineno-16-34" href="#__codelineno-16-34"></a>        <span class="c1"># 만약 오늘 발표 시각이 없으면 어제 23시 사용</span>
-</span><span id="__span-16-35"><a id="__codelineno-16-35" name="__codelineno-16-35" href="#__codelineno-16-35"></a>        <span class="k">if</span> <span class="n">base_time_hour</span> <span class="o">&lt;</span> <span class="n">valid_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="__span-16-36"><a id="__codelineno-16-36" name="__codelineno-16-36" href="#__codelineno-16-36"></a>            <span class="n">base_date</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-16-37"><a id="__codelineno-16-37" name="__codelineno-16-37" href="#__codelineno-16-37"></a>            <span class="n">base_time_hour</span> <span class="o">=</span> <span class="mi">23</span>
-</span><span id="__span-16-38"><a id="__codelineno-16-38" name="__codelineno-16-38" href="#__codelineno-16-38"></a>
-</span><span id="__span-16-39"><a id="__codelineno-16-39" name="__codelineno-16-39" href="#__codelineno-16-39"></a>        <span class="n">base_time</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_time_hour</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">00&quot;</span>
-</span><span id="__span-16-40"><a id="__codelineno-16-40" name="__codelineno-16-40" href="#__codelineno-16-40"></a>        <span class="k">return</span> <span class="n">base_date</span><span class="p">,</span> <span class="n">base_time</span>
-</span><span id="__span-16-41"><a id="__codelineno-16-41" name="__codelineno-16-41" href="#__codelineno-16-41"></a>
-</span><span id="__span-16-42"><a id="__codelineno-16-42" name="__codelineno-16-42" href="#__codelineno-16-42"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_tomorrow_weather</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="__span-16-43"><a id="__codelineno-16-43" name="__codelineno-16-43" href="#__codelineno-16-43"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;내일 날씨 조회&quot;&quot;&quot;</span>
-</span><span id="__span-16-44"><a id="__codelineno-16-44" name="__codelineno-16-44" href="#__codelineno-16-44"></a>        <span class="n">base_date</span><span class="p">,</span> <span class="n">base_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_time</span><span class="p">()</span>
-</span><span id="__span-16-45"><a id="__codelineno-16-45" name="__codelineno-16-45" href="#__codelineno-16-45"></a>
-</span><span id="__span-16-46"><a id="__codelineno-16-46" name="__codelineno-16-46" href="#__codelineno-16-46"></a>        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-16-47"><a id="__codelineno-16-47" name="__codelineno-16-47" href="#__codelineno-16-47"></a>            <span class="s2">&quot;serviceKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_key</span><span class="p">,</span>
-</span><span id="__span-16-48"><a id="__codelineno-16-48" name="__codelineno-16-48" href="#__codelineno-16-48"></a>            <span class="s2">&quot;pageNo&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
-</span><span id="__span-16-49"><a id="__codelineno-16-49" name="__codelineno-16-49" href="#__codelineno-16-49"></a>            <span class="s2">&quot;numOfRows&quot;</span><span class="p">:</span> <span class="s2">&quot;1000&quot;</span><span class="p">,</span>
-</span><span id="__span-16-50"><a id="__codelineno-16-50" name="__codelineno-16-50" href="#__codelineno-16-50"></a>            <span class="s2">&quot;dataType&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON&quot;</span><span class="p">,</span>
-</span><span id="__span-16-51"><a id="__codelineno-16-51" name="__codelineno-16-51" href="#__codelineno-16-51"></a>            <span class="s2">&quot;base_date&quot;</span><span class="p">:</span> <span class="n">base_date</span><span class="p">,</span>
-</span><span id="__span-16-52"><a id="__codelineno-16-52" name="__codelineno-16-52" href="#__codelineno-16-52"></a>            <span class="s2">&quot;base_time&quot;</span><span class="p">:</span> <span class="n">base_time</span><span class="p">,</span>
-</span><span id="__span-16-53"><a id="__codelineno-16-53" name="__codelineno-16-53" href="#__codelineno-16-53"></a>            <span class="s2">&quot;nx&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NX</span><span class="p">),</span>
-</span><span id="__span-16-54"><a id="__codelineno-16-54" name="__codelineno-16-54" href="#__codelineno-16-54"></a>            <span class="s2">&quot;ny&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NY</span><span class="p">)</span>
-</span><span id="__span-16-55"><a id="__codelineno-16-55" name="__codelineno-16-55" href="#__codelineno-16-55"></a>        <span class="p">}</span>
-</span><span id="__span-16-56"><a id="__codelineno-16-56" name="__codelineno-16-56" href="#__codelineno-16-56"></a>
-</span><span id="__span-16-57"><a id="__codelineno-16-57" name="__codelineno-16-57" href="#__codelineno-16-57"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">BASE_URL</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-</span><span id="__span-16-58"><a id="__codelineno-16-58" name="__codelineno-16-58" href="#__codelineno-16-58"></a>        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-</span><span id="__span-16-59"><a id="__codelineno-16-59" name="__codelineno-16-59" href="#__codelineno-16-59"></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-</span><span id="__span-16-60"><a id="__codelineno-16-60" name="__codelineno-16-60" href="#__codelineno-16-60"></a>
-</span><span id="__span-16-61"><a id="__codelineno-16-61" name="__codelineno-16-61" href="#__codelineno-16-61"></a>        <span class="c1"># 응답 검증</span>
-</span><span id="__span-16-62"><a id="__codelineno-16-62" name="__codelineno-16-62" href="#__codelineno-16-62"></a>        <span class="n">header</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;header&quot;</span><span class="p">,</span> <span class="p">{})</span>
-</span><span id="__span-16-63"><a id="__codelineno-16-63" name="__codelineno-16-63" href="#__codelineno-16-63"></a>        <span class="k">if</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resultCode&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;00&quot;</span><span class="p">:</span>
-</span><span id="__span-16-64"><a id="__codelineno-16-64" name="__codelineno-16-64" href="#__codelineno-16-64"></a>            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;API 오류: </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resultMsg&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;알 수 없는 오류&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-16-65"><a id="__codelineno-16-65" name="__codelineno-16-65" href="#__codelineno-16-65"></a>
-</span><span id="__span-16-66"><a id="__codelineno-16-66" name="__codelineno-16-66" href="#__codelineno-16-66"></a>        <span class="n">items</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;items&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="p">[])</span>
-</span><span id="__span-16-67"><a id="__codelineno-16-67" name="__codelineno-16-67" href="#__codelineno-16-67"></a>
-</span><span id="__span-16-68"><a id="__codelineno-16-68" name="__codelineno-16-68" href="#__codelineno-16-68"></a>        <span class="c1"># 내일 날짜</span>
-</span><span id="__span-16-69"><a id="__codelineno-16-69" name="__codelineno-16-69" href="#__codelineno-16-69"></a>        <span class="n">tomorrow</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-16-70"><a id="__codelineno-16-70" name="__codelineno-16-70" href="#__codelineno-16-70"></a>
-</span><span id="__span-16-71"><a id="__codelineno-16-71" name="__codelineno-16-71" href="#__codelineno-16-71"></a>        <span class="c1"># 내일 날씨 정보 수집</span>
-</span><span id="__span-16-72"><a id="__codelineno-16-72" name="__codelineno-16-72" href="#__codelineno-16-72"></a>        <span class="n">weather_info</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-16-73"><a id="__codelineno-16-73" name="__codelineno-16-73" href="#__codelineno-16-73"></a>            <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">tomorrow</span><span class="p">,</span>
-</span><span id="__span-16-74"><a id="__codelineno-16-74" name="__codelineno-16-74" href="#__codelineno-16-74"></a>            <span class="s2">&quot;forecasts&quot;</span><span class="p">:</span> <span class="p">{}</span>
-</span><span id="__span-16-75"><a id="__codelineno-16-75" name="__codelineno-16-75" href="#__codelineno-16-75"></a>        <span class="p">}</span>
-</span><span id="__span-16-76"><a id="__codelineno-16-76" name="__codelineno-16-76" href="#__codelineno-16-76"></a>
-</span><span id="__span-16-77"><a id="__codelineno-16-77" name="__codelineno-16-77" href="#__codelineno-16-77"></a>        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
-</span><span id="__span-16-78"><a id="__codelineno-16-78" name="__codelineno-16-78" href="#__codelineno-16-78"></a>            <span class="n">fcst_date</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fcstDate&quot;</span><span class="p">)</span>
-</span><span id="__span-16-79"><a id="__codelineno-16-79" name="__codelineno-16-79" href="#__codelineno-16-79"></a>            <span class="n">fcst_time</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fcstTime&quot;</span><span class="p">)</span>
-</span><span id="__span-16-80"><a id="__codelineno-16-80" name="__codelineno-16-80" href="#__codelineno-16-80"></a>            <span class="n">category</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">)</span>
-</span><span id="__span-16-81"><a id="__codelineno-16-81" name="__codelineno-16-81" href="#__codelineno-16-81"></a>            <span class="n">fcst_value</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fcstValue&quot;</span><span class="p">)</span>
-</span><span id="__span-16-82"><a id="__codelineno-16-82" name="__codelineno-16-82" href="#__codelineno-16-82"></a>
-</span><span id="__span-16-83"><a id="__codelineno-16-83" name="__codelineno-16-83" href="#__codelineno-16-83"></a>            <span class="k">if</span> <span class="n">fcst_date</span> <span class="o">==</span> <span class="n">tomorrow</span><span class="p">:</span>
-</span><span id="__span-16-84"><a id="__codelineno-16-84" name="__codelineno-16-84" href="#__codelineno-16-84"></a>                <span class="n">time_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fcst_time</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">fcst_time</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-16-85"><a id="__codelineno-16-85" name="__codelineno-16-85" href="#__codelineno-16-85"></a>                <span class="k">if</span> <span class="n">time_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">weather_info</span><span class="p">[</span><span class="s2">&quot;forecasts&quot;</span><span class="p">]:</span>
-</span><span id="__span-16-86"><a id="__codelineno-16-86" name="__codelineno-16-86" href="#__codelineno-16-86"></a>                    <span class="n">weather_info</span><span class="p">[</span><span class="s2">&quot;forecasts&quot;</span><span class="p">][</span><span class="n">time_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-16-87"><a id="__codelineno-16-87" name="__codelineno-16-87" href="#__codelineno-16-87"></a>                <span class="n">weather_info</span><span class="p">[</span><span class="s2">&quot;forecasts&quot;</span><span class="p">][</span><span class="n">time_key</span><span class="p">][</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="n">fcst_value</span>
-</span><span id="__span-16-88"><a id="__codelineno-16-88" name="__codelineno-16-88" href="#__codelineno-16-88"></a>
-</span><span id="__span-16-89"><a id="__codelineno-16-89" name="__codelineno-16-89" href="#__codelineno-16-89"></a>        <span class="k">return</span> <span class="n">weather_info</span>
-</span><span id="__span-16-90"><a id="__codelineno-16-90" name="__codelineno-16-90" href="#__codelineno-16-90"></a>
-</span><span id="__span-16-91"><a id="__codelineno-16-91" name="__codelineno-16-91" href="#__codelineno-16-91"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">format_weather_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weather_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="__span-16-92"><a id="__codelineno-16-92" name="__codelineno-16-92" href="#__codelineno-16-92"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;날씨 정보를 읽기 쉬운 형식으로 변환&quot;&quot;&quot;</span>
-</span><span id="__span-16-93"><a id="__codelineno-16-93" name="__codelineno-16-93" href="#__codelineno-16-93"></a>        <span class="n">tomorrow</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-16-94"><a id="__codelineno-16-94" name="__codelineno-16-94" href="#__codelineno-16-94"></a>        <span class="n">date_str</span> <span class="o">=</span> <span class="n">tomorrow</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y년 %m월 </span><span class="si">%d</span><span class="s2">일&quot;</span><span class="p">)</span>
-</span><span id="__span-16-95"><a id="__codelineno-16-95" name="__codelineno-16-95" href="#__codelineno-16-95"></a>
-</span><span id="__span-16-96"><a id="__codelineno-16-96" name="__codelineno-16-96" href="#__codelineno-16-96"></a>        <span class="n">summary</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;서울시 마포구 </span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2"> 날씨</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-</span><span id="__span-16-97"><a id="__codelineno-16-97" name="__codelineno-16-97" href="#__codelineno-16-97"></a>
-</span><span id="__span-16-98"><a id="__codelineno-16-98" name="__codelineno-16-98" href="#__codelineno-16-98"></a>        <span class="c1"># 주요 정보 추출</span>
-</span><span id="__span-16-99"><a id="__codelineno-16-99" name="__codelineno-16-99" href="#__codelineno-16-99"></a>        <span class="n">forecasts</span> <span class="o">=</span> <span class="n">weather_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;forecasts&quot;</span><span class="p">,</span> <span class="p">{})</span>
-</span><span id="__span-16-100"><a id="__codelineno-16-100" name="__codelineno-16-100" href="#__codelineno-16-100"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">forecasts</span><span class="p">:</span>
-</span><span id="__span-16-101"><a id="__codelineno-16-101" name="__codelineno-16-101" href="#__codelineno-16-101"></a>            <span class="k">return</span> <span class="n">summary</span> <span class="o">+</span> <span class="s2">&quot;날씨 정보가 없습니다.&quot;</span>
-</span><span id="__span-16-102"><a id="__codelineno-16-102" name="__codelineno-16-102" href="#__codelineno-16-102"></a>
-</span><span id="__span-16-103"><a id="__codelineno-16-103" name="__codelineno-16-103" href="#__codelineno-16-103"></a>        <span class="c1"># 최저/최고 기온 찾기</span>
-</span><span id="__span-16-104"><a id="__codelineno-16-104" name="__codelineno-16-104" href="#__codelineno-16-104"></a>        <span class="n">min_temp</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-16-105"><a id="__codelineno-16-105" name="__codelineno-16-105" href="#__codelineno-16-105"></a>        <span class="n">max_temp</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-16-106"><a id="__codelineno-16-106" name="__codelineno-16-106" href="#__codelineno-16-106"></a>        <span class="n">sky_info</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-16-107"><a id="__codelineno-16-107" name="__codelineno-16-107" href="#__codelineno-16-107"></a>        <span class="n">pop_info</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-16-108"><a id="__codelineno-16-108" name="__codelineno-16-108" href="#__codelineno-16-108"></a>
-</span><span id="__span-16-109"><a id="__codelineno-16-109" name="__codelineno-16-109" href="#__codelineno-16-109"></a>        <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">forecasts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span id="__span-16-110"><a id="__codelineno-16-110" name="__codelineno-16-110" href="#__codelineno-16-110"></a>            <span class="k">if</span> <span class="s2">&quot;TMN&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-</span><span id="__span-16-111"><a id="__codelineno-16-111" name="__codelineno-16-111" href="#__codelineno-16-111"></a>                <span class="n">temp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;TMN&quot;</span><span class="p">])</span>
-</span><span id="__span-16-112"><a id="__codelineno-16-112" name="__codelineno-16-112" href="#__codelineno-16-112"></a>                <span class="k">if</span> <span class="n">min_temp</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">temp</span> <span class="o">&lt;</span> <span class="n">min_temp</span><span class="p">:</span>
-</span><span id="__span-16-113"><a id="__codelineno-16-113" name="__codelineno-16-113" href="#__codelineno-16-113"></a>                    <span class="n">min_temp</span> <span class="o">=</span> <span class="n">temp</span>
-</span><span id="__span-16-114"><a id="__codelineno-16-114" name="__codelineno-16-114" href="#__codelineno-16-114"></a>            <span class="k">if</span> <span class="s2">&quot;TMX&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-</span><span id="__span-16-115"><a id="__codelineno-16-115" name="__codelineno-16-115" href="#__codelineno-16-115"></a>                <span class="n">temp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;TMX&quot;</span><span class="p">])</span>
-</span><span id="__span-16-116"><a id="__codelineno-16-116" name="__codelineno-16-116" href="#__codelineno-16-116"></a>                <span class="k">if</span> <span class="n">max_temp</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">temp</span> <span class="o">&gt;</span> <span class="n">max_temp</span><span class="p">:</span>
-</span><span id="__span-16-117"><a id="__codelineno-16-117" name="__codelineno-16-117" href="#__codelineno-16-117"></a>                    <span class="n">max_temp</span> <span class="o">=</span> <span class="n">temp</span>
-</span><span id="__span-16-118"><a id="__codelineno-16-118" name="__codelineno-16-118" href="#__codelineno-16-118"></a>            <span class="k">if</span> <span class="s2">&quot;SKY&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-</span><span id="__span-16-119"><a id="__codelineno-16-119" name="__codelineno-16-119" href="#__codelineno-16-119"></a>                <span class="n">sky_code</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;SKY&quot;</span><span class="p">])</span>
-</span><span id="__span-16-120"><a id="__codelineno-16-120" name="__codelineno-16-120" href="#__codelineno-16-120"></a>                <span class="n">sky_map</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;맑음&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;구름많음&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;흐림&quot;</span><span class="p">}</span>
-</span><span id="__span-16-121"><a id="__codelineno-16-121" name="__codelineno-16-121" href="#__codelineno-16-121"></a>                <span class="n">sky_info</span><span class="p">[</span><span class="n">time</span><span class="p">]</span> <span class="o">=</span> <span class="n">sky_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sky_code</span><span class="p">,</span> <span class="s2">&quot;알 수 없음&quot;</span><span class="p">)</span>
-</span><span id="__span-16-122"><a id="__codelineno-16-122" name="__codelineno-16-122" href="#__codelineno-16-122"></a>            <span class="k">if</span> <span class="s2">&quot;POP&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-</span><span id="__span-16-123"><a id="__codelineno-16-123" name="__codelineno-16-123" href="#__codelineno-16-123"></a>                <span class="n">pop_info</span><span class="p">[</span><span class="n">time</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;POP&quot;</span><span class="p">])</span>
-</span><span id="__span-16-124"><a id="__codelineno-16-124" name="__codelineno-16-124" href="#__codelineno-16-124"></a>
-</span><span id="__span-16-125"><a id="__codelineno-16-125" name="__codelineno-16-125" href="#__codelineno-16-125"></a>        <span class="k">if</span> <span class="n">min_temp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-16-126"><a id="__codelineno-16-126" name="__codelineno-16-126" href="#__codelineno-16-126"></a>            <span class="n">summary</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;최저기온: </span><span class="si">{</span><span class="n">min_temp</span><span class="si">}</span><span class="s2">℃</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="__span-16-127"><a id="__codelineno-16-127" name="__codelineno-16-127" href="#__codelineno-16-127"></a>        <span class="k">if</span> <span class="n">max_temp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-16-128"><a id="__codelineno-16-128" name="__codelineno-16-128" href="#__codelineno-16-128"></a>            <span class="n">summary</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;최고기온: </span><span class="si">{</span><span class="n">max_temp</span><span class="si">}</span><span class="s2">℃</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="__span-16-129"><a id="__codelineno-16-129" name="__codelineno-16-129" href="#__codelineno-16-129"></a>
-</span><span id="__span-16-130"><a id="__codelineno-16-130" name="__codelineno-16-130" href="#__codelineno-16-130"></a>        <span class="k">if</span> <span class="n">sky_info</span><span class="p">:</span>
-</span><span id="__span-16-131"><a id="__codelineno-16-131" name="__codelineno-16-131" href="#__codelineno-16-131"></a>            <span class="n">summary</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">하늘상태: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">sky_info</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="__span-16-132"><a id="__codelineno-16-132" name="__codelineno-16-132" href="#__codelineno-16-132"></a>        <span class="k">if</span> <span class="n">pop_info</span><span class="p">:</span>
-</span><span id="__span-16-133"><a id="__codelineno-16-133" name="__codelineno-16-133" href="#__codelineno-16-133"></a>            <span class="n">max_pop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pop_info</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-</span><span id="__span-16-134"><a id="__codelineno-16-134" name="__codelineno-16-134" href="#__codelineno-16-134"></a>            <span class="n">summary</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;강수확률: 최대 </span><span class="si">{</span><span class="n">max_pop</span><span class="si">}</span><span class="s2">%</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span id="__span-16-135"><a id="__codelineno-16-135" name="__codelineno-16-135" href="#__codelineno-16-135"></a>
-</span><span id="__span-16-136"><a id="__codelineno-16-136" name="__codelineno-16-136" href="#__codelineno-16-136"></a>        <span class="k">return</span> <span class="n">summary</span>
-</span><span id="__span-16-137"><a id="__codelineno-16-137" name="__codelineno-16-137" href="#__codelineno-16-137"></a>
-</span><span id="__span-16-138"><a id="__codelineno-16-138" name="__codelineno-16-138" href="#__codelineno-16-138"></a>
-</span><span id="__span-16-139"><a id="__codelineno-16-139" name="__codelineno-16-139" href="#__codelineno-16-139"></a><span class="c1"># 사용 예시</span>
-</span><span id="__span-16-140"><a id="__codelineno-16-140" name="__codelineno-16-140" href="#__codelineno-16-140"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="__span-16-141"><a id="__codelineno-16-141" name="__codelineno-16-141" href="#__codelineno-16-141"></a>    <span class="c1"># 환경변수에서 서비스 키 가져오기 (권장)</span>
-</span><span id="__span-16-142"><a id="__codelineno-16-142" name="__codelineno-16-142" href="#__codelineno-16-142"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-</span><span id="__span-16-143"><a id="__codelineno-16-143" name="__codelineno-16-143" href="#__codelineno-16-143"></a>    <span class="n">service_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;KMA_SERVICE_KEY&quot;</span><span class="p">,</span> <span class="s2">&quot;YOUR_SERVICE_KEY&quot;</span><span class="p">)</span>
-</span><span id="__span-16-144"><a id="__codelineno-16-144" name="__codelineno-16-144" href="#__codelineno-16-144"></a>
-</span><span id="__span-16-145"><a id="__codelineno-16-145" name="__codelineno-16-145" href="#__codelineno-16-145"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">MapoWeatherClient</span><span class="p">(</span><span class="n">service_key</span><span class="p">)</span>
-</span><span id="__span-16-146"><a id="__codelineno-16-146" name="__codelineno-16-146" href="#__codelineno-16-146"></a>
-</span><span id="__span-16-147"><a id="__codelineno-16-147" name="__codelineno-16-147" href="#__codelineno-16-147"></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="__span-16-148"><a id="__codelineno-16-148" name="__codelineno-16-148" href="#__codelineno-16-148"></a>        <span class="n">weather</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_tomorrow_weather</span><span class="p">()</span>
-</span><span id="__span-16-149"><a id="__codelineno-16-149" name="__codelineno-16-149" href="#__codelineno-16-149"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">weather</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-</span><span id="__span-16-150"><a id="__codelineno-16-150" name="__codelineno-16-150" href="#__codelineno-16-150"></a>
-</span><span id="__span-16-151"><a id="__codelineno-16-151" name="__codelineno-16-151" href="#__codelineno-16-151"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">50</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-16-152"><a id="__codelineno-16-152" name="__codelineno-16-152" href="#__codelineno-16-152"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">format_weather_summary</span><span class="p">(</span><span class="n">weather</span><span class="p">))</span>
-</span><span id="__span-16-153"><a id="__codelineno-16-153" name="__codelineno-16-153" href="#__codelineno-16-153"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="__span-16-154"><a id="__codelineno-16-154" name="__codelineno-16-154" href="#__codelineno-16-154"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;오류 발생: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span></code></pre></div>
+<pre><code class="language-python">import requests
+from datetime import datetime, timedelta
+import json
+
+class MapoWeatherClient:
+    &quot;&quot;&quot;서울시 마포구 날씨 조회 클라이언트&quot;&quot;&quot;
+
+    BASE_URL = &quot;http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst&quot;
+    NX = 55  # 마포구 격자 X 좌표
+    NY = 126  # 마포구 격자 Y 좌표
+
+    def __init__(self, service_key: str):
+        self.service_key = service_key
+
+    def _get_base_time(self) -&gt; tuple:
+        &quot;&quot;&quot;현재 시각 기준으로 유효한 base_date와 base_time 계산&quot;&quot;&quot;
+        now = datetime.now()
+        base_date = now.strftime(&quot;%Y%m%d&quot;)
+
+        # 유효한 발표 시각 목록
+        valid_times = [2, 5, 8, 11, 14, 17, 20, 23]
+        current_hour = now.hour
+        current_minute = now.minute
+
+        # 30분 이전 시각 계산
+        if current_minute &lt; 30:
+            target_hour = current_hour - 1
+        else:
+            target_hour = current_hour
+
+        # 가장 가까운 유효한 발표 시각 찾기
+        base_time_hour = max([t for t in valid_times if t &lt;= target_hour], default=23)
+
+        # 만약 오늘 발표 시각이 없으면 어제 23시 사용
+        if base_time_hour &lt; valid_times[0]:
+            base_date = (now - timedelta(days=1)).strftime(&quot;%Y%m%d&quot;)
+            base_time_hour = 23
+
+        base_time = f&quot;{base_time_hour:02d}00&quot;
+        return base_date, base_time
+
+    def get_tomorrow_weather(self) -&gt; dict:
+        &quot;&quot;&quot;내일 날씨 조회&quot;&quot;&quot;
+        base_date, base_time = self._get_base_time()
+
+        params = {
+            &quot;serviceKey&quot;: self.service_key,
+            &quot;pageNo&quot;: &quot;1&quot;,
+            &quot;numOfRows&quot;: &quot;1000&quot;,
+            &quot;dataType&quot;: &quot;JSON&quot;,
+            &quot;base_date&quot;: base_date,
+            &quot;base_time&quot;: base_time,
+            &quot;nx&quot;: str(self.NX),
+            &quot;ny&quot;: str(self.NY)
+        }
+
+        response = requests.get(self.BASE_URL, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+        # 응답 검증
+        header = data.get(&quot;response&quot;, {}).get(&quot;header&quot;, {})
+        if header.get(&quot;resultCode&quot;) != &quot;00&quot;:
+            raise Exception(f&quot;API 오류: {header.get('resultMsg', '알 수 없는 오류')}&quot;)
+
+        items = data.get(&quot;response&quot;, {}).get(&quot;body&quot;, {}).get(&quot;items&quot;, {}).get(&quot;item&quot;, [])
+
+        # 내일 날짜
+        tomorrow = (datetime.now() + timedelta(days=1)).strftime(&quot;%Y%m%d&quot;)
+
+        # 내일 날씨 정보 수집
+        weather_info = {
+            &quot;date&quot;: tomorrow,
+            &quot;forecasts&quot;: {}
+        }
+
+        for item in items:
+            fcst_date = item.get(&quot;fcstDate&quot;)
+            fcst_time = item.get(&quot;fcstTime&quot;)
+            category = item.get(&quot;category&quot;)
+            fcst_value = item.get(&quot;fcstValue&quot;)
+
+            if fcst_date == tomorrow:
+                time_key = f&quot;{fcst_time[:2]}:{fcst_time[2:]}&quot;
+                if time_key not in weather_info[&quot;forecasts&quot;]:
+                    weather_info[&quot;forecasts&quot;][time_key] = {}
+                weather_info[&quot;forecasts&quot;][time_key][category] = fcst_value
+
+        return weather_info
+
+    def format_weather_summary(self, weather_data: dict) -&gt; str:
+        &quot;&quot;&quot;날씨 정보를 읽기 쉬운 형식으로 변환&quot;&quot;&quot;
+        tomorrow = datetime.now() + timedelta(days=1)
+        date_str = tomorrow.strftime(&quot;%Y년 %m월 %d일&quot;)
+
+        summary = f&quot;서울시 마포구 {date_str} 날씨\n\n&quot;
+
+        # 주요 정보 추출
+        forecasts = weather_data.get(&quot;forecasts&quot;, {})
+        if not forecasts:
+            return summary + &quot;날씨 정보가 없습니다.&quot;
+
+        # 최저/최고 기온 찾기
+        min_temp = None
+        max_temp = None
+        sky_info = {}
+        pop_info = {}
+
+        for time, data in forecasts.items():
+            if &quot;TMN&quot; in data:
+                temp = int(data[&quot;TMN&quot;])
+                if min_temp is None or temp &lt; min_temp:
+                    min_temp = temp
+            if &quot;TMX&quot; in data:
+                temp = int(data[&quot;TMX&quot;])
+                if max_temp is None or temp &gt; max_temp:
+                    max_temp = temp
+            if &quot;SKY&quot; in data:
+                sky_code = int(data[&quot;SKY&quot;])
+                sky_map = {1: &quot;맑음&quot;, 3: &quot;구름많음&quot;, 4: &quot;흐림&quot;}
+                sky_info[time] = sky_map.get(sky_code, &quot;알 수 없음&quot;)
+            if &quot;POP&quot; in data:
+                pop_info[time] = int(data[&quot;POP&quot;])
+
+        if min_temp is not None:
+            summary += f&quot;최저기온: {min_temp}℃\n&quot;
+        if max_temp is not None:
+            summary += f&quot;최고기온: {max_temp}℃\n&quot;
+
+        if sky_info:
+            summary += f&quot;\n하늘상태: {list(sky_info.values())[0]}\n&quot;
+        if pop_info:
+            max_pop = max(pop_info.values())
+            summary += f&quot;강수확률: 최대 {max_pop}%\n&quot;
+
+        return summary
+
+
+# 사용 예시
+if __name__ == &quot;__main__&quot;:
+    # 환경변수에서 서비스 키 가져오기 (권장)
+    import os
+    service_key = os.getenv(&quot;KMA_SERVICE_KEY&quot;, &quot;YOUR_SERVICE_KEY&quot;)
+
+    client = MapoWeatherClient(service_key)
+
+    try:
+        weather = client.get_tomorrow_weather()
+        print(json.dumps(weather, indent=2, ensure_ascii=False))
+
+        print(&quot;\n&quot; + &quot;=&quot;*50 + &quot;\n&quot;)
+        print(client.format_weather_summary(weather))
+    except Exception as e:
+        print(f&quot;오류 발생: {e}&quot;)
+</code></pre>
 <h3 id="5">5. 다른 지역 좌표 찾기<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
 <p>다른 지역의 nx, ny 좌표가 필요한 경우:</p>
 <ol>
@@ -3788,84 +3327,18 @@
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
-          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
-  맨위로
-</button>
-        
       </main>
       
         <footer class="md-footer">
-  
-    
-      
-      <nav class="md-footer__inner md-grid" aria-label="하단/푸터" >
-        
-          
-          <a href="../wardrobe/" class="md-footer__link md-footer__link--prev" aria-label="이전: 옷장 (Wardrobe)">
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
-            </div>
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                이전
-              </span>
-              <div class="md-ellipsis">
-                옷장 (Wardrobe)
-              </div>
-            </div>
-          </a>
-        
-        
-          
-          <a href="../recommendation/" class="md-footer__link md-footer__link--next" aria-label="다음: 추천 (Recommendation)">
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                다음
-              </span>
-              <div class="md-ellipsis">
-                추천 (Recommendation)
-              </div>
-            </div>
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
-            </div>
-          </a>
-        
-      </nav>
-    
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
-    <div class="md-copyright__highlight">
-      Copyright &copy; 2024 MyClo Team
-    </div>
-  
   
     Made with
     <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
       Material for MkDocs
-    </a>
-  
-</div>
-      
-        
-<div class="md-social">
-  
-    
-    
-    
-    
-      
-      
-    
-    <a href="https://github.com/MyClo1234/backend" target="_blank" rel="noopener" title="github.com" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
     </a>
   
 </div>
@@ -3883,7 +3356,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "search.share", "toc.follow", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

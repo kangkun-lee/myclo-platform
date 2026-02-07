@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from uuid import UUID
 
@@ -13,8 +13,8 @@ class ChatMessageCreate(ChatMessageBase):
 
 
 class ChatMessageResponse(ChatMessageBase):
-    message_id: int
-    session_id: int
+    message_id: UUID
+    session_id: UUID
 
     class Config:
         from_attributes = True
@@ -29,7 +29,7 @@ class ChatSessionCreate(ChatSessionBase):
 
 
 class ChatSessionResponse(ChatSessionBase):
-    session_id: int
+    session_id: UUID
     user_id: UUID
     messages: List[ChatMessageResponse] = []
 
@@ -41,3 +41,5 @@ class ChatRequest(BaseModel):
     query: str
     lat: float = 37.5665
     lon: float = 126.9780
+    history: List[Dict[str, str]] = Field(default_factory=list)
+    session_id: Optional[UUID] = None

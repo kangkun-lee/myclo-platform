@@ -24,8 +24,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Use Local PostgreSQL for tests by default
-# This prevents accidental connections to Azure/Production DB during local testing
+# Use local PostgreSQL for tests by default
+# This prevents accidental connections to non-test databases during local testing
 TEST_DB_USER = "choeseonghyeon"
 TEST_DB_HOST = "localhost"
 TEST_DB_PORT = "5432"
@@ -70,8 +70,8 @@ def init_test_db():
 @pytest.fixture(scope="function")
 def test_db():
     """
-    Create a test database session using Azure PostgreSQL.
-    Uses the same database as production but with transaction rollback.
+    Create a test database session using PostgreSQL.
+    Uses transaction rollback to isolate each test.
     """
     engine = create_engine(DATABASE_URL)
 

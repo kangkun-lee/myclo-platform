@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { sendChatMessage } from "../api"
-import type { TodaysPick } from "../api/types"
+import type { ChatHistoryMessage, TodaysPick } from "../api/types"
 import { useAuth } from "../hooks/useAuth"
 
 type Message = {
@@ -11,16 +11,17 @@ type Message = {
 }
 
 export default function Chat() {
-  const { } = useAuth()
+  const {} = useAuth()
   const [messages, setMessages] = useState<Message[]>([
     {
-      text: "안녕하세요! 오늘 어떤 스타일을 찾으시나요? 제가 완벽한 코디를 도와드릴게요.",
+      text: "Hello. What style are you looking for today? I can recommend a look for your situation.",
       isUser: false,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     },
   ])
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
+  const [chatSessionId, setChatSessionId] = useState<string | null>(null)
   const listRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -31,15 +32,25 @@ export default function Chat() {
   const send = async () => {
     if (!input.trim()) return
     const text = input.trim()
-    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
 
     setInput("")
     setMessages((prev) => [...prev, { text, isUser: true, timestamp: now }])
     setLoading(true)
 
     try {
-      const response = await sendChatMessage(text)
-      const aiTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      const history: ChatHistoryMessage[] = messages
+        .map((m) => ({
+          role: m.isUser ? "user" : "assistant",
+          content: m.text,
+        }))
+        .slice(-10)
+
+      const response = await sendChatMessage(text, undefined, undefined, history, chatSessionId)
+      if (response.session_id) {
+        setChatSessionId(response.session_id)
+      }
+      const aiTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
 
       setMessages((prev) => [
         ...prev,
@@ -47,7 +58,7 @@ export default function Chat() {
           text: response.response ?? "No response",
           isUser: false,
           timestamp: aiTime,
-          outfit: response.todays_pick?.outfit
+          outfit: response.todays_pick?.outfit,
         },
       ])
     } catch (error) {
@@ -56,7 +67,7 @@ export default function Chat() {
         {
           text: error instanceof Error ? error.message : "Chat error",
           isUser: false,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         },
       ])
     } finally {
@@ -66,7 +77,6 @@ export default function Chat() {
 
   return (
     <div className="flex flex-1 h-[calc(100vh-160px)] overflow-hidden animate-fade-in">
-      {/* Sidebar - Recent Consultations */}
       <aside className="w-[30%] min-w-[320px] hidden xl:flex flex-col border-r border-white/10 bg-white/5 rounded-l-3xl">
         <div className="p-6 pb-2">
           <button className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-primary/20">
@@ -94,12 +104,8 @@ export default function Chat() {
         </div>
       </aside>
 
-      {/* Chat Area */}
       <section className="flex-1 flex flex-col relative bg-background-dark/20 rounded-r-3xl border-l border-white/5">
-        <div
-          ref={listRef}
-          className="flex-1 overflow-y-auto px-6 py-8 space-y-8 scroll-smooth pb-32"
-        >
+        <div ref={listRef} className="flex-1 overflow-y-auto px-6 py-8 space-y-8 scroll-smooth pb-32">
           {messages.map((message, index) => (
             <div key={index} className={`flex flex-col gap-2 ${message.isUser ? "items-end" : "items-start"}`}>
               <div className={`flex gap-4 ${message.isUser ? "flex-row-reverse" : "flex-row"}`}>
@@ -108,18 +114,18 @@ export default function Chat() {
                     <span className="material-symbols-outlined text-white">auto_awesome</span>
                   </div>
                 )}
-                <div className={`max-w-[80%] p-4 rounded-2xl ${message.isUser
-                  ? "bg-primary text-white rounded-tr-none shadow-lg"
-                  : "glass-card rounded-tl-none border border-white/10"
-                  }`}>
+                <div
+                  className={`max-w-[80%] p-4 rounded-2xl ${
+                    message.isUser
+                      ? "bg-primary text-white rounded-tr-none shadow-lg"
+                      : "glass-card rounded-tl-none border border-white/10"
+                  }`}
+                >
                   <p className="text-sm leading-relaxed">{message.text}</p>
-                  <p className={`text-[10px] mt-2 opacity-50 ${message.isUser ? "text-right" : "text-left"}`}>
-                    {message.timestamp}
-                  </p>
+                  <p className={`text-[10px] mt-2 opacity-50 ${message.isUser ? "text-right" : "text-left"}`}>{message.timestamp}</p>
                 </div>
               </div>
 
-              {/* Rich Outfit Card if available */}
               {!message.isUser && message.outfit && (
                 <div className="ml-14 max-w-xl w-full glass-card rounded-2xl overflow-hidden border border-white/20 group animate-in zoom-in-95 duration-500">
                   <div className="relative h-48 bg-slate-900 overflow-hidden">
@@ -130,7 +136,9 @@ export default function Chat() {
                       alt="Outfit recommendation"
                     />
                     <div className="absolute bottom-4 left-6 z-20">
-                      <span className="bg-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white mb-2 inline-block">Recommended Look</span>
+                      <span className="bg-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white mb-2 inline-block">
+                        Recommended Look
+                      </span>
                       <h3 className="text-xl font-bold text-white">{message.outfit.style_description ?? "Modern Elegance"}</h3>
                     </div>
                   </div>
@@ -169,7 +177,6 @@ export default function Chat() {
           )}
         </div>
 
-        {/* Input Bar Area */}
         <div className="absolute bottom-0 left-0 right-0 p-8 pt-0 pointer-events-none">
           <div className="max-w-3xl mx-auto w-full glass-card rounded-2xl p-2 flex items-center gap-2 pointer-events-auto shadow-2xl">
             <button className="p-3 rounded-xl hover:bg-white/10 text-slate-400 hover:text-primary transition-all flex items-center justify-center">

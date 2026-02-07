@@ -16,4 +16,6 @@ export const endpoints = {
   todaysPickRegenerate: "/api/recommend/todays-pick/regenerate",
   weatherSummary: "/api/today/summary",
   chat: "/api/chat",
+  chatSessions: "/api/chat/sessions",
+  processImage: "/api/process-image",
 }

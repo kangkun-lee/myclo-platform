@@ -2,6 +2,9 @@ import { apiRequest } from "./client"
 import { endpoints } from "./endpoints"
 import type {
   AuthResponse,
+  ChatHistoryMessage,
+  ChatSessionMessage,
+  ChatSessionSummary,
   ChatResponse,
   DailyWeather,
   MultiExtractionResponse,
@@ -143,10 +146,56 @@ export async function fetchWeatherSummary(lat: number, lon: number) {
   )
 }
 
-export async function sendChatMessage(query: string, lat?: number, lon?: number) {
+export async function sendChatMessage(
+  query: string,
+  lat?: number,
+  lon?: number,
+  history: ChatHistoryMessage[] = [],
+  sessionId?: string | null
+) {
   return apiRequest<ChatResponse>(endpoints.chat, {
     method: "POST",
     auth: true,
-    body: JSON.stringify({ query, lat, lon }),
+    body: JSON.stringify({ query, lat, lon, history, session_id: sessionId }),
+  })
+}
+
+export async function createChatSession() {
+  return apiRequest<{ success: boolean; session_id: string; created_at?: string }>(
+    endpoints.chatSessions,
+    {
+      method: "POST",
+      auth: true,
+    }
+  )
+}
+
+export async function fetchChatSessions(limit = 20) {
+  const search = new URLSearchParams({ limit: String(limit) })
+  return apiRequest<{ success: boolean; items: ChatSessionSummary[] }>(
+    `${endpoints.chatSessions}?${search.toString()}`,
+    { auth: true }
+  )
+}
+
+export async function fetchChatSessionMessages(sessionId: string, limit = 100) {
+  const search = new URLSearchParams({ limit: String(limit) })
+  return apiRequest<{
+    success: boolean
+    session_id: string
+    items: ChatSessionMessage[]
+  }>(`${endpoints.chatSessions}/${sessionId}/messages?${search.toString()}`, {
+    auth: true,
+  })
+}
+export async function processClothingImage(imageUrl: string, type: "background_removal" | "silhouette" | "shadow" = "background_removal") {
+  return apiRequest<{
+    processed_image_url: string
+    processing_type: string
+    success: boolean
+  }>(endpoints.processImage, {
+    method: "POST",
+    auth: true,
+    body: JSON.stringify({ image_url: imageUrl, processing_type: type }),
   })
 }
